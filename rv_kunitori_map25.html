@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>別府國盗リ合戦 — 絵図奉行(実地図×25パネル)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+:root{
+  --ink:#12100b; --ink2:#1b1710; --ink3:#241d14; --paper:#f2ead8;
+  --gold:#c9a227; --gold-hi:#e9c964; --gold-dim:#7d651f;
+  --aka:#d84334; --aka-d:#8e2618; --ao:#3d7ab8; --ao-d:#1f405f;
+  --ok:#3f9d5a; --cand:#b8892a; --far:#8a5fd0;
+  --line:rgba(201,162,39,0.26); --soft:rgba(242,234,216,0.12);
+  --mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ink);color:var(--paper);
+  font-family:'Hiragino Kaku Gothic ProN','Yu Gothic','Noto Sans JP',sans-serif;
+  padding-bottom:96px;-webkit-text-size-adjust:100%;}
+a{color:var(--gold-hi);}
+
+/* ---- header ---- */
+header{position:sticky;top:0;z-index:40;background:rgba(18,16,11,.97);
+  border-bottom:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:12px;}
+header .seal{flex:0 0 auto;width:36px;height:36px;border:2px solid var(--aka);border-radius:7px;
+  color:var(--aka);display:flex;align-items:center;justify-content:center;font-size:18px;
+  transform:rotate(-6deg);font-family:'Yu Mincho',serif;}
+header .ttl{min-width:0;}
+header .sub{font-size:9px;letter-spacing:.24em;color:var(--gold);white-space:nowrap;}
+header h1{font-size:15px;letter-spacing:.06em;font-weight:800;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+header .spacer{flex:1;}
+.hbtn{flex:0 0 auto;background:none;border:1px solid var(--line);color:var(--paper);
+  border-radius:7px;padding:7px 11px;font-size:11px;cursor:pointer;letter-spacing:.05em;}
+.hbtn:hover{border-color:var(--gold);color:var(--gold-hi);}
+
+main{max-width:1080px;margin:0 auto;padding:16px 12px;}
+.card{background:var(--ink2);border:1px solid var(--line);border-radius:12px;
+  padding:16px;margin-bottom:16px;}
+.card > h2{font-size:13px;letter-spacing:.18em;color:var(--gold);
+  padding-bottom:9px;margin-bottom:12px;border-bottom:1px solid var(--soft);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.card > h2 .cnt{font-family:var(--mono);font-size:10px;color:rgba(242,234,216,.5);letter-spacing:.04em;}
+.muted{font-size:11.5px;color:rgba(242,234,216,.58);line-height:1.95;}
+.muted b{color:var(--gold);font-weight:700;}
+
+/* ---- legend / chips : アイコンは必ず独立ボックス。文字に重ねない ---- */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:11px;}
+.legend .item{display:inline-flex;align-items:center;gap:7px;line-height:1;}
+.dot{flex:0 0 auto;width:10px;height:10px;border-radius:3px;}
+.dot.ok{background:var(--ok);} .dot.cand{background:var(--cand);}
+.dot.far{background:var(--far);} .dot.res{background:rgba(242,234,216,.3);}
+.dot.aka{background:var(--aka);} .dot.ao{background:var(--ao);}
+
+/* ---- toolbar ---- */
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.btn{background:rgba(201,162,39,.1);border:1px solid var(--line);color:var(--paper);
+  border-radius:8px;padding:9px 13px;font-size:11.5px;cursor:pointer;letter-spacing:.04em;
+  display:inline-flex;align-items:center;gap:6px;transition:.15s;}
+.btn:hover{border-color:var(--gold);background:rgba(201,162,39,.2);}
+.btn.solid{background:var(--gold);color:#1a1509;font-weight:800;border-color:var(--gold);}
+.btn.solid:hover{background:var(--gold-hi);}
+.btn.ghost{background:none;}
+.btn .ic{flex:0 0 auto;font-size:13px;line-height:1;}
+.btn[aria-pressed="true"]{border-color:var(--gold-hi);background:rgba(201,162,39,.3);color:var(--gold-hi);}
+
+/* ---- map ---- */
+.mapwrap{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  background:#0c0a07;}
+#gmap,#svgmap{width:100%;height:clamp(340px,62vh,560px);display:block;}
+#svgmap{background:radial-gradient(120% 90% at 20% 10%,#1d2a30,#0c0a07 70%);}
+/* 25パネルオーバーレイ(地図の上に重ねる格子) */
+#gridOverlay{position:absolute;inset:0;display:grid;grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(5,1fr);pointer-events:none;opacity:0;transition:opacity .25s;}
+#gridOverlay.on{opacity:1;}
+#gridOverlay .ov{border:1px solid rgba(201,162,39,.35);pointer-events:auto;cursor:pointer;
+  position:relative;display:flex;align-items:flex-start;justify-content:flex-start;
+  padding:4px;background:rgba(18,16,11,.16);}
+#gridOverlay .ov:hover{background:rgba(201,162,39,.22);}
+#gridOverlay .ov .ovno{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--gold-hi);
+  background:rgba(18,16,11,.72);border-radius:4px;padding:1px 5px;line-height:1.5;}
+#gridOverlay .ov.aka{background:rgba(216,67,52,.30);}
+#gridOverlay .ov.ao{background:rgba(61,122,184,.30);}
+#gridOverlay .ov.sel{outline:2px solid var(--gold-hi);outline-offset:-2px;}
+.mapnote{font-size:11px;color:rgba(242,234,216,.5);line-height:1.85;margin-top:10px;}
+.keybox{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+.keybox input{flex:1;min-width:220px;}
+
+/* ---- 25 board ---- */
+.grid25{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.cell{position:relative;aspect-ratio:1;min-height:76px;border:1px solid var(--line);
+  border-radius:9px;cursor:pointer;background:rgba(255,255,255,.02);transition:.15s;
+  display:flex;flex-direction:column;overflow:hidden;text-align:center;}
+.cell:hover{border-color:var(--gold);transform:translateY(-2px);}
+.cell.sel{outline:2px solid var(--gold-hi);outline-offset:1px;}
+.cell.aka{background:linear-gradient(160deg,var(--aka),var(--aka-d));border-color:#ef5a45;}
+.cell.ao{background:linear-gradient(160deg,var(--ao),var(--ao-d));border-color:#5b9adf;}
+/* 上段=バッジ専用行。テキストと絶対に重ならない */
+.cell .badges{flex:0 0 auto;height:16px;display:flex;align-items:center;justify-content:space-between;
+  padding:4px 5px 0;gap:4px;}
+.cell .badges .st{width:8px;height:8px;border-radius:3px;flex:0 0 auto;}
+.cell .badges .kan{font-size:9px;line-height:1;color:var(--gold-hi);letter-spacing:0;}
+.cell.aka .badges .kan,.cell.ao .badges .kan{color:#fff;}
+.cell .body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;padding:2px 4px 6px;min-height:0;}
+.cell .no{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--gold);line-height:1;}
+.cell.aka .no,.cell.ao .no{color:#fff;}
+.cell .nm{font-size:9.5px;font-weight:700;line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cell .pp{font-family:var(--mono);font-size:8.5px;color:rgba(233,201,100,.75);line-height:1;}
+.cell.aka .pp,.cell.ao .pp{color:rgba(255,255,255,.8);}
+.compass{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:.16em;
+  color:rgba(242,234,216,.4);margin-bottom:8px;}
+
+/* ---- edit form ---- */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.field label{font-size:10px;letter-spacing:.12em;color:var(--gold);}
+.field input,.field select,.field textarea{width:100%;background:var(--ink);color:var(--paper);
+  border:1px solid var(--soft);border-radius:7px;padding:9px 10px;font-size:12.5px;font-family:inherit;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);}
+.field textarea{min-height:56px;resize:vertical;}
+.field.wide{grid-column:1/-1;}
+.flagrow{display:flex;gap:8px;}
+.flagrow button{flex:1;border:1px solid var(--soft);background:var(--ink);color:var(--paper);
+  border-radius:7px;padding:9px 4px;font-size:11.5px;cursor:pointer;}
+.flagrow button[aria-pressed="true"].f-aka{background:var(--aka);border-color:var(--aka);color:#fff;font-weight:800;}
+.flagrow button[aria-pressed="true"].f-ao{background:var(--ao);border-color:var(--ao);color:#fff;font-weight:800;}
+.flagrow button[aria-pressed="true"].f-free{background:rgba(242,234,216,.18);border-color:var(--soft);font-weight:800;}
+
+/* ---- reserve list ---- */
+.res-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+.res-item{border:1px dashed var(--line);border-radius:9px;padding:10px 12px;background:rgba(255,255,255,.02);}
+.res-item .rt{font-size:12px;font-weight:700;margin-bottom:3px;}
+.res-item .rs{font-size:10.5px;color:rgba(242,234,216,.5);line-height:1.6;margin-bottom:8px;}
+.res-item .ra{display:flex;gap:6px;align-items:center;}
+.res-item select{flex:1;background:var(--ink);color:var(--paper);border:1px solid var(--soft);
+  border-radius:6px;padding:6px;font-size:11px;}
+.res-item button{background:var(--gold);color:#1a1509;border:none;border-radius:6px;
+  padding:6px 10px;font-size:11px;font-weight:800;cursor:pointer;}
+
+/* ---- table ---- */
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table.tbl{width:100%;border-collapse:collapse;font-size:11.5px;min-width:640px;}
+table.tbl th{text-align:left;font-size:9.5px;letter-spacing:.14em;color:var(--gold);
+  border-bottom:1px solid var(--line);padding:8px 8px;white-space:nowrap;}
+table.tbl td{border-bottom:1px solid var(--soft);padding:9px 8px;vertical-align:top;line-height:1.6;}
+table.tbl tr:hover td{background:rgba(201,162,39,.06);}
+table.tbl .n{font-family:var(--mono);color:var(--gold-hi);}
+table.tbl .g{white-space:nowrap;}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,80px);
+  background:var(--gold);color:#1a1509;padding:11px 20px;border-radius:100px;
+  font-weight:800;font-size:12.5px;z-index:99;opacity:0;transition:.3s;pointer-events:none;}
+.toast.show{transform:translate(-50%,0);opacity:1;}
+
+@media(max-width:560px){
+  .cell{min-height:64px;}
+  .cell .nm{font-size:8.5px;}
+  header h1{font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="seal">図</div>
+  <div class="ttl">
+    <div class="sub">RV CAMP 2026 ・ 絵図奉行</div>
+    <h1>別府國盗リ合戦 — 実地図 × 25パネル</h1>
+  </div>
+  <div class="spacer"></div>
+  <button class="hbtn" onclick="location.href='https://art-crea.github.io/RVcamp2026/'">HUBへ</button>
+</header>
+
+<main>
+
+<!-- 使い方 -->
+<div class="card">
+  <h2>この絵図でできること</h2>
+  <p class="muted">
+    左が<b>リアル(Google地図)</b>、右が<b>ゲーム(アタック25の25パネル)</b> ── その2つを1枚に重ねた画面です。<br>
+    パネルを押す → 下の編集欄が開く → <b>名称・実在地点・座標・PT・ヒント・旗(陣営)</b>を直せます(この端末に保存)。
+    地図上のピンは<b>ドラッグで移動</b>でき、離した瞬間に緯度経度が更新されます。地図を押すと選択中パネルの座標をそこに置きます。
+  </p>
+  <div class="legend">
+    <span class="item"><span class="dot ok"></span>確定(Google実測座標)</span>
+    <span class="item"><span class="dot cand"></span>候補(要現地確認)</span>
+    <span class="item"><span class="dot far"></span>盤外・遠国</span>
+    <span class="item"><span class="dot res"></span>控え(差し替え候補)</span>
+    <span class="item"><span class="dot aka"></span>堀江軍 制圧</span>
+    <span class="item"><span class="dot ao"></span>溝口軍 制圧</span>
+  </div>
+</div>
+
+<!-- 地図 -->
+<div class="card">
+  <h2>実地図 <span class="cnt" id="mapMode">簡易絵図モード</span></h2>
+
+  <div class="bar">
+    <button class="btn" id="btnGrid" aria-pressed="true" onclick="toggleGrid()"><span class="ic">▦</span>25パネルを重ねる</button>
+    <button class="btn" id="btnPins" aria-pressed="true" onclick="togglePins()"><span class="ic">📍</span>旗ピン</button>
+    <button class="btn" onclick="fitAll()"><span class="ic">⌖</span>全体表示</button>
+    <button class="btn" onclick="openRoute()"><span class="ic">🚗</span>Googleマップで順路を開く</button>
+  </div>
+
+  <div class="mapwrap" style="margin-top:12px;">
+    <div id="gmap" hidden></div>
+    <svg id="svgmap" viewBox="0 0 700 520" role="img" aria-label="別府チェックポイント簡易絵図"></svg>
+    <div id="gridOverlay" class="on"></div>
+  </div>
+
+  <p class="mapnote" id="mapHint">
+    Google地図を出すには、Google Maps JavaScript API のキーを入れてください(キーはこの端末にのみ保存され、外部に送られません)。
+    未入力でも上の<b>簡易絵図</b>で緯度経度のズレ確認・座標編集はすべて行えます。
+  </p>
+  <div class="keybox">
+    <input id="apiKey" placeholder="Google Maps APIキー (AIza...)" autocomplete="off">
+    <button class="btn solid" onclick="saveKey()">地図を読み込む</button>
+    <button class="btn ghost" onclick="clearKey()">キーを消す</button>
+  </div>
+</div>
+
+<!-- 盤 -->
+<div class="card">
+  <h2>國盗リ盤(押して編集) <span class="cnt" id="boardCnt"></span></h2>
+  <div class="compass"><span>← 山側(西)</span><span>▲ 北(亀川)</span><span>海側(東) →</span></div>
+  <div class="grid25" id="grid25"></div>
+  <div class="bar">
+    <button class="btn" onclick="autoArrange()"><span class="ic">⇅</span>実際の地理で並べ直す</button>
+    <button class="btn" onclick="resetAll()"><span class="ic">↺</span>初期値に戻す</button>
+  </div>
+  <p class="muted" style="margin-top:10px;">
+    「実際の地理で並べ直す」＝ 緯度で5段に分け、各段を経度順に左(西)→右(東)へ並べてパネル番号を振り直します。
+    盤の見た目と現地の位置関係が完全に一致するので、参加者が「盤の右上＝亀川の海側」と直感で読めます。
+  </p>
+</div>
+
+<!-- 編集 -->
+<div class="card" id="editCard">
+  <h2>地点の編集 <span class="cnt" id="editNo">パネル未選択</span></h2>
+  <div class="form">
+    <div class="field"><label>エリア名(盤の表示)</label><input id="fName"></div>
+    <div class="field"><label>実在地点(チェックポイント)</label><input id="fSpot"></div>
+    <div class="field"><label>緯度</label><input id="fLat" type="number" step="0.000001" inputmode="decimal"></div>
+    <div class="field"><label>経度</label><input id="fLng" type="number" step="0.000001" inputmode="decimal"></div>
+    <div class="field"><label>PT(石高)</label><input id="fPt" type="number" step="10" inputmode="numeric"></div>
+    <div class="field"><label>状態</label>
+      <select id="fStatus">
+        <option value="ok">確定(実測)</option>
+        <option value="cand">候補(要確認)</option>
+        <option value="far">盤外・遠国</option>
+      </select>
+    </div>
+    <div class="field"><label>判定センサー</label>
+      <select id="fSensor">
+        <option>GPS</option><option>GPS+写真AI</option><option>NFC</option>
+        <option>ビーコン</option><option>音響</option><option>GPS+写真</option>
+      </select>
+    </div>
+    <div class="field"><label>旗(現在の制圧軍)</label>
+      <div class="flagrow">
+        <button class="f-aka" id="flgAka" onclick="setFlag('aka')">赤 堀江軍</button>
+        <button class="f-ao"  id="flgAo"  onclick="setFlag('ao')">青 溝口軍</button>
+        <button class="f-free" id="flgFree" onclick="setFlag('')">無</button>
+      </div>
+    </div>
+    <div class="field wide"><label>ヒント(参加者に見せる一文)</label><textarea id="fHint"></textarea></div>
+    <div class="field wide"><label>運営メモ(参加者には出さない)</label><textarea id="fMemo"></textarea></div>
+  </div>
+  <div class="bar">
+    <button class="btn solid" onclick="saveEdit()"><span class="ic">✓</span>この地点を保存</button>
+    <button class="btn" onclick="openInGoogle()"><span class="ic">🗺️</span>Googleマップで開く</button>
+    <button class="btn" onclick="copyLatLng()"><span class="ic">⧉</span>緯度経度をコピー</button>
+    <button class="btn" onclick="markKaname()"><span class="ic">要</span>天下の要に指定</button>
+  </div>
+</div>
+
+<!-- 控え -->
+<div class="card">
+  <h2>控えの地(差し替え候補) <span class="cnt" id="resCnt"></span></h2>
+  <p class="muted">別府市の著名観光地から、25地点の道筋(北=亀川→鉄輪→中心部→南=浜脇)に沿うものを追加してあります。弱い地点は、ここから入れ替えてください。</p>
+  <div class="res-list" id="resList" style="margin-top:12px;"></div>
+</div>
+
+<!-- 一覧・書き出し -->
+<div class="card">
+  <h2>一覧と書き出し</h2>
+  <div class="bar" style="margin:0 0 12px;">
+    <button class="btn" onclick="dl('csv')"><span class="ic">⤓</span>Googleマイマップ用CSV</button>
+    <button class="btn" onclick="dl('kml')"><span class="ic">⤓</span>KML(旗の色つき)</button>
+    <button class="btn" onclick="dl('json')"><span class="ic">⤓</span>ゲーム設定JSON</button>
+    <button class="btn ghost" onclick="document.getElementById('imp').click()"><span class="ic">⤒</span>JSONを読み込む</button>
+    <input type="file" id="imp" accept="application/json" hidden onchange="importJson(event)">
+  </div>
+  <p class="muted" style="margin-bottom:12px;">
+    <b>参加者への共有はマイマップが最短です。</b> CSVを書き出す → <a href="https://www.google.com/maps/d/" target="_blank" rel="noopener">Google マイマップ</a>で新規地図を作る → CSVをインポート → 「リンクを知る全員が閲覧可」で共有。
+    参加者のスマホのGoogleマップアプリでそのまま経路案内が使え、運営が地点を直すと全員の地図に即反映されます。
+  </p>
+  <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>No</th><th>エリア</th><th>実在地点</th><th>PT</th><th>状態</th><th>センサー</th><th>座標</th><th>地図</th></tr></thead>
+      <tbody id="tblBody"></tbody>
+    </table>
+  </div>
+</div>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="rv_data.js"></script>
+<script>
+/* =========================================================
+   データ ─ Google Places 実測座標を優先。cand は要現地確認。
+   ========================================================= */
+const SEED = [
+  {no:1, name:"十文字原",   spot:"十文字原展望台",           lat:33.3297195, lng:131.4602103, pt:80,  status:"ok",   sensor:"GPS+写真", hint:"日本夜景遺産。別府湾と国東半島を一望", memo:"駐車8台程度。道が狭い"},
+  {no:2, name:"柴石",       spot:"柴石温泉(市営)",           lat:33.3257541, lng:131.4730186, pt:70,  status:"ok",   sensor:"NFC",      hint:"渓谷沿いの湯。醍醐天皇の伝承が残る", memo:"水曜休"},
+  {no:3, name:"血の池地獄", spot:"血の池地獄",               lat:33.3271734, lng:131.4781731, pt:120, status:"ok",   sensor:"GPS+写真AI", hint:"日本最古の赤い熱泥地獄", memo:""},
+  {no:4, name:"龍巻地獄",   spot:"龍巻地獄",                 lat:33.3271408, lng:131.4794006, pt:90,  status:"ok",   sensor:"GPS+写真AI", hint:"30〜40分に一度の間欠泉。噴出待ちも作戦のうち", memo:""},
+  {no:5, name:"亀川",       spot:"ドローンサッカーアリーナ大分", lat:33.331379, lng:131.4902243, pt:110, status:"ok", sensor:"GPS",      hint:"北の玄関口・亀川の確定地点", memo:"Slack確定地"},
+  {no:6, name:"明礬",       spot:"明礬 湯の里(湯の花小屋)",  lat:33.3200867, lng:131.4527838, pt:100, status:"ok",   sensor:"音響",     hint:"藁葺きの湯の花小屋が並ぶ山手の湯里", memo:""},
+  {no:7, name:"上人ヶ浜",   spot:"別府海浜砂湯(上人ヶ浜公園内)",             lat:33.3120889,     lng:131.5015273,    pt:50,  status:"ok", sensor:"GPS",      hint:"上人ヶ浜の砂湯。8:00-21:00・駐車場あり", memo:"公園は広く中心を取れないため、砂湯の建物を基準点に(Places実測)。ロケハンで最終確認"},
+  {no:8, name:"かまど地獄", spot:"かまど地獄",               lat:33.3163879, lng:131.4723906, pt:100, status:"ok",   sensor:"GPS+写真AI", hint:"一丁目から六丁目まで続く地獄", memo:""},
+  {no:9, name:"鉄輪むし湯", spot:"鉄輪むし湯",               lat:33.3163444, lng:131.4780083, pt:80,  status:"ok",   sensor:"NFC",      hint:"石菖を敷いた蒸し風呂。鎌倉期の一遍上人が開いたと伝わる", memo:""},
+  {no:10,name:"湯けむり",   spot:"湯けむり展望台",           lat:33.3156683, lng:131.4853258, pt:70,  status:"ok",   sensor:"GPS+写真", hint:"鉄輪の湯けむりと鶴見岳。24時間・無料", memo:"夜景も可"},
+  {no:11,name:"永福寺",     spot:"永福寺(一遍上人ゆかり)",   lat:33.316057,  lng:131.4771659, pt:100, status:"ok",   sensor:"GPS+写真", hint:"一遍上人ゆかりの寺。参拝ボーナス+40pt", memo:"採否を委員会で確認"},
+  {no:12,name:"地獄蒸し",   spot:"地獄蒸し工房 鉄輪",        lat:33.3154852, lng:131.4762201, pt:100, status:"ok",   sensor:"GPS+写真AI", hint:"噴気で蒸す鉄輪名物。行列必至、時間読みが勝負", memo:"待ち15分〜"},
+  {no:13,name:"鉄輪",       spot:"縁間(えんま)",             lat:33.3147301, lng:131.4773158, pt:110, status:"ok",   sensor:"NFC",      hint:"【天下の要】鉄輪の湯けむり通り。制圧軍に要害ボーナス", memo:"Slack確定地・盤の中心"},
+  {no:14,name:"海地獄",     spot:"地獄温泉ミュージアム",     lat:33.3156603, lng:131.4740591, pt:120, status:"ok",   sensor:"ビーコン", hint:"コバルトブルーの海地獄に隣接する確定地点", memo:"Slack確定地"},
+  {no:15,name:"白池地獄",   spot:"白池地獄",                 lat:33.3152711, lng:131.4741269, pt:90,  status:"ok",   sensor:"GPS+写真AI", hint:"冷えると青白く濁る国指定名勝", memo:""},
+  {no:16,name:"坊主地獄",   spot:"鬼石坊主地獄",             lat:33.3152885, lng:131.4696131, pt:90,  status:"ok",   sensor:"GPS+写真AI", hint:"灰色の熱泥が坊主頭のように沸く", memo:""},
+  {no:17,name:"実相寺",     spot:"胡月(別府冷麺)",           lat:33.302379,  lng:131.499291,  pt:80,  status:"ok",   sensor:"GPS+写真", hint:"別府名物・冷麺の確定地点", memo:"Slack確定地"},
+  {no:18,name:"堀田",       spot:"堀田温泉(市営)",           lat:33.2885017,    lng:131.4611182,    pt:70,  status:"ok", sensor:"NFC",      hint:"山手の関門にあたる市営温泉。露天あり", memo:"Places実測(南立石堀田556-4)。第1水曜休の情報あり—ロケハンで確認"},
+  {no:19,name:"別府公園",   spot:"別府市立図書館 こもれびパーク(別府公園隣)",                 lat:33.2842674,    lng:131.4899654,    pt:50,  status:"ok", sensor:"GPS",      hint:"別府公園に隣接する新しい図書館。駐車場・トイレあり", memo:"別府公園の中心(33.28156,131.49101)は基準にしづらいため、隣接の図書館を基準点に(Places実測)"},
+  {no:20,name:"観海寺",     spot:"グローバルタワー(ビーコンプラザ)", lat:33.2831944, lng:131.4861111, pt:90, status:"ok", sensor:"GPS+写真", hint:"高さ100mの展望デッキ。別府湾を見下ろす", memo:"観海寺エリアの代表として設定"},
+  {no:21,name:"北浜",       spot:"別府タワー",               lat:33.2817713, lng:131.5059174, pt:60,  status:"ok",   sensor:"GPS",      hint:"1957年建設・海辺のランドマーク", memo:""},
+  {no:22,name:"鶴見岳",     spot:"別府ロープウェイ(鶴見岳)", lat:33.2779012, lng:131.4487593, pt:200, status:"ok",   sensor:"GPS+写真", hint:"標高1,375m。最高難度・最高報酬。運行時間に注意", memo:"9:00-17:00"},
+  {no:23,name:"ラクテンチ", spot:"別府ラクテンチ",           lat:33.274941,  lng:131.4855361, pt:80,  status:"ok",   sensor:"GPS",      hint:"ケーブルカーで上る昭和の遊園地", memo:"火・水休のことあり"},
+  {no:24,name:"竹瓦",       spot:"竹瓦温泉",                 lat:33.2774556, lng:131.5059894, pt:80,  status:"ok",   sensor:"NFC",      hint:"明治12年創業・砂湯の殿堂", memo:"水曜休"},
+  {no:25,name:"浜脇",       spot:"八幡朝見神社",             lat:33.2716217, lng:131.4951489, pt:70,  status:"ok",   sensor:"GPS+写真", hint:"別府の総鎮守。勝利祈願の写真ミッション", memo:""},
+  {no:26,name:"【盤外】遠国", spot:"羯諦寺(日出町)",         lat:33.3684862, lng:131.5034878, pt:200, status:"far",  sensor:"GPS+写真", hint:"日出町への遠征。往復の時間コストと200ptを天秤に", memo:"Slack記載「祇園寺」は誤記→羯諦寺が正"}
+];
+const RESERVE = [
+  {name:"湯都ピア浜脇", spot:"湯都ピア浜脇",     lat:33.2698342, lng:131.5083486, pt:70, sensor:"NFC",      hint:"別府温泉発祥の地のひとつ。南の終点"},
+  {name:"駅市場",       spot:"べっぷ駅市場",     lat:33.2769657, lng:131.4992579, pt:50, sensor:"GPS+写真", hint:"高架下の昭和レトロ市場。食べ歩き"},
+  {name:"流川",         spot:"流川通り",         lat:33.2779,    lng:131.4991,    pt:50, sensor:"GPS+写真", hint:"昭和の面影残る中心繁華街"},
+  {name:"別府駅前",     spot:"油屋熊八像(別府駅)", lat:33.2793,  lng:131.5010,    pt:40, sensor:"NFC",      hint:"別府観光の父・熊八が出迎える"},
+  {name:"的ヶ浜",       spot:"的ヶ浜公園(SPAビーチ)", lat:33.2828, lng:131.5041, pt:50, sensor:"GPS",      hint:"海沿いの砂浜公園"},
+  {name:"南立石",       spot:"南立石公園",       lat:33.2872,    lng:131.4703,    pt:40, sensor:"GPS",      hint:"四季の花の公園"}
+];
+const LS = 'rv_cp25_v2';
+let CP = load();
+let sel = null, gmap = null, markers = [], showGrid = true, showPins = true;
+
+function load(){
+  try{ const s = localStorage.getItem(LS); if(s) return JSON.parse(s); }catch(e){}
+  // rv_data.js があればそちらの埋め込み(=rv_checkpoints.jsonと同じ内容)を正とする
+  if(window.RV && RV.EMBED && RV.EMBED.checkpoints) return JSON.parse(JSON.stringify(RV.EMBED.checkpoints));
+  return JSON.parse(JSON.stringify(SEED));
+}
+function save(){ try{ localStorage.setItem(LS, JSON.stringify(CP)); }catch(e){} }
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1900); }
+const board = () => CP.filter(c=>c.status!=='far').slice(0,25);
+const byNo  = n => CP.find(c=>c.no===n);
+
+/* ---------- 盤 ---------- */
+function renderBoard(){
+  const g = document.getElementById('grid25');
+  g.innerHTML='';
+  const b = board();
+  b.forEach(c=>{
+    const el=document.createElement('div');
+    el.className='cell'+(c.flag?' '+c.flag:'')+(sel===c.no?' sel':'');
+    el.onclick=()=>select(c.no);
+    el.innerHTML=`
+      <div class="badges">
+        <span class="st" style="background:${c.status==='ok'?'var(--ok)':'var(--cand)'}"></span>
+        <span class="kan">${c.kaname?'要':''}</span>
+      </div>
+      <div class="body">
+        <div class="no">${c.no}</div>
+        <div class="nm">${esc(c.name)}</div>
+        <div class="pp">${c.pt}pt</div>
+      </div>`;
+    g.appendChild(el);
+  });
+  document.getElementById('boardCnt').textContent =
+    `盤上 ${b.length}/25 ・ 確定 ${b.filter(c=>c.status==='ok').length} ・ 要確認 ${b.filter(c=>c.status!=='ok').length}`;
+  renderOverlay(); renderTable();
+}
+function esc(s){ return String(s??'').replace(/[<>&]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m])); }
+
+/* ---------- オーバーレイ(地図に重ねる25格子) ---------- */
+function renderOverlay(){
+  const o=document.getElementById('gridOverlay');
+  o.innerHTML='';
+  board().forEach(c=>{
+    const d=document.createElement('div');
+    d.className='ov'+(c.flag?' '+c.flag:'')+(sel===c.no?' sel':'');
+    d.innerHTML=`<span class="ovno">${c.no}</span>`;
+    d.title=`${c.no}. ${c.name} / ${c.spot}`;
+    d.onclick=()=>select(c.no);
+    o.appendChild(d);
+  });
+  o.classList.toggle('on', showGrid);
+}
+function toggleGrid(){ showGrid=!showGrid;
+  document.getElementById('btnGrid').setAttribute('aria-pressed', showGrid);
+  document.getElementById('gridOverlay').classList.toggle('on', showGrid); }
+function togglePins(){ showPins=!showPins;
+  document.getElementById('btnPins').setAttribute('aria-pressed', showPins);
+  markers.forEach(m=>m.setMap&&m.setMap(showPins?gmap:null));
+  renderSvg(); }
+
+/* ---------- 簡易絵図(SVG) ---------- */
+function bounds(){
+  const b=CP; const la=b.map(c=>c.lat), ln=b.map(c=>c.lng);
+  return {n:Math.max(...la), s:Math.min(...la), e:Math.max(...ln), w:Math.min(...ln)};
+}
+function renderSvg(){
+  const svg=document.getElementById('svgmap'); if(svg.hidden) return;
+  const B=bounds(), P=44, W=700, H=520;
+  const X=l=>P+(l-B.w)/(B.e-B.w||1)*(W-P*2);
+  const Y=l=>P+(B.n-l)/(B.n-B.s||1)*(H-P*2);
+  let s=`<defs><filter id="gl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  for(let i=0;i<=5;i++){
+    const x=P+i*(W-P*2)/5, y=P+i*(H-P*2)/5;
+    s+=`<line x1="${x}" y1="${P}" x2="${x}" y2="${H-P}" stroke="rgba(201,162,39,.10)"/>`;
+    s+=`<line x1="${P}" y1="${y}" x2="${W-P}" y2="${y}" stroke="rgba(201,162,39,.10)"/>`;
+  }
+  s+=`<text x="${W/2}" y="24" fill="rgba(242,234,216,.35)" font-size="11" text-anchor="middle" letter-spacing="4">北 ・ 亀川</text>`;
+  s+=`<text x="${W-8}" y="${H/2}" fill="rgba(242,234,216,.35)" font-size="11" text-anchor="end" letter-spacing="4">東・海</text>`;
+  if(showPins) CP.forEach(c=>{
+    const x=X(c.lng), y=Y(c.lat);
+    const col=c.flag==='aka'?'#d84334':c.flag==='ao'?'#3d7ab8':(c.status==='ok'?'#3f9d5a':c.status==='far'?'#8a5fd0':'#b8892a');
+    s+=`<g class="pin" style="cursor:pointer" onclick="select(${c.no})" filter="${sel===c.no?'url(#gl)':''}">
+      <circle cx="${x}" cy="${y}" r="${sel===c.no?13:10}" fill="${col}" stroke="${sel===c.no?'#e9c964':'rgba(0,0,0,.5)'}" stroke-width="${sel===c.no?2.5:1}"/>
+      <text x="${x}" y="${y+3.6}" font-size="9.5" font-weight="700" fill="#fff" text-anchor="middle" font-family="monospace">${c.no}</text>
+      <text x="${x}" y="${y-15}" font-size="9" fill="rgba(242,234,216,.75)" text-anchor="middle">${esc(c.name)}</text>
+    </g>`;
+  });
+  svg.innerHTML=s;
+}
+
+/* ---------- Google Maps ---------- */
+function saveKey(){
+  const k=document.getElementById('apiKey').value.trim();
+  if(!k){ toast('キーを入力してください'); return; }
+  localStorage.setItem('rv_gmapkey', k); loadGmap(k);
+}
+function clearKey(){ localStorage.removeItem('rv_gmapkey'); location.reload(); }
+function loadGmap(key){
+  if(window.google && window.google.maps){ initGmap(); return; }
+  const s=document.createElement('script');
+  s.src=`https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&language=ja&region=JP&callback=initGmap`;
+  s.async=true; s.onerror=()=>toast('地図の読み込みに失敗(キー/通信を確認)');
+  document.head.appendChild(s);
+}
+window.initGmap = function(){
+  document.getElementById('svgmap').hidden=true;
+  const el=document.getElementById('gmap'); el.hidden=false;
+  gmap=new google.maps.Map(el,{
+    center:{lat:33.3,lng:131.48}, zoom:13, mapTypeId:'roadmap',
+    gestureHandling:'greedy', streetViewControl:false, fullscreenControl:false,
+    styles:[{elementType:'geometry',stylers:[{color:'#20211c'}]},
+            {elementType:'labels.text.fill',stylers:[{color:'#c9b98a'}]},
+            {elementType:'labels.text.stroke',stylers:[{color:'#12100b'}]},
+            {featureType:'water',elementType:'geometry',stylers:[{color:'#12212e'}]},
+            {featureType:'road',elementType:'geometry',stylers:[{color:'#3a352a'}]},
+            {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#1e2a1c'}]}]
+  });
+  gmap.addListener('click', e=>{
+    if(sel==null){ toast('先にパネルを選んでください'); return; }
+    const c=byNo(sel); c.lat=+e.latLng.lat().toFixed(6); c.lng=+e.latLng.lng().toFixed(6);
+    c.status='cand'; save(); fillForm(c); drawMarkers(); toast(`パネル${sel}の座標をここに置きました`);
+  });
+  document.getElementById('mapMode').textContent='Google地図モード';
+  drawMarkers(); fitAll();
+};
+function drawMarkers(){
+  if(!gmap) { renderSvg(); return; }
+  markers.forEach(m=>m.setMap(null)); markers=[];
+  CP.forEach(c=>{
+    const col=c.flag==='aka'?'#d84334':c.flag==='ao'?'#3d7ab8':(c.status==='ok'?'#3f9d5a':c.status==='far'?'#8a5fd0':'#b8892a');
+    const m=new google.maps.Marker({
+      position:{lat:c.lat,lng:c.lng}, map: showPins?gmap:null, draggable:true,
+      label:{text:String(c.no), color:'#fff', fontSize:'11px', fontWeight:'700'},
+      title:`${c.no}. ${c.name} / ${c.spot}`,
+      icon:{path:google.maps.SymbolPath.CIRCLE, scale: sel===c.no?15:12, fillColor:col, fillOpacity:1,
+            strokeColor: sel===c.no?'#e9c964':'#12100b', strokeWeight: sel===c.no?3:1.5}
+    });
+    m.addListener('click',()=>select(c.no));
+    m.addListener('dragend',e=>{
+      c.lat=+e.latLng.lat().toFixed(6); c.lng=+e.latLng.lng().toFixed(6); c.status='cand';
+      save(); if(sel===c.no) fillForm(c); toast(`${c.no}. ${c.name} の座標を更新`);
+    });
+    markers.push(m);
+  });
+}
+function fitAll(){
+  if(gmap && window.google){
+    const b=new google.maps.LatLngBounds();
+    CP.forEach(c=>b.extend({lat:c.lat,lng:c.lng})); gmap.fitBounds(b,40);
+  } else renderSvg();
+}
+function openRoute(){
+  const b=board();
+  const wp=b.slice(1,-1).slice(0,8).map(c=>`${c.lat},${c.lng}`).join('|');
+  const u=`https://www.google.com/maps/dir/?api=1&origin=${b[0].lat},${b[0].lng}`+
+          `&destination=${b[b.length-1].lat},${b[b.length-1].lng}&waypoints=${encodeURIComponent(wp)}&travelmode=driving`;
+  window.open(u,'_blank','noopener');
+}
+
+/* ---------- 選択・編集 ---------- */
+function select(no){
+  sel=no; const c=byNo(no); if(!c) return;
+  fillForm(c); renderBoard(); drawMarkers();
+  if(gmap) gmap.panTo({lat:c.lat,lng:c.lng});
+  const ec=document.getElementById('editCard');
+  if(ec.scrollIntoView) ec.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function fillForm(c){
+  document.getElementById('editNo').textContent=`パネル ${c.no}`;
+  const v=(id,val)=>document.getElementById(id).value=val;
+  v('fName',c.name); v('fSpot',c.spot); v('fLat',c.lat); v('fLng',c.lng); v('fPt',c.pt);
+  v('fStatus',c.status); v('fSensor',c.sensor); v('fHint',c.hint||''); v('fMemo',c.memo||'');
+  ['flgAka','flgAo','flgFree'].forEach(id=>document.getElementById(id).setAttribute('aria-pressed','false'));
+  document.getElementById(c.flag==='aka'?'flgAka':c.flag==='ao'?'flgAo':'flgFree').setAttribute('aria-pressed','true');
+}
+function setFlag(f){
+  if(sel==null){ toast('パネルを選んでください'); return; }
+  byNo(sel).flag=f||''; save(); fillForm(byNo(sel)); renderBoard(); drawMarkers();
+}
+function saveEdit(){
+  if(sel==null){ toast('パネルを選んでください'); return; }
+  const c=byNo(sel), g=id=>document.getElementById(id).value;
+  c.name=g('fName').trim()||c.name; c.spot=g('fSpot').trim()||c.spot;
+  c.lat=parseFloat(g('fLat'))||c.lat; c.lng=parseFloat(g('fLng'))||c.lng;
+  c.pt=parseInt(g('fPt'))||c.pt; c.status=g('fStatus'); c.sensor=g('fSensor');
+  c.hint=g('fHint'); c.memo=g('fMemo');
+  save(); renderBoard(); drawMarkers(); toast(`パネル${c.no}「${c.name}」を保存`);
+}
+function markKaname(){
+  if(sel==null) return;
+  CP.forEach(c=>c.kaname=false); byNo(sel).kaname=true; save(); renderBoard();
+  toast(`パネル${sel}を【天下の要】に指定`);
+}
+function openInGoogle(){
+  if(sel==null) return; const c=byNo(sel);
+  window.open(`https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}`,'_blank','noopener');
+}
+function copyLatLng(){
+  if(sel==null) return; const c=byNo(sel);
+  const t=`${c.lat},${c.lng}`;
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject())
+    .then(()=>toast('コピーしました: '+t)).catch(()=>toast(t));
+}
+
+/* ---------- 地理整列 ---------- */
+function autoArrange(){
+  const far=CP.filter(c=>c.status==='far');
+  const b=CP.filter(c=>c.status!=='far').sort((a,z)=>z.lat-a.lat); // 北→南
+  const rows=[];
+  for(let i=0;i<b.length;i+=5) rows.push(b.slice(i,i+5).sort((a,z)=>a.lng-z.lng)); // 西→東
+  const flat=[].concat(...rows);
+  flat.forEach((c,i)=>c.no=i+1);
+  far.forEach((c,i)=>c.no=flat.length+1+i);
+  CP=flat.concat(far); save(); sel=null; renderBoard(); drawMarkers();
+  toast('実際の地理どおりに並べ直しました');
+}
+function resetAll(){
+  const b=document.activeElement;
+  if(b && b.dataset.armed==='1'){ localStorage.removeItem(LS); CP=load(); sel=null; renderBoard(); drawMarkers(); toast('初期値に戻しました'); return; }
+  if(b){ b.dataset.armed='1'; b.innerHTML='<span class="ic">!</span>もう一度押すと初期化';
+    setTimeout(()=>{ b.dataset.armed='0'; b.innerHTML='<span class="ic">↺</span>初期値に戻す'; },3500); }
+}
+
+/* ---------- 控え ---------- */
+function renderReserve(){
+  const l=document.getElementById('resList'); l.innerHTML='';
+  RESERVE.forEach((r,i)=>{
+    const opts=board().map(c=>`<option value="${c.no}">${c.no}. ${esc(c.name)}</option>`).join('');
+    const d=document.createElement('div'); d.className='res-item';
+    d.innerHTML=`<div class="rt">${esc(r.spot)}</div>
+      <div class="rs">${esc(r.hint)}<br>${r.pt}pt ・ ${r.sensor}</div>
+      <div class="ra"><select id="sw${i}">${opts}</select><button onclick="swapIn(${i})">差替</button></div>`;
+    l.appendChild(d);
+  });
+  document.getElementById('resCnt').textContent=`${RESERVE.length}件`;
+}
+function swapIn(i){
+  const r=RESERVE[i], no=+document.getElementById('sw'+i).value, c=byNo(no); if(!c) return;
+  Object.assign(c,{name:r.name,spot:r.spot,lat:r.lat,lng:r.lng,pt:r.pt,sensor:r.sensor,hint:r.hint,status:'cand',memo:'控えから差替'});
+  save(); renderBoard(); drawMarkers(); renderReserve(); toast(`パネル${no}を「${r.spot}」に差し替え`);
+}
+
+/* ---------- 一覧 ---------- */
+function renderTable(){
+  const t=document.getElementById('tblBody'); t.innerHTML='';
+  CP.forEach(c=>{
+    const st=c.status==='ok'?'<span class="dot ok"></span> 確定':c.status==='far'?'<span class="dot far"></span> 遠国':'<span class="dot cand"></span> 候補';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="n">${c.no}</td><td>${esc(c.name)}${c.kaname?' <b style="color:var(--gold-hi)">要</b>':''}</td>
+      <td>${esc(c.spot)}</td><td class="n">${c.pt}</td><td class="g">${st}</td><td>${esc(c.sensor)}</td>
+      <td class="n g">${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}</td>
+      <td class="g"><a href="https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}" target="_blank" rel="noopener">開く</a></td>`;
+    tr.onclick=e=>{ if(e.target.tagName!=='A') select(c.no); };
+    t.appendChild(tr);
+  });
+}
+
+/* ---------- 書き出し ---------- */
+function download(name,txt,mime){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\ufeff'+txt],{type:mime}));
+  a.download=name; a.click(); URL.revokeObjectURL(a.href);
+}
+function dl(kind){
+  if(kind==='csv'){
+    const rows=[['パネル','名称','地点','緯度','経度','PT','状態','センサー','ヒント','旗']]
+      .concat(CP.map(c=>[c.no,c.name,c.spot,c.lat,c.lng,c.pt,c.status,c.sensor,(c.hint||'').replace(/"/g,'""'),c.flag||'']));
+    download('beppu_kunitori_cp.csv', rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n'),'text/csv');
+    toast('CSVを書き出しました(マイマップにインポート可)');
+  }else if(kind==='kml'){
+    const st=(id,col)=>`<Style id="${id}"><IconStyle><color>${col}</color><scale>1.1</scale>
+      <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon></IconStyle></Style>`;
+    const pm=CP.map(c=>`<Placemark><name>${c.no}. ${esc(c.spot)}</name>
+      <description><![CDATA[${esc(c.name)} / ${c.pt}pt / ${esc(c.sensor)}<br>${esc(c.hint||'')}]]></description>
+      <styleUrl>#${c.flag==='aka'?'aka':c.flag==='ao'?'ao':'free'}</styleUrl>
+      <Point><coordinates>${c.lng},${c.lat},0</coordinates></Point></Placemark>`).join('');
+    download('beppu_kunitori.kml',
+      `<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+      <name>別府國盗リ合戦 チェックポイント</name>${st('aka','ff3443d8')}${st('ao','ffb87a3d')}${st('free','ff27a2c9')}${pm}
+      </Document></kml>`,'application/vnd.google-earth.kml+xml');
+    toast('KMLを書き出しました');
+  }else{
+    const doc={version:new Date().toISOString().slice(0,10), event:'別府國盗リ合戦',
+      checkpoints:CP.map((c,i)=>Object.assign({id:c.id||('cp'+String(c.no).padStart(2,'0')), radius:c.radius||80, mission:c.mission||''}, c))};
+    download('rv_checkpoints.json', JSON.stringify(doc,null,2),'application/json');
+    toast('ゲーム設定JSONを書き出しました');
+  }
+}
+function importJson(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ let d=JSON.parse(r.result);
+    if(d && d.checkpoints) d=d.checkpoints;
+    if(!Array.isArray(d)) throw 0; CP=d; save(); sel=null; renderBoard(); drawMarkers(); renderReserve();
+    toast('JSONを読み込みました'); }catch(_){ toast('読み込み失敗：形式が違います'); } };
+  r.readAsText(f); e.target.value='';
+}
+
+/* ---------- 起動 ---------- */
+(function(){
+  renderBoard(); renderReserve(); renderSvg();
+  const k=localStorage.getItem('rv_gmapkey');
+  if(k){ document.getElementById('apiKey').value=k; loadGmap(k); }
+  window.addEventListener('resize',()=>renderSvg());
+})();
+</script>
+</body>
+</html>

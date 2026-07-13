@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>別府國盗リ合戦 — 合戦本陣</title>
+<meta property="og:title" content="別府國盗リ合戦 — 合戦本陣">
+<meta property="og:description" content="8/27 三十六名、赤青二軍、天下分け目の一日。">
+<style>
+:root{
+  --ink:#12100b; --ink2:#1b1710; --paper:#f2ead8;
+  --gold:#c9a227; --gold-hi:#e9c964;
+  --aka:#d84334; --ao:#3d7ab8;
+  --line:rgba(201,162,39,.26); --soft:rgba(242,234,216,.12);
+  --mono:'JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ink);color:var(--paper);
+  font-family:'Hiragino Kaku Gothic ProN','Yu Gothic','Noto Sans JP',sans-serif;padding-bottom:70px;}
+a{text-decoration:none;color:inherit;}
+
+/* 幟(のぼり)ヒーロー：文字と紋は別レイヤー、絶対に重ねない */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);
+  background:
+    repeating-linear-gradient(90deg,rgba(201,162,39,.05) 0 1px,transparent 1px 42px),
+    radial-gradient(120% 90% at 50% 0%,#2a1c14,#12100b 70%);
+  padding:44px 18px 34px;text-align:center;}
+.hero .eyebrow{font-size:9.5px;letter-spacing:.42em;color:var(--gold);margin-bottom:14px;}
+.hero h1{font-family:'Yu Mincho','Hiragino Mincho ProN',serif;font-weight:900;
+  font-size:clamp(30px,8vw,58px);letter-spacing:.14em;line-height:1.15;
+  background:linear-gradient(180deg,#f6e6b4,#c9a227 60%,#8a6d17);
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero .rule{width:64px;height:1px;background:var(--gold);margin:18px auto;opacity:.6;}
+.hero .lead{font-size:12.5px;line-height:2;color:rgba(242,234,216,.62);max-width:560px;margin:0 auto;}
+.armies{display:flex;justify-content:center;gap:12px;margin-top:22px;flex-wrap:wrap;}
+.army{border:1px solid var(--line);border-radius:10px;padding:12px 20px;min-width:150px;}
+.army.aka{border-color:rgba(216,67,52,.5);} .army.ao{border-color:rgba(61,122,184,.5);}
+.army .lb{font-size:9px;letter-spacing:.3em;margin-bottom:6px;}
+.army.aka .lb{color:#ff9c98;} .army.ao .lb{color:#9cc7ff;}
+.army .gn{font-size:15px;font-weight:800;letter-spacing:.06em;}
+.army .sub{font-size:10px;color:rgba(242,234,216,.45);margin-top:4px;}
+
+main{max-width:940px;margin:0 auto;padding:22px 12px;}
+h2.sec{font-size:12px;letter-spacing:.24em;color:var(--gold);margin:26px 0 14px;
+  display:flex;align-items:center;gap:12px;}
+h2.sec::after{content:"";flex:1;height:1px;background:var(--soft);}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;}
+.c{border:1px solid var(--line);border-radius:12px;background:var(--ink2);padding:18px;
+  display:flex;flex-direction:column;gap:8px;transition:.18s;}
+.c:hover{transform:translateY(-3px);border-color:var(--gold);background:#221b12;}
+/* アイコンは独立ボックス。テキストの上に絶対配置しない */
+.c .ic{flex:0 0 auto;width:40px;height:40px;border:1px solid var(--line);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:19px;}
+.c .t{font-size:14.5px;font-weight:800;letter-spacing:.05em;}
+.c .d{font-size:11.5px;line-height:1.85;color:rgba(242,234,216,.55);}
+.c .go{font-size:10.5px;color:var(--gold-hi);letter-spacing:.1em;margin-top:auto;padding-top:4px;}
+.c.main{border-color:var(--gold);background:linear-gradient(160deg,#2a2015,#1b1710);}
+.c.gm{border-style:dashed;}
+
+.notice{margin-top:26px;border:1px solid var(--soft);border-radius:12px;padding:14px 16px;
+  font-size:11.5px;line-height:1.95;color:rgba(242,234,216,.55);}
+.notice b{color:var(--gold);}
+footer{text-align:center;padding:34px 12px;font-size:10px;letter-spacing:.2em;
+  color:rgba(242,234,216,.3);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">HIU × REAL VALUE ・ BEPPU CONQUEST</div>
+  <h1>別府國盗リ合戦</h1>
+  <div class="rule"></div>
+  <p class="lead">8月27日、別府。三十六名が赤青二軍に分かれ、25の郷を奪い合う。<br>盤を制した軍が、天下を獲る。</p>
+  <div class="armies">
+    <div class="army aka"><div class="lb">赤軍 総大将</div><div class="gn">堀江 貴文 氏</div><div class="sub">信長隊・秀吉隊・謙信隊</div></div>
+    <div class="army ao"><div class="lb">青軍 総大将</div><div class="gn">溝口 勇児 氏</div><div class="sub">家康隊・信玄隊・元就隊</div></div>
+  </div>
+</div>
+
+<main>
+  <h2 class="sec">合戦の間</h2>
+  <div class="cards">
+    <a class="c main" href="rv_kunitori_board25.html">
+      <div class="ic">⚔️</div>
+      <div class="t">25エリア國盗リ盤</div>
+      <div class="d">別府を25等分したアタック25方式の陣取り。挟めば一気に寝返る。</div>
+      <div class="go">▶ 盤面を開く</div>
+    </a>
+    <a class="c" href="rv_kunitori_map25.html">
+      <div class="ic">🗺️</div>
+      <div class="t">実地図 × 25パネル(絵図)</div>
+      <div class="d">Google地図の上に盤を重ねた画面。チェックポイント・旗・ヒントを運営が直接編集できる。</div>
+      <div class="go">▶ 絵図を開く</div>
+    </a>
+    <a class="c" href="rv_bushou36.html">
+      <div class="ic">🪖</div>
+      <div class="t">武将 三十六人</div>
+      <div class="d">兜の前立てと家紋で全員を見分ける名鑑。赤18名・青18名。</div>
+      <div class="go">▶ 名鑑を開く</div>
+    </a>
+    <a class="c" href="rv_player_app.html">
+      <div class="ic">📱</div>
+      <div class="t">武将画面(参加者用)</div>
+      <div class="d">出陣手続き → 武将選択 → 陣地攻略 → 一言合戦 → 戦況。</div>
+      <div class="go">▶ 出陣する</div>
+    </a>
+    <a class="c" href="rv_beppu_conquest_go.html">
+      <div class="ic">🎮</div>
+      <div class="t">別府國盗リGO(予習)</div>
+      <div class="d">位置×バトル×カードの体験版。守護武将を倒して八湯カードを集めよ。</div>
+      <div class="go">▶ 体験版へ</div>
+    </a>
+    <a class="c gm" href="rv_gm_dashboard.html">
+      <div class="ic">🎛️</div>
+      <div class="t">GM本陣(運営専用)</div>
+      <div class="d">全体スコア、陣地別の攻略状況、手動加点、CSV書き出し。</div>
+      <div class="go">▶ 運営のみ</div>
+    </a>
+  </div>
+
+  <h2 class="sec">すぐ行く</h2>
+  <div class="cards">
+    <a class="c" href="rv_camp_allinone.html"><div class="ic">📖</div><div class="t">公式サイト</div><div class="d">ルール・スケジュール・申込。</div><div class="go">▶ 開く</div></a>
+    <a class="c" href="https://lin.ee/vHQ0IV2" target="_blank" rel="noopener"><div class="ic">💬</div><div class="t">公式LINE</div><div class="d">@682jfrra ・ 当日の連絡と報告。</div><div class="go">▶ 友だち追加</div></a>
+    <a class="c" href="https://art-crea.github.io/RVcamp2026/"><div class="ic">🏯</div><div class="t">RV合宿 本陣(HUB)</div><div class="d">合宿全体のトップへ戻る。</div><div class="go">▶ 戻る</div></a>
+  </div>
+
+  <div class="notice">
+    <b>運営メモ</b>：チェックポイントは「絵図」で編集すると、その場で盤・地図・一覧すべてに反映されます。
+    確定した内容は<b>ゲーム設定JSON</b>として書き出し、本番前に盤とアプリへ読み込ませてください。
+    参加者への地点共有は<b>Googleマイマップ</b>(絵図からCSVを書き出してインポート)が最短です。
+  </div>
+</main>
+
+<footer>RV CAMP 2026 ・ 別府國盗リ合戦 ・ art-crea.jp</footer>
+</body>
+</html>

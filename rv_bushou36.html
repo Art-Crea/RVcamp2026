@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>別府國盗リ合戦 — 武将三十六人 兜と家紋</title>
+<style>
+:root{
+  --ink:#12100b; --ink2:#1b1710; --paper:#f2ead8;
+  --gold:#c9a227; --gold-hi:#e9c964;
+  --aka:#d84334; --aka-d:#7d2117; --ao:#3d7ab8; --ao-d:#1c3d5c;
+  --line:rgba(201,162,39,.26); --soft:rgba(242,234,216,.12);
+  --mono:'JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ink);color:var(--paper);
+  font-family:'Hiragino Kaku Gothic ProN','Yu Gothic','Noto Sans JP',sans-serif;padding-bottom:80px;}
+header{position:sticky;top:0;z-index:20;background:rgba(18,16,11,.97);border-bottom:1px solid var(--line);
+  padding:10px 14px;display:flex;align-items:center;gap:12px;}
+header .seal{width:36px;height:36px;border:2px solid var(--gold);border-radius:7px;color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:18px;transform:rotate(-6deg);font-family:'Yu Mincho',serif;}
+header .sub{font-size:9px;letter-spacing:.24em;color:var(--gold);}
+header h1{font-size:15px;letter-spacing:.06em;font-weight:800;}
+main{max-width:1080px;margin:0 auto;padding:16px 12px;}
+.card{background:var(--ink2);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px;}
+.card h2{font-size:13px;letter-spacing:.18em;color:var(--gold);padding-bottom:9px;margin-bottom:12px;border-bottom:1px solid var(--soft);}
+.muted{font-size:11.5px;color:rgba(242,234,216,.58);line-height:1.95;}
+.muted b{color:var(--gold);}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.tab{background:none;border:1px solid var(--line);color:var(--paper);border-radius:100px;
+  padding:8px 16px;font-size:11.5px;cursor:pointer;letter-spacing:.06em;}
+.tab[aria-pressed="true"]{background:var(--gold);color:#1a1509;border-color:var(--gold);font-weight:800;}
+.tab.aka[aria-pressed="true"]{background:var(--aka);border-color:var(--aka);color:#fff;}
+.tab.ao[aria-pressed="true"]{background:var(--ao);border-color:var(--ao);color:#fff;}
+
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;}
+.bu{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02);
+  cursor:pointer;transition:.15s;display:flex;flex-direction:column;}
+.bu:hover{transform:translateY(-3px);border-color:var(--gold);}
+.bu.aka{border-top:3px solid var(--aka);} .bu.ao{border-top:3px solid var(--ao);}
+/* 兜=画像枠。文字は必ずその外側の帯に置く(重なり禁止) */
+.bu .pic{position:relative;aspect-ratio:1/1;display:block;width:100%;}
+.bu .pic svg{width:100%;height:100%;display:block;}
+.bu .meta{border-top:1px solid var(--soft);padding:9px 10px 11px;display:flex;flex-direction:column;gap:4px;}
+.bu .idx{font-family:var(--mono);font-size:9px;color:rgba(242,234,216,.42);letter-spacing:.1em;}
+.bu .nm{font-size:13px;font-weight:800;letter-spacing:.04em;line-height:1.3;}
+.bu .kn{font-size:9.5px;color:rgba(242,234,216,.5);line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.bu .tai{font-size:9.5px;font-weight:700;letter-spacing:.08em;}
+.bu.aka .tai{color:#ff9c98;} .bu.ao .tai{color:#9cc7ff;}
+
+/* 詳細 */
+.detail{display:none;}
+.detail.on{display:block;}
+.dwrap{display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:start;}
+.dwrap .big{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.25);}
+.dwrap .big svg{width:100%;display:block;}
+.drow{display:flex;gap:10px;font-size:12px;line-height:1.9;padding:7px 0;border-bottom:1px solid var(--soft);}
+.drow .k{flex:0 0 82px;color:var(--gold);font-size:10.5px;letter-spacing:.1em;padding-top:2px;}
+.drow .v{flex:1;min-width:0;}
+@media(max-width:600px){ .dwrap{grid-template-columns:1fr;} .dwrap .big{max-width:220px;margin:0 auto;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="seal">将</div>
+  <div>
+    <div class="sub">RV CAMP 2026 ・ 武将名鑑</div>
+    <h1>武将 三十六人 — 兜と家紋</h1>
+  </div>
+</header>
+
+<main>
+
+<div class="card">
+  <h2>見分け方</h2>
+  <p class="muted">
+    36名すべて、<b>兜の前立て</b>(三日月・鹿角・毘・愛・長烏帽子など)と<b>家紋</b>で一目で見分けられます。
+    <b>赤＝堀江軍18名</b>／<b>青＝溝口軍18名</b>。各武将は3つの隊(信長隊・秀吉隊・謙信隊／家康隊・信玄隊・元就隊)のいずれかに属します。
+    札を押すと大きな兜と由来が出ます。
+  </p>
+  <div class="tabs" style="margin-top:14px;">
+    <button class="tab" id="tAll" aria-pressed="true" onclick="filt('')">三十六将すべて</button>
+    <button class="tab aka" id="tAka" aria-pressed="false" onclick="filt('aka')">赤 堀江軍(18)</button>
+    <button class="tab ao"  id="tAo"  aria-pressed="false" onclick="filt('ao')">青 溝口軍(18)</button>
+  </div>
+</div>
+
+<div class="card detail" id="detail">
+  <h2 id="dTitle">武将</h2>
+  <div class="dwrap">
+    <div class="big" id="dBig"></div>
+    <div>
+      <div class="drow"><div class="k">陣営・隊</div><div class="v" id="dArmy"></div></div>
+      <div class="drow"><div class="k">家紋</div><div class="v" id="dKamon"></div></div>
+      <div class="drow"><div class="k">兜の特徴</div><div class="v" id="dKabuto"></div></div>
+      <div class="drow"><div class="k">見分け方</div><div class="v" id="dTell"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>名鑑</h2>
+  <div class="roster" id="roster"></div>
+</div>
+
+</main>
+
+<script>
+/* ============================================================
+   家紋 SVG(中心 0,0 / 半径 ~34 で描く)
+   ============================================================ */
+const KAMON = {
+  mokko:      c=>`<circle r="30" fill="none" stroke="${c}" stroke-width="4"/>`+[0,90,180,270].map(a=>`<ellipse rx="11" ry="15" cx="0" cy="-18" fill="none" stroke="${c}" stroke-width="4" transform="rotate(${a})"/>`).join('')+`<circle r="7" fill="${c}"/>`,
+  kiri:       c=>`<path d="M0,-32 L0,10" stroke="${c}" stroke-width="4"/>`+[-1,0,1].map(i=>`<ellipse cx="${i*17}" cy="${i?6:-2}" rx="8" ry="${i?16:22}" fill="none" stroke="${c}" stroke-width="4"/>`).join('')+`<path d="M-16,-24 L-13,-34 M0,-30 L0,-40 M16,-24 L13,-34" stroke="${c}" stroke-width="3"/>`,
+  aoi3:       c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/>`+[0,120,240].map(a=>`<g transform="rotate(${a})"><path d="M0,-6 C-14,-8 -19,-20 -10,-26 C-4,-30 4,-30 10,-26 C19,-20 14,-8 0,-6 Z" fill="none" stroke="${c}" stroke-width="3.4"/><path d="M0,-6 L0,-24" stroke="${c}" stroke-width="2"/></g>`).join(''),
+  takedabishi:c=>[[0,-17],[0,17],[-17,0],[17,0]].map(p=>`<path d="M${p[0]},${p[1]-15} L${p[0]+13},${p[1]} L${p[0]},${p[1]+15} L${p[0]-13},${p[1]} Z" fill="${c}"/>`).join(''),
+  sasa:       c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/>`+[-1,0,1].map(i=>`<path d="M${i*13},14 C${i*13-7},0 ${i*13-5},-16 ${i*13},-26 C${i*13+5},-16 ${i*13+7},0 ${i*13},14 Z" fill="none" stroke="${c}" stroke-width="3"/>`).join(''),
+  bi:         c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><text y="13" font-size="40" font-weight="900" fill="${c}" text-anchor="middle" font-family="'Yu Mincho',serif">毘</text>`,
+  ai:         c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><text y="13" font-size="38" font-weight="900" fill="${c}" text-anchor="middle" font-family="'Yu Mincho',serif">愛</text>`,
+  moji:       c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><text y="-4" font-size="19" font-weight="900" fill="${c}" text-anchor="middle" font-family="'Yu Mincho',serif">大一</text><text y="17" font-size="19" font-weight="900" fill="${c}" text-anchor="middle" font-family="'Yu Mincho',serif">大万</text>`,
+  suzume:     c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><path d="M-22,10 C-14,-6 -6,-16 0,-22 C6,-16 14,-6 22,10" fill="none" stroke="${c}" stroke-width="3"/><ellipse cx="-9" cy="2" rx="8" ry="6" fill="${c}"/><ellipse cx="9" cy="2" rx="8" ry="6" fill="${c}"/><path d="M-17,-2 L-24,-6 M17,-2 L24,-6" stroke="${c}" stroke-width="3"/>`,
+  rokumonsen: c=>[[-20,-14],[0,-14],[20,-14],[-20,14],[0,14],[20,14]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="none" stroke="${c}" stroke-width="4"/><rect x="${p[0]-2.4}" y="${p[1]-2.4}" width="4.8" height="4.8" fill="${c}"/>`).join(''),
+  umebachi:   c=>`<circle r="8" fill="${c}"/>`+[0,72,144,216,288].map(a=>`<circle cx="0" cy="-21" r="10" fill="${c}" transform="rotate(${a})"/>`).join(''),
+  fujitomoe:  c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><path d="M0,-20 C16,-14 16,8 0,20 C-16,8 -16,-14 0,-20 Z" fill="none" stroke="${c}" stroke-width="3.4"/><path d="M0,-20 C-10,-4 -4,8 0,20" fill="none" stroke="${c}" stroke-width="3"/><circle cy="-20" r="5" fill="${c}"/>`,
+  janome:     c=>`<circle r="30" fill="none" stroke="${c}" stroke-width="9"/><circle r="11" fill="${c}"/>`,
+  hanabishi:  c=>[0,90,180,270].map(a=>`<path d="M0,-8 L11,-22 L0,-33 L-11,-22 Z" fill="${c}" transform="rotate(${a})"/>`).join('')+`<circle r="6" fill="none" stroke="${c}" stroke-width="3"/>`,
+  tomoe:      c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/>`+[0,120,240].map(a=>`<path d="M0,0 C0,-16 -8,-24 -18,-20 C-8,-24 0,-14 0,0 Z" fill="${c}" transform="rotate(${a})"/><circle cx="-9" cy="-18" r="8" fill="${c}" transform="rotate(${a})"/>`).join(''),
+  tachiaoi:   c=>`<path d="M0,26 L0,-6" stroke="${c}" stroke-width="4"/>`+[-1,1].map(s=>`<path d="M0,0 C${s*8},-6 ${s*22},-8 ${s*20},-22 C${s*16},-30 ${s*4},-24 0,-12 Z" fill="none" stroke="${c}" stroke-width="3.4"/>`).join('')+`<path d="M0,-8 C-8,-20 -4,-32 0,-34 C4,-32 8,-20 0,-8 Z" fill="none" stroke="${c}" stroke-width="3.4"/>`,
+  omodaka:    c=>`<path d="M0,-30 L14,-4 L5,-4 L5,20 L-5,20 L-5,-4 L-14,-4 Z" fill="${c}"/><path d="M-24,4 C-16,-8 -10,-10 -8,-6 M24,4 C16,-8 10,-10 8,-6" fill="none" stroke="${c}" stroke-width="3.4"/>`,
+  tsuta:      c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><path d="M0,22 C-6,10 -20,10 -22,-2 C-24,-14 -12,-12 -8,-18 C-4,-26 4,-26 8,-18 C12,-12 24,-14 22,-2 C20,10 6,10 0,22 Z" fill="none" stroke="${c}" stroke-width="3.2"/>`,
+  gyoyou:     c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/>`+[-1,1].map(s=>`<path d="M${s*3},14 C${s*20},8 ${s*22},-12 ${s*8},-20 C${s*2},-23 0,-14 ${s*3},14 Z" fill="none" stroke="${c}" stroke-width="3.2"/>`).join('')+`<path d="M0,16 L0,-24" stroke="${c}" stroke-width="3"/><circle cy="-24" r="5" fill="${c}"/>`,
+  kikyou:     c=>[0,72,144,216,288].map(a=>`<path d="M0,0 L-11,-20 L0,-32 L11,-20 Z" fill="${c}" transform="rotate(${a})"/>`).join('')+`<circle r="5" fill="#12100b"/>`,
+  yotsume:    c=>[[-13,-13],[13,-13],[-13,13],[13,13]].map(p=>`<rect x="${p[0]-11}" y="${p[1]-11}" width="22" height="22" fill="none" stroke="${c}" stroke-width="4" transform="rotate(45 ${p[0]} ${p[1]})"/>`).join(''),
+  uroko:      c=>[[0,-20],[-16,10],[16,10]].map(p=>`<path d="M${p[0]},${p[1]-13} L${p[0]+14},${p[1]+11} L${p[0]-14},${p[1]+11} Z" fill="${c}"/>`).join(''),
+  mitsuboshi: c=>`<rect x="-26" y="-26" width="52" height="8" fill="${c}"/>`+[[-18,10],[0,-2],[18,10]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="10" fill="${c}"/>`).join(''),
+  juji:       c=>`<circle r="30" fill="none" stroke="${c}" stroke-width="5"/><rect x="-22" y="-4" width="44" height="8" fill="${c}"/><rect x="-4" y="-22" width="8" height="44" fill="${c}"/>`,
+  fune:       c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><path d="M-24,6 L24,6 L16,20 L-16,20 Z" fill="none" stroke="${c}" stroke-width="3.4"/><path d="M0,4 L0,-24 M0,-22 L16,-8 L0,-6" fill="none" stroke="${c}" stroke-width="3.4"/>`,
+  mukaizuru:  c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/>`+[-1,1].map(s=>`<g transform="scale(${s},1)"><path d="M4,16 C4,4 10,-4 18,-8 C12,-14 4,-16 2,-24 C10,-24 16,-18 20,-12" fill="none" stroke="${c}" stroke-width="3"/><circle cx="4" cy="14" r="4" fill="${c}"/></g>`).join(''),
+  katabami:   c=>[0,51,102,153,204,255,306].map(a=>`<ellipse cx="0" cy="-19" rx="7" ry="12" fill="${c}" transform="rotate(${a})"/>`).join('')+`<circle r="5" fill="#12100b"/>`,
+  kenkatabami:c=>[0,120,240].map(a=>`<g transform="rotate(${a})"><ellipse cx="0" cy="-17" rx="9" ry="13" fill="${c}"/><path d="M0,-30 L4,-40 L0,-52 L-4,-40 Z" fill="${c}" transform="rotate(60)"/></g>`).join(''),
+  igeta:      c=>`<path d="M-26,-11 L26,-11 M-26,11 L26,11 M-11,-26 L-11,26 M11,-26 L11,26" stroke="${c}" stroke-width="5" fill="none"/>`,
+  karigane:   c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/>`+[-1,1].map(s=>`<path d="M-22,${s*10} C-10,${s*2} 10,${s*2} 22,${s*10} L14,${s*10} C6,${s*5} -6,${s*5} -14,${s*10} Z" fill="${c}"/>`).join(''),
+  hoshi:      c=>`<circle r="31" fill="none" stroke="${c}" stroke-width="3"/><circle r="10" fill="${c}"/>`+[0,60,120,180,240,300].map(a=>`<circle cx="0" cy="-22" r="6.5" fill="${c}" transform="rotate(${a})"/>`).join('')
+};
+
+/* ============================================================
+   兜 SVG(前立て=maedate で武将を識別)
+   ============================================================ */
+function kabuto(m, army, kam){
+  const base = army==='aka' ? '#8e2618' : '#22496b';
+  const lite = army==='aka' ? '#e0503c' : '#4a8bd0';
+  const g    = '#c9a227', gh='#e9c964';
+  const M = {
+    mikazuki:`<path d="M100,52 C74,20 130,4 150,26 C126,26 108,38 100,52 Z" fill="${gh}" stroke="${g}" stroke-width="2"/>`,
+    kuwagata:`<path d="M78,52 C60,18 66,4 78,2 C82,20 84,36 92,50 Z" fill="${gh}"/><path d="M122,52 C140,18 134,4 122,2 C118,20 116,36 108,50 Z" fill="${gh}"/>`,
+    shikatsuno:`<path d="M80,50 C56,30 50,8 58,2 C66,10 62,22 78,34 M62,14 L44,8" fill="none" stroke="${gh}" stroke-width="6" stroke-linecap="round"/><path d="M120,50 C144,30 150,8 142,2 C134,10 138,22 122,34 M138,14 L156,8" fill="none" stroke="${gh}" stroke-width="6" stroke-linecap="round"/>`,
+    nagaeboshi:`<path d="M100,54 C92,30 96,4 112,-14 C120,4 114,34 108,54 Z" fill="${gh}" stroke="${g}" stroke-width="2"/>`,
+    moji_bi:`<rect x="82" y="10" width="36" height="42" rx="4" fill="#12100b" stroke="${gh}" stroke-width="2"/><text x="100" y="43" font-size="30" font-weight="900" fill="${gh}" text-anchor="middle" font-family="'Yu Mincho',serif">毘</text>`,
+    moji_ai:`<rect x="82" y="10" width="36" height="42" rx="4" fill="#12100b" stroke="${gh}" stroke-width="2"/><text x="100" y="43" font-size="28" font-weight="900" fill="${gh}" text-anchor="middle" font-family="'Yu Mincho',serif">愛</text>`,
+    shirage:`<path d="M100,50 C70,44 56,22 64,8 C76,20 88,26 100,28 C112,26 124,20 136,8 C144,22 130,44 100,50 Z" fill="#efe7d6" stroke="${g}" stroke-width="2"/><path d="M74,16 L66,6 M126,16 L134,6 M100,28 L100,10" stroke="#cfc3a8" stroke-width="2.5"/>`,
+    nanban:`<path d="M100,50 L100,6 M84,20 L116,20" stroke="${gh}" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="10" r="7" fill="${gh}"/>`,
+    hangetsu:`<path d="M100,50 C76,44 66,24 76,12 C88,26 112,26 124,12 C134,24 124,44 100,50 Z" fill="none" stroke="${gh}" stroke-width="5"/>`,
+    zunari:`<rect x="88" y="16" width="24" height="34" rx="3" fill="${gh}"/>`,
+    yari:`<path d="M100,52 L100,4 M100,4 L92,20 L108,20 Z" fill="${gh}" stroke="${gh}" stroke-width="5" stroke-linejoin="round"/>`,
+    zukin:`<path d="M60,60 C64,26 136,26 140,60 Z" fill="#2b2620" stroke="${g}" stroke-width="2"/>`
+  };
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bw${m.i}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${lite}"/><stop offset="1" stop-color="${base}"/></linearGradient>
+    <radialGradient id="bg${m.i}" cx=".5" cy=".35" r=".8">
+      <stop offset="0" stop-color="rgba(255,255,255,.06)"/><stop offset="1" stop-color="rgba(0,0,0,0)"/></radialGradient>
+  </defs>
+  <rect width="200" height="200" fill="#15120c"/><rect width="200" height="200" fill="url(#bg${m.i})"/>
+  <!-- 錣(しころ) -->
+  <path d="M42,120 C42,150 56,168 100,172 C144,168 158,150 158,120 Z" fill="${base}" opacity=".9"/>
+  <path d="M42,128 H158 M46,144 H154 M54,158 H146" stroke="rgba(0,0,0,.45)" stroke-width="3"/>
+  <!-- 鉢 -->
+  <path d="M50,124 C50,80 70,54 100,54 C130,54 150,80 150,124 Z" fill="url(#bw${m.i})" stroke="#0c0a07" stroke-width="2"/>
+  <path d="M100,54 L100,124" stroke="rgba(0,0,0,.3)" stroke-width="2"/>
+  <!-- 吹返(左右) -->
+  <path d="M34,112 C34,132 42,142 54,146 L54,110 Z" fill="${g}" opacity=".85"/>
+  <path d="M166,112 C166,132 158,142 146,146 L146,110 Z" fill="${g}" opacity=".85"/>
+  <!-- 前立て -->
+  ${M[m.maedate]||M.kuwagata}
+  <!-- 眉庇の家紋 -->
+  <g transform="translate(100,104) scale(0.42)">${KAMON[kam] ? KAMON[kam]('#f2ead8') : ''}</g>
+  <!-- 面頬 -->
+  <path d="M78,140 C86,156 114,156 122,140 C118,164 82,164 78,140 Z" fill="#1a1610" stroke="#0c0a07"/>
+  </svg>`;
+}
+function kamonBadge(kam, col){
+  return `<svg viewBox="-40 -40 80 80" xmlns="http://www.w3.org/2000/svg">${KAMON[kam]?KAMON[kam](col):''}</svg>`;
+}
+
+/* ============================================================
+   36将
+   ============================================================ */
+const B=[
+ // 赤 = 堀江軍(18)
+ {n:"織田信長",   a:"aka",t:"信長隊",k:"mokko",      m:"nanban",    kn:"織田木瓜",       kb:"南蛮胴の当世具足に簡素な兜",     tell:"四弁の木瓜紋＋十字の南蛮前立て"},
+ {n:"豊臣秀吉",   a:"aka",t:"秀吉隊",k:"kiri",       m:"nagaeboshi",kn:"五七桐/千成瓢箪", kb:"馬印は千成瓢箪",                 tell:"桐紋＋後ろへ反る長い前立て"},
+ {n:"上杉謙信",   a:"aka",t:"謙信隊",k:"bi",         m:"moji_bi",   kn:"上杉笹・毘の旗印", kb:"毘沙門天の前立て",              tell:"兜の前面に「毘」の一字"},
+ {n:"伊達政宗",   a:"aka",t:"信長隊",k:"suzume",     m:"mikazuki",  kn:"竹に雀",         kb:"巨大な三日月の前立て",           tell:"三日月＝政宗。他に類なし"},
+ {n:"真田幸村",   a:"aka",t:"秀吉隊",k:"rokumonsen", m:"shikatsuno",kn:"六文銭",         kb:"赤備え・鹿角の脇立",             tell:"六つの銭＋鹿の角"},
+ {n:"前田利家",   a:"aka",t:"謙信隊",k:"umebachi",   m:"yari",      kn:"加賀梅鉢",       kb:"「槍の又左」の長槍",             tell:"梅の花＋槍の前立て"},
+ {n:"黒田官兵衛", a:"aka",t:"信長隊",k:"fujitomoe",  m:"zukin",     kn:"黒田藤巴",       kb:"如水の号・僧形の頭巾",           tell:"藤巴＋頭巾(兜ではない)"},
+ {n:"加藤清正",   a:"aka",t:"秀吉隊",k:"janome",     m:"nagaeboshi",kn:"蛇の目",         kb:"長烏帽子形兜",                   tell:"的のような蛇の目＋縦長の兜"},
+ {n:"立花道雪",   a:"aka",t:"謙信隊",k:"hanabishi",  m:"kuwagata",  kn:"立花花菱",       kb:"雷神の異名。輿に乗った老将",     tell:"花菱＋大鍬形"},
+ {n:"島左近",     a:"aka",t:"信長隊",k:"tomoe",      m:"hangetsu",  kn:"巴紋",           kb:"三成配下の勇将",                 tell:"三つ巴＋半月の前立て"},
+ {n:"本多忠勝",   a:"aka",t:"秀吉隊",k:"tachiaoi",   m:"shikatsuno",kn:"本多立葵",       kb:"大鹿角・蜻蛉切",                 tell:"立葵＋鹿角(幸村と紋で区別)"},
+ {n:"福島正則",   a:"aka",t:"謙信隊",k:"omodaka",    m:"hangetsu",  kn:"福島沢瀉",       kb:"賤ヶ岳七本槍の筆頭",             tell:"矢尻に似た沢瀉紋"},
+ {n:"藤堂高虎",   a:"aka",t:"信長隊",k:"tsuta",      m:"zunari",    kn:"藤堂蔦",         kb:"実用本位の頭形兜",               tell:"蔦の葉＋角のない兜"},
+ {n:"大友宗麟",   a:"aka",t:"秀吉隊",k:"gyoyou",     m:"nanban",    kn:"大友杏葉",       kb:"南蛮貿易の太守。洋風の意匠",     tell:"杏葉＋十字(豊後の主)"},
+ {n:"石田三成",   a:"aka",t:"謙信隊",k:"moji",       m:"kuwagata",  kn:"大一大万大吉",   kb:"折り目正しい奉行の甲冑",         tell:"文字を紋にした唯一の家"},
+ {n:"明智光秀",   a:"aka",t:"信長隊",k:"kikyou",     m:"kuwagata",  kn:"明智桔梗",       kb:"端正な甲冑",                     tell:"五弁の桔梗"},
+ {n:"山中鹿介",   a:"aka",t:"秀吉隊",k:"yotsume",    m:"hangetsu",  kn:"尼子四つ目結",   kb:"「七難八苦を与えたまえ」",       tell:"四つの目結＋三日月の願"},
+ {n:"北条氏康",   a:"aka",t:"謙信隊",k:"uroko",      m:"kuwagata",  kn:"北条鱗",         kb:"関東の獅子",                     tell:"三角の鱗紋"},
+ // 青 = 溝口軍(18)
+ {n:"徳川家康",   a:"ao", t:"家康隊",k:"aoi3",       m:"zunari",    kn:"三つ葉葵",       kb:"東照大権現の威厳",               tell:"三つ葉葵＝家康"},
+ {n:"武田信玄",   a:"ao", t:"信玄隊",k:"takedabishi",m:"shirage",   kn:"武田菱",         kb:"諏訪法性兜・白毛",               tell:"白い毛＋四つ菱"},
+ {n:"毛利元就",   a:"ao", t:"元就隊",k:"mitsuboshi", m:"kuwagata",  kn:"一文字三星",     kb:"三本の矢の逸話",                 tell:"一文字の下に三つの星"},
+ {n:"島津義弘",   a:"ao", t:"家康隊",k:"juji",       m:"kuwagata",  kn:"丸に十字",       kb:"鬼島津",                         tell:"丸に十字＋大鍬形"},
+ {n:"直江兼続",   a:"ao", t:"信玄隊",k:"ai",         m:"moji_ai",   kn:"上杉笹に愛",     kb:"「愛」の一字の前立て",           tell:"兜の前面に「愛」"},
+ {n:"竹中半兵衛", a:"ao", t:"元就隊",k:"fune",       m:"zunari",    kn:"竹中舟系",       kb:"若く聡明な軍師",                 tell:"舟の紋＋飾らぬ兜"},
+ {n:"山本勘助",   a:"ao", t:"家康隊",k:"hanabishi",  m:"zukin",     kn:"花菱(代用)",     kb:"軍配者",                         tell:"花菱＋頭巾(道雪と陣営で区別)"},
+ {n:"蒲生氏郷",   a:"ao", t:"信玄隊",k:"mukaizuru",  m:"nagaeboshi",kn:"蒲生対い鶴",     kb:"南蛮胴を好んだ先進性",           tell:"向かい合う二羽の鶴"},
+ {n:"長宗我部元親",a:"ao",t:"元就隊",k:"katabami",   m:"kuwagata",  kn:"七つ酢漿草",     kb:"土佐の出来人",                   tell:"七枚のカタバミ"},
+ {n:"大谷吉継",   a:"ao", t:"家康隊",k:"tomoe",      m:"zukin",     kn:"巴紋",           kb:"病をおして戦場に立つ",           tell:"三つ巴＋白頭巾(左近と陣営で区別)"},
+ {n:"井伊直政",   a:"ao", t:"信玄隊",k:"igeta",      m:"shikatsuno",kn:"井伊井桁",       kb:"井伊の赤備え・大天衝",           tell:"井桁＋角(青軍なのに赤備え)"},
+ {n:"柴田勝家",   a:"ao", t:"元就隊",k:"karigane",   m:"kuwagata",  kn:"二つ雁金",       kb:"鬼柴田",                         tell:"二羽の雁"},
+ {n:"松永久秀",   a:"ao", t:"家康隊",k:"tsuta",      m:"hangetsu",  kn:"蔦紋",           kb:"梟雄の策士",                     tell:"蔦＋半月(高虎と陣営で区別)"},
+ {n:"島津義久",   a:"ao", t:"信玄隊",k:"juji",       m:"zunari",    kn:"丸に十字",       kb:"島津家当主の威厳",               tell:"丸に十字＋角のない兜(義弘と区別)"},
+ {n:"高橋紹運",   a:"ao", t:"元就隊",k:"gyoyou",     m:"yari",      kn:"大友杏葉",       kb:"岩屋城の忠臣",                   tell:"杏葉＋槍(宗麟と陣営で区別)"},
+ {n:"鍋島直茂",   a:"ao", t:"家康隊",k:"gyoyou",     m:"hangetsu",  kn:"鍋島杏葉",       kb:"龍造寺を支えた実力者",           tell:"杏葉＋半月"},
+ {n:"龍造寺隆信", a:"ao", t:"信玄隊",k:"hoshi",      m:"kuwagata",  kn:"星紋(十二日足系)",kb:"肥前の熊",                      tell:"円を囲む六つの星"},
+ {n:"宇喜多直家", a:"ao", t:"元就隊",k:"kenkatabami",m:"nagaeboshi",kn:"剣片喰",         kb:"謀略の梟雄",                     tell:"カタバミに剣"}
+];
+B.forEach((b,i)=>b.i=i+1);
+
+let cur='';
+function filt(a){
+  cur=a;
+  document.getElementById('tAll').setAttribute('aria-pressed', a===''); 
+  document.getElementById('tAka').setAttribute('aria-pressed', a==='aka');
+  document.getElementById('tAo').setAttribute('aria-pressed', a==='ao');
+  render();
+}
+function render(){
+  const r=document.getElementById('roster'); r.innerHTML='';
+  B.filter(b=>!cur||b.a===cur).forEach(b=>{
+    const d=document.createElement('div');
+    d.className='bu '+b.a;
+    d.onclick=()=>open_(b.i);
+    d.innerHTML=`<div class="pic">${kabuto(b,b.a,b.k)}</div>
+      <div class="meta">
+        <div class="idx">NO.${String(b.i).padStart(2,'0')}</div>
+        <div class="nm">${b.n}</div>
+        <div class="tai">${b.a==='aka'?'赤':'青'}・${b.t}</div>
+        <div class="kn">${b.kn}</div>
+      </div>`;
+    r.appendChild(d);
+  });
+}
+function open_(i){
+  const b=B.find(x=>x.i===i);
+  document.getElementById('dTitle').textContent=`NO.${String(b.i).padStart(2,'0')} ${b.n}`;
+  document.getElementById('dBig').innerHTML=kabuto(b,b.a,b.k);
+  document.getElementById('dArmy').innerHTML=
+    `<b style="color:${b.a==='aka'?'#ff9c98':'#9cc7ff'}">${b.a==='aka'?'赤 堀江軍':'青 溝口軍'}</b> ／ ${b.t}`;
+  document.getElementById('dKamon').innerHTML=
+    `<span style="display:inline-flex;align-items:center;gap:10px;">
+      <span style="flex:0 0 auto;width:34px;height:34px;">${kamonBadge(b.k,'#e9c964')}</span>
+      <span>${b.kn}</span></span>`;
+  document.getElementById('dKabuto').textContent=b.kb;
+  document.getElementById('dTell').textContent=b.tell;
+  const d=document.getElementById('detail'); d.classList.add('on');
+  if(d.scrollIntoView) d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+render();
+</script>
+</body>
+</html>

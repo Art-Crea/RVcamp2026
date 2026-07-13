@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GM本陣 — 別府國盗リ合戦 運営専用</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f0d0a; --ink2:#1a1510; --paper:#f2ead8; --gold:#c9a227;
+  --red:#b5382f; --red-dim:#5c2220; --blue:#2e5170; --blue-dim:#1c3145; --line:rgba(242,234,216,0.13);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:'Zen Kaku Gothic New',sans-serif;padding:0 0 40px;}
+.mincho{font-family:'Shippori Mincho',serif;}
+header{padding:16px 20px 13px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(15,13,10,0.96);backdrop-filter:blur(6px);z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+header .eyebrow{font-size:11px;letter-spacing:.2em;color:var(--gold);}
+header h1{font-family:'Shippori Mincho',serif;font-size:19px;margin:3px 0 0;}
+.golden-live{font-size:12px;font-weight:900;color:#ffe9a8;border:1px solid var(--gold);border-radius:100px;padding:5px 14px;display:none;}
+main{max-width:960px;margin:0 auto;padding:20px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr;}}
+.card{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px;}
+.card h2{font-family:'Shippori Mincho',serif;font-size:14.5px;color:var(--gold);letter-spacing:.08em;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+.card h2::after{content:"";flex:1;height:1px;background:var(--line);}
+.stat-big{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;}
+.stat-lbl{font-size:10.5px;color:rgba(242,234,216,0.5);margin-top:2px;}
+.rank-bar{height:26px;border-radius:100px;overflow:hidden;display:flex;background:var(--ink2);margin:10px 0;}
+.rank-bar .r{background:linear-gradient(90deg,var(--red-dim),var(--red));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;transition:width .5s;}
+.rank-bar .b{background:linear-gradient(90deg,var(--blue),var(--blue-dim));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;transition:width .5s;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{text-align:left;font-size:10px;color:rgba(242,234,216,0.5);padding:6px 5px;border-bottom:1px solid var(--line);font-weight:500;}
+td{padding:7px 5px;border-bottom:1px solid var(--line);}
+.tag{font-size:10.5px;padding:2px 8px;border-radius:100px;}
+.tag.red{background:rgba(181,56,47,0.25);color:#ff9c98;}
+.tag.blue{background:rgba(46,81,112,0.35);color:#9cc7ff;}
+.btn{background:var(--gold);color:var(--ink);border:none;padding:8px 14px;border-radius:6px;font-weight:800;font-size:12.5px;cursor:pointer;}
+.btn.ghost{background:transparent;border:1px solid var(--gold);color:var(--gold);}
+.btn.danger{background:transparent;border:1px solid var(--red);color:#ff9c98;}
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+input.adj{width:64px;background:var(--ink2);border:1px solid var(--line);color:var(--paper);border-radius:6px;padding:5px 6px;font-family:'JetBrains Mono',monospace;}
+input.txt, textarea.txt{width:100%;background:var(--ink2);border:1px solid var(--line);color:var(--paper);border-radius:6px;padding:9px 10px;font-family:inherit;font-size:13px;}
+textarea.txt{min-height:60px;resize:vertical;}
+.small{font-size:11px;color:rgba(242,234,216,0.5);line-height:1.7;}
+.cp-mini{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.pill-count{font-family:'JetBrains Mono',monospace;color:var(--gold);}
+.comment-entry{border-bottom:1px solid var(--line);padding:8px 0;font-size:12.5px;}
+.comment-entry .meta{font-size:10px;color:rgba(242,234,216,0.45);margin-bottom:3px;}
+.log-entry{font-size:11.5px;color:rgba(242,234,216,0.68);padding:6px 0;border-bottom:1px solid var(--line);}
+.log-entry .ts{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:rgba(242,234,216,0.35);margin-right:6px;}
+.mini-board{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:6px;}
+.mini-cell{aspect-ratio:1;border-radius:4px;background:var(--ink2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:8px;color:rgba(242,234,216,0.45);text-align:center;line-height:1.1;padding:1px;}
+.mini-cell.red{background:var(--red);color:#fff;}
+.mini-cell.blue{background:var(--blue);color:#fff;}
+.code-chip{font-family:'JetBrains Mono',monospace;background:var(--ink2);border:1px dashed var(--gold-dim,#8a7326);border-radius:6px;padding:4px 10px;color:var(--gold);font-size:12px;}
+.note-box{background:rgba(201,162,39,0.08);border:1px solid rgba(201,162,39,0.3);border-radius:8px;padding:11px 13px;font-size:11.5px;color:rgba(242,234,216,0.75);margin-bottom:16px;line-height:1.6;}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="eyebrow">RV CAMP 2026 · GM DASHBOARD v2</div>
+    <h1 class="mincho">GM本陣 — 運営専用</h1>
+  </div>
+  <div class="golden-live" id="goldenLive">⚡ ゴールデンタイム発動中</div>
+</header>
+<main>
+
+  <div class="note-box">
+    このダッシュボードは同一ブラウザ内のlocalStorageを参照するデモ版。複数端末の本番運用ではFirestore等への差し替えが必要(ストレージ層のみ)。
+    敵郷攻略コード: <span class="code-chip">yukemuri</span> ／ 盤面リセットGMコード: <span class="code-chip">honjin</span>
+  </div>
+
+  <div class="grid3">
+    <div class="card"><div class="stat-big" id="totalPlayers">0</div><div class="stat-lbl">出陣済み武将数(定員36)</div></div>
+    <div class="card"><div class="stat-big" id="totalComments">0</div><div class="stat-lbl">本日の日誌投稿数</div></div>
+    <div class="card"><div class="stat-big" id="totalCp">0</div><div class="stat-lbl">陣地攻略の合計回数</div></div>
+  </div>
+
+  <div class="card">
+    <h2>全軍戦況(個人スコア+盤上領地)</h2>
+    <div class="rank-bar"><div class="r" id="redBar">赤</div><div class="b" id="blueBar">青</div></div>
+    <div class="small" id="leadNote"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>号令(全端末に反映)</h2>
+      <div class="toolbar">
+        <button class="btn" onclick="startGolden(15)">⚡ ゴールデンタイム発動(15分・陣地得点2倍)</button>
+        <button class="btn ghost" onclick="startGolden(30)">30分</button>
+        <button class="btn danger" onclick="stopGolden()">終了</button>
+      </div>
+      <div class="small" id="goldenStatus" style="margin-bottom:12px;"></div>
+      <input class="txt" id="announceInput" placeholder="陣触れ(全体アナウンス)を入力…">
+      <div class="toolbar" style="margin-top:8px;">
+        <button class="btn" onclick="sendAnnounce()">📢 陣触れを発する</button>
+      </div>
+      <div class="small">※本番ではこのボタンがLINE一斉配信+Slack投稿のトリガーになる。</div>
+    </div>
+    <div class="card">
+      <h2>國盗リ盤 監視</h2>
+      <div class="mini-board" id="miniBoard"></div>
+      <div class="small" id="boardTotalsNote" style="margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>隊別ランキング</h2>
+      <table><thead><tr><th>順位</th><th>隊</th><th>軍</th><th>人数</th><th>得点</th></tr></thead><tbody id="teamBody"></tbody></table>
+    </div>
+    <div class="card">
+      <h2>陣地別 攻略状況</h2>
+      <div id="cpBreakdown"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>全武将 スコア一覧 / 手動調整</h2>
+    <div class="toolbar">
+      <button class="btn ghost" onclick="refreshAll()">再読込</button>
+      <button class="btn ghost" onclick="exportCSV()">CSV書き出し</button>
+    </div>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>順位</th><th>名前</th><th>武将</th><th>隊</th><th>役職</th><th>攻略</th><th>特技</th><th>得点</th><th>調整</th></tr></thead>
+      <tbody id="playerTable"></tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>同期コード取込(他端末の戦果を合流)</h2>
+      <textarea class="txt" id="syncIn" placeholder="武将画面で生成された同期コードを貼り付け…"></textarea>
+      <div class="toolbar" style="margin-top:8px;"><button class="btn" onclick="importSync()">取り込む</button></div>
+      <div class="small" id="syncNote"></div>
+    </div>
+    <div class="card">
+      <h2>本日の陣中日誌</h2>
+      <div id="commentList" style="max-height:240px;overflow:auto;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>戦況ログ(時系列)</h2>
+    <div id="battleLog" style="max-height:260px;overflow:auto;"></div>
+  </div>
+
+</main>
+
+<script>
+const TEAMS=[
+  {id:"kannawa",army:"red",name:"鉄輪隊"},{id:"myoban",army:"red",name:"明礬隊"},{id:"kankaiji",army:"red",name:"観海寺隊"},
+  {id:"kamegawa",army:"blue",name:"亀川隊"},{id:"horita",army:"blue",name:"堀田隊"},{id:"shibaseki",army:"blue",name:"柴石隊"}
+];
+const ROLE_NAMES={taisho:"総大将",fukusho:"副将",busho:"武将"};
+const WARLORD_NAMES={sorin:"大友宗麟",dosetsu:"立花道雪",joun:"高橋紹運",ginchiyo:"立花誾千代",chikatsugu:"志賀親次",ippen:"一遍上人(伝)",akizane:"吉弘鎮理",tawara:"田原紹忍",yoshihiro:"島津義弘",yoshihisa:"島津義久",iehisa:"島津家久",tadashige:"新納忠元",chuho:"伊集院忠棟",arinobu:"山田有信",tadatomo:"川上忠智",tokihisa:"北郷時久"};
+const CP_NAMES={enma:"地熱観光ラボ 縁間",jigoku_museum:"地獄温泉ミュージアム",gyateiji:"祇園寺",reimen:"別府冷麺 グルメ陣地",drone:"ドローンサッカー陣地"};
+const AREAS=["亀川","柴石","血の池","龍巻","上人ヶ浜","鉄輪","海地獄","かまど","明礬","地獄原","堀田","観海寺","南立石","別府公園","実相寺","竹瓦","北浜","駅前","富士見","南荘園","浜脇","楠港","流川","松原","朝見"];
+const BOARD_PTS=[20,25,30,25,20,25,35,40,35,25,30,40,50,40,30,25,35,40,35,25,20,25,30,25,20];
+
+const K={players:"rv2_players",comments:"rv2_comments",board:"rv2_board",events:"rv2_events",log:"rv2_log"};
+function get(k,f){ try{ return JSON.parse(localStorage.getItem(k)) ?? f; }catch(e){ return f; } }
+function set(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+function addLog(text){ const l=get(K.log,[]); l.push({ts:Date.now(),text}); set(K.log,l.slice(-200)); }
+
+function startGolden(min){
+  const ev=get(K.events,{goldenUntil:0,announcements:[]});
+  ev.goldenUntil=Date.now()+min*60*1000; set(K.events,ev);
+  addLog(`GMがゴールデンタイム発動(${min}分・陣地得点2倍)`);
+  refreshAll();
+}
+function stopGolden(){
+  const ev=get(K.events,{goldenUntil:0,announcements:[]});
+  ev.goldenUntil=0; set(K.events,ev);
+  addLog('GMがゴールデンタイムを終了');
+  refreshAll();
+}
+function sendAnnounce(){
+  const inp=document.getElementById('announceInput');
+  const text=inp.value.trim(); if(!text)return;
+  const ev=get(K.events,{goldenUntil:0,announcements:[]});
+  ev.announcements=(ev.announcements||[]).concat([{text,ts:Date.now()}]).slice(-20);
+  set(K.events,ev); inp.value='';
+  addLog('【陣触れ】'+text);
+  refreshAll();
+}
+
+function importSync(){
+  const note=document.getElementById('syncNote');
+  const raw=document.getElementById('syncIn').value.trim();
+  if(!raw){ note.textContent='コードを貼り付けてください'; return; }
+  try{
+    const payload=JSON.parse(decodeURIComponent(escape(atob(raw))));
+    if(!payload.name || !payload.rec) throw new Error('形式不正');
+    const all=get(K.players,{});
+    all[payload.name]=payload.rec;
+    set(K.players,all);
+    if(Array.isArray(payload.comments)&&payload.comments.length){
+      const cs=get(K.comments,[]);
+      payload.comments.forEach(c=>{ if(!cs.some(x=>x.name===c.name&&x.ts===c.ts)) cs.push(c); });
+      set(K.comments,cs);
+    }
+    note.textContent=`✅ ${payload.name} の戦果を合流しました`;
+    document.getElementById('syncIn').value='';
+    addLog(`GMが${payload.name}の戦果を同期`);
+    refreshAll();
+  }catch(e){ note.textContent='❌ コードを読み取れませんでした: '+e.message; }
+}
+
+function refreshAll(){
+  const all=get(K.players,{});
+  const arr=Object.entries(all).map(([n,p])=>({n,...p}));
+  const comments=get(K.comments,[]);
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('totalPlayers').textContent=arr.length;
+  document.getElementById('totalComments').textContent=comments.filter(c=>c.date===today).length;
+  document.getElementById('totalCp').textContent=arr.reduce((s,p)=>s+((p.cp||[]).length),0);
+
+  // board
+  const b=get(K.board,{cells:Array(25).fill(null)});
+  let br=0,bb=0;
+  b.cells.forEach((v,i)=>{ if(v==='red')br+=BOARD_PTS[i]; else if(v==='blue')bb+=BOARD_PTS[i]; });
+  document.getElementById('miniBoard').innerHTML=b.cells.map((v,i)=>`<div class="mini-cell ${v||''}">${AREAS[i]}</div>`).join('');
+  document.getElementById('boardTotalsNote').textContent=`盤上領地: 大友 ${br}pt ／ 島津 ${bb}pt`;
+
+  // army totals
+  let red=br, blue=bb;
+  arr.forEach(p=>{ if(p.army==='red')red+=(p.score||0); else blue+=(p.score||0); });
+  const total=red+blue||1;
+  document.getElementById('redBar').style.width=(red/total*100)+'%';
+  document.getElementById('blueBar').style.width=(blue/total*100)+'%';
+  document.getElementById('redBar').textContent='大友 '+red;
+  document.getElementById('blueBar').textContent='島津 '+blue;
+  document.getElementById('leadNote').textContent = red===blue?'両軍拮抗':(red>blue?`大友軍 +${red-blue}`:`島津軍 +${blue-red}`);
+
+  // golden
+  const ev=get(K.events,{goldenUntil:0,announcements:[]});
+  const active=ev.goldenUntil>Date.now();
+  document.getElementById('goldenLive').style.display=active?'block':'none';
+  document.getElementById('goldenStatus').textContent=active?`発動中 — 残り約${Math.ceil((ev.goldenUntil-Date.now())/60000)}分`:'現在は通常時間';
+
+  // team rank
+  const teams=TEAMS.map(t=>{
+    const members=arr.filter(p=>p.teamId===t.id);
+    return {...t, count:members.length, score:members.reduce((s,p)=>s+(p.score||0),0)};
+  }).sort((a,b)=>b.score-a.score);
+  document.getElementById('teamBody').innerHTML=teams.map((t,i)=>`
+    <tr><td>${i+1}</td><td>${t.name}</td><td><span class="tag ${t.army}">${t.army==='red'?'赤':'青'}</span></td><td>${t.count}</td><td>${t.score}</td></tr>`).join('');
+
+  // cp breakdown
+  const cpc={};
+  arr.forEach(p=>(p.cp||[]).forEach(id=>cpc[id]=(cpc[id]||0)+1));
+  document.getElementById('cpBreakdown').innerHTML=Object.entries(CP_NAMES).map(([id,name])=>`
+    <div class="cp-mini"><span>${name}</span><span class="pill-count">${cpc[id]||0}件</span></div>`).join('');
+
+  // player table
+  arr.sort((a,b)=>(b.score||0)-(a.score||0));
+  document.getElementById('playerTable').innerHTML=arr.map((p,i)=>{
+    const t=TEAMS.find(x=>x.id===p.teamId);
+    const sk=p.skillUsed?'済':(p.skillArmed?'待機':'未');
+    return `<tr>
+      <td>${i+1}</td><td>${p.n}</td><td>${WARLORD_NAMES[p.warlordId]||'-'}</td>
+      <td>${t?t.name:'-'}</td><td>${ROLE_NAMES[p.role]||'-'}</td>
+      <td>${(p.cp||[]).length}</td><td>${sk}</td><td>${p.score||0}</td>
+      <td><input type="number" class="adj" id="adj-${i}" placeholder="±pt"><button class="btn" style="margin-left:4px;" onclick="applyAdj('${p.n.replace(/'/g,"\\'")}', ${i})">適用</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="9" class="small">まだ出陣者がいません。</td></tr>';
+
+  // comments
+  document.getElementById('commentList').innerHTML=comments.slice().reverse().slice(0,30).map(c=>`
+    <div class="comment-entry"><div class="meta">${c.name}（${c.warlord||''}・${c.army==='red'?'赤':'青'}） ${c.date} ・ +${c.score}pt</div><div>${c.text}</div></div>`).join('')||'<div class="small">まだ投稿がありません。</div>';
+
+  // log
+  const log=get(K.log,[]).slice().reverse().slice(0,40);
+  document.getElementById('battleLog').innerHTML=log.map(e=>{
+    const d=new Date(e.ts),hh=String(d.getHours()).padStart(2,'0'),mm=String(d.getMinutes()).padStart(2,'0');
+    return `<div class="log-entry"><span class="ts">${hh}:${mm}</span>${e.text}</div>`;
+  }).join('')||'<div class="small">まだログはありません。</div>';
+}
+
+function applyAdj(name, idx){
+  const input=document.getElementById('adj-'+idx);
+  const val=parseInt(input.value,10);
+  if(isNaN(val))return;
+  const all=get(K.players,{});
+  if(!all[name])return;
+  all[name].score=(all[name].score||0)+val;
+  set(K.players,all);
+  addLog(`GMが${name}に${val>0?'+':''}${val}ptを調整`);
+  input.value='';
+  refreshAll();
+}
+
+function exportCSV(){
+  const all=get(K.players,{});
+  const arr=Object.entries(all).map(([n,p])=>({n,...p}));
+  let csv="名前,武将,隊,役職,攻略数,得点\n";
+  arr.forEach(p=>{
+    const t=TEAMS.find(x=>x.id===p.teamId);
+    csv+=`${p.n},${WARLORD_NAMES[p.warlordId]||''},${t?t.name:''},${ROLE_NAMES[p.role]||''},${(p.cp||[]).length},${p.score||0}\n`;
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='rv_camp_scores.csv'; a.click();
+}
+
+refreshAll();
+setInterval(refreshAll, 4000);
+</script>
+</body>
+</html>

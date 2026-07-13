@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d0a07">
+<title>別府国盗り合戦 — 天下分け目のREAL VALUE合宿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lacquer:#0d0a07; --sumi:#171209; --panel:#1b140d; --paper:#f0e7d3;
+  --gold:#c9a227; --gold-hi:#e9c964; --gold-dim:#7d651f;
+  --aka:#d84334; --aka-deep:#7e2116;
+  --ao:#3d7ab8; --ao-deep:#1b3a58;
+  --line:rgba(201,162,39,0.22); --line-soft:rgba(240,231,211,0.10);
+  --line-green:#06c755;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--lacquer);color:var(--paper);font-family:'Zen Kaku Gothic New',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at 50% -20%, rgba(201,162,39,0.07), transparent 55%),
+    radial-gradient(ellipse at 50% 120%, rgba(126,33,22,0.10), transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.8 0 0 0 0 0.66 0 0 0 0 0.35 0 0 0 0.028 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;box-shadow:inset 0 0 180px rgba(0,0,0,0.85);}
+.brush{font-family:'Yuji Syuku',serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px;position:relative;z-index:2;}
+
+/* 火の粉 */
+.embers{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.ember{position:absolute;bottom:-10px;border-radius:50%;
+  background:radial-gradient(circle, rgba(233,201,100,0.9), rgba(216,67,52,0.4) 60%, transparent 70%);
+  animation:emberRise linear infinite;filter:blur(0.4px);}
+@keyframes emberRise{0%{transform:translateY(0) scale(1);opacity:0;}8%{opacity:.85;}
+  100%{transform:translateY(-105vh) translateX(var(--drift,20px)) scale(.25);opacity:0;}}
+@media (prefers-reduced-motion: reduce){.ember{display:none;}}
+.kumo{position:absolute;pointer-events:none;opacity:.85;}
+.kumo path{fill:url(#goldGrad);}
+.kumo.dim{opacity:.35;}
+
+/* NAV */
+nav.top{position:sticky;top:0;z-index:40;background:linear-gradient(180deg, rgba(13,10,7,0.98), rgba(13,10,7,0.9));
+  border-bottom:1px solid var(--line);backdrop-filter:blur(8px);}
+nav.top .inner{max-width:1060px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--paper);}
+.nav-seal{width:36px;height:36px;border:2px solid var(--aka);border-radius:6px;color:var(--aka);
+  display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:19px;
+  transform:rotate(-7deg);box-shadow:0 0 14px rgba(216,67,52,0.35);background:rgba(216,67,52,0.06);}
+.nav-brand .t1{font-size:9px;letter-spacing:.28em;color:var(--gold);}
+.nav-brand .t2{font-family:'Shippori Mincho',serif;font-weight:800;font-size:15.5px;letter-spacing:.1em;}
+.nav-links{display:flex;gap:1px;flex-wrap:wrap;}
+.nav-links a{color:rgba(240,231,211,0.6);text-decoration:none;font-size:11.5px;font-weight:700;
+  padding:7px 9px;border-radius:4px;letter-spacing:.06em;transition:.2s;}
+.nav-links a:hover{color:var(--gold-hi);background:rgba(201,162,39,0.08);}
+@media(max-width:860px){.nav-links{display:none;}}
+
+/* HERO */
+header.hero{position:relative;min-height:94vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;padding:70px 20px 90px;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(201,162,39,0.10), transparent 55%),
+    radial-gradient(ellipse at 12% 100%, rgba(126,33,22,0.26), transparent 50%),
+    radial-gradient(ellipse at 88% 100%, rgba(27,58,88,0.34), transparent 50%);}
+.hero-inner{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.hero-eyebrow{font-size:clamp(11px,2vw,13.5px);letter-spacing:.42em;color:var(--gold);font-weight:800;
+  display:flex;align-items:center;gap:16px;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:"";width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.hero-eyebrow::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.hero-title{font-family:'Yuji Syuku',serif;font-size:clamp(46px,11.5vw,132px);line-height:1.04;letter-spacing:.03em;
+  color:var(--paper);text-shadow:0 0 60px rgba(201,162,39,0.35), 0 4px 0 rgba(0,0,0,0.6);}
+.hero-title .beni{background:linear-gradient(180deg,#e9c964 15%, #c9a227 55%, #8a6d1c);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 10px rgba(0,0,0,0.7));}
+.hero-sub{font-family:'Shippori Mincho',serif;font-size:clamp(12.5px,2.3vw,16.5px);letter-spacing:.24em;
+  color:rgba(240,231,211,0.85);font-weight:700;line-height:2;}
+.hero-tag{font-size:10px;letter-spacing:.4em;color:rgba(201,162,39,0.75);}
+.hero-vs{display:flex;align-items:flex-start;gap:clamp(12px,4vw,32px);margin-top:10px;}
+.vs-side{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.vs-crest{width:clamp(78px,13vw,112px);height:clamp(78px,13vw,112px);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;position:relative;
+  font-family:'Yuji Syuku',serif;font-size:clamp(36px,6.5vw,54px);color:#fff;}
+.vs-crest::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid currentColor;opacity:.9;}
+.vs-crest::after{content:"";position:absolute;inset:7px;border-radius:50%;border:1px solid currentColor;opacity:.5;}
+.vs-crest.aka{background:radial-gradient(circle at 35% 30%, #e0503c, #7e2116);box-shadow:0 0 54px rgba(216,67,52,0.55);}
+.vs-crest.ao{background:radial-gradient(circle at 35% 30%, #4a8bd0, #1b3a58);box-shadow:0 0 54px rgba(61,122,184,0.55);}
+.vs-general .role{font-size:9.5px;letter-spacing:.3em;color:var(--gold);}
+.vs-general .name{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(14px,2.6vw,18px);letter-spacing:.1em;margin-top:3px;}
+.vs-mark{font-family:'Yuji Syuku',serif;font-size:clamp(22px,4vw,34px);color:var(--gold-hi);
+  text-shadow:0 0 22px rgba(233,201,100,0.6);align-self:center;}
+.hero-cta{margin-top:14px;display:inline-flex;align-items:center;gap:12px;padding:17px 62px;border-radius:4px;
+  cursor:pointer;text-decoration:none;font-family:'Shippori Mincho',serif;font-weight:800;font-size:17px;
+  letter-spacing:.4em;text-indent:.4em;color:#1a1206;
+  background:linear-gradient(160deg,#efd77e,#c9a227 45%,#a2801e);border:1px solid #f2dc8c;
+  box-shadow:0 0 34px rgba(201,162,39,0.45), inset 0 1px 0 rgba(255,255,255,0.5), 0 6px 20px rgba(0,0,0,0.6);
+  transition:transform .18s, box-shadow .18s;position:relative;overflow:hidden;}
+.hero-cta::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,0.55),transparent);
+  transform:skewX(-20deg);animation:sheen 3.6s ease-in-out infinite;}
+@keyframes sheen{0%,60%{left:-70%;}85%,100%{left:130%;}}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 0 54px rgba(233,201,100,0.6), 0 10px 26px rgba(0,0,0,0.7);}
+.hero-note{font-size:10px;color:rgba(240,231,211,0.4);letter-spacing:.2em;}
+@media (prefers-reduced-motion: reduce){.hero-cta::after{animation:none;}}
+
+/* SECTION 共通 */
+section{position:relative;padding:78px 0 56px;}
+.sec-head{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:40px;text-align:center;}
+.sec-kanji{font-family:'Yuji Syuku',serif;font-size:clamp(30px,5.5vw,48px);letter-spacing:.12em;
+  color:var(--paper);text-shadow:0 0 34px rgba(201,162,39,0.3);}
+.sec-kanji .g{color:var(--gold-hi);}
+.sec-rule{display:flex;align-items:center;gap:12px;color:var(--gold);}
+.sec-rule::before,.sec-rule::after{content:"";width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim));}
+.sec-rule::after{background:linear-gradient(90deg,var(--gold-dim),transparent);}
+.sec-rule .dia{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 10px rgba(201,162,39,0.8);}
+.sec-lead{font-size:12.5px;color:rgba(240,231,211,0.55);letter-spacing:.08em;line-height:1.95;max-width:680px;}
+.fuda{position:relative;background:linear-gradient(165deg, rgba(240,231,211,0.045), rgba(240,231,211,0.01));
+  border:1px solid var(--line);padding:22px;transition:transform .2s, box-shadow .2s, border-color .2s;}
+.fuda::before,.fuda::after,.fuda .c3::before,.fuda .c3::after{
+  content:"";position:absolute;width:14px;height:14px;pointer-events:none;border-color:var(--gold);border-style:solid;}
+.fuda::before{top:-1px;left:-1px;border-width:2px 0 0 2px;}
+.fuda::after{top:-1px;right:-1px;border-width:2px 2px 0 0;}
+.fuda .c3::before{bottom:-1px;left:-1px;border-width:0 0 2px 2px;}
+.fuda .c3::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;}
+.fuda:hover{transform:translateY(-3px);border-color:rgba(201,162,39,0.5);
+  box-shadow:0 14px 34px rgba(0,0,0,0.55), 0 0 24px rgba(201,162,39,0.12);}
+
+/* 戦況バー + 戦局タイムテーブル */
+.senkyo-panel{padding:30px 26px;}
+.senkyo-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.senkyo-top .ttl{font-family:'Shippori Mincho',serif;font-weight:800;letter-spacing:.2em;color:var(--gold);font-size:14px;}
+.senkyo-top .upd{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(240,231,211,0.4);}
+.war-bar-labels{display:flex;justify-content:space-between;margin-bottom:10px;font-family:'Shippori Mincho',serif;font-weight:800;}
+.war-bar-labels .aka-l{color:#ff9585;font-size:15px;}
+.war-bar-labels .ao-l{color:#96c6ee;font-size:15px;text-align:right;}
+.war-bar-labels .num{font-family:'JetBrains Mono',monospace;font-size:clamp(22px,4vw,30px);display:block;}
+.war-bar-labels .gen{font-size:10px;letter-spacing:.14em;color:rgba(240,231,211,0.55);}
+.war-bar{height:30px;display:flex;overflow:hidden;background:#0a0806;border:1px solid var(--line);position:relative;}
+.war-bar .fill-r{background:linear-gradient(90deg,#8e2618,#d84334 70%,#ef5a45);position:relative;transition:width 1.2s cubic-bezier(.2,.8,.2,1);}
+.war-bar .fill-b{background:linear-gradient(90deg,#4a8bd0,#3d7ab8 40%,#1f405f);flex:1;transition:width 1.2s;}
+.war-bar .fill-r::after{content:"";position:absolute;top:0;right:-1px;width:2px;height:100%;
+  background:var(--gold-hi);box-shadow:0 0 12px 2px rgba(233,201,100,0.8);}
+.war-bar .shine{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.16),transparent 45%);pointer-events:none;}
+.senkyo-note{margin-top:12px;font-size:11.5px;color:rgba(240,231,211,0.5);text-align:center;letter-spacing:.12em;}
+.phases{margin-top:30px;}
+.phases .p-ttl{font-family:'Shippori Mincho',serif;font-size:12px;letter-spacing:.26em;color:var(--gold);margin-bottom:16px;text-align:center;}
+.phase-track{display:flex;justify-content:space-between;position:relative;}
+.phase-track::before{content:"";position:absolute;top:9px;left:5%;right:5%;height:1px;background:linear-gradient(90deg,var(--gold-dim),var(--gold),var(--gold-dim));}
+.phase{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;text-align:center;}
+.phase .node{width:18px;height:18px;background:var(--sumi);border:2px solid var(--gold-dim);transform:rotate(45deg);transition:.3s;}
+.phase.now .node{background:var(--gold-hi);border-color:var(--gold-hi);box-shadow:0 0 16px rgba(233,201,100,0.9);}
+.phase .p-time{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--gold);}
+.phase .p-name{font-family:'Shippori Mincho',serif;font-size:clamp(10px,1.6vw,13px);font-weight:800;letter-spacing:.08em;}
+.phase .p-desc{font-size:9px;color:rgba(240,231,211,0.45);letter-spacing:.04em;}
+.phase.now .p-name{color:var(--gold-hi);}
+@media(max-width:640px){.phase .p-desc{display:none;}}
+
+/* 両軍の陣 */
+.jin-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+@media(max-width:760px){.jin-grid{grid-template-columns:1fr;}}
+.jin{position:relative;padding:34px 26px 26px;overflow:hidden;border:1px solid var(--line);}
+.jin.aka{background:linear-gradient(160deg, rgba(216,67,52,0.18), rgba(126,33,22,0.05) 60%, transparent);border-color:rgba(216,67,52,0.4);}
+.jin.ao{background:linear-gradient(160deg, rgba(61,122,184,0.22), rgba(27,58,88,0.07) 60%, transparent);border-color:rgba(61,122,184,0.45);}
+.jin .nobori{position:absolute;top:-6px;right:18px;width:46px;height:122px;
+  clip-path:polygon(0 0,100% 0,100% 88%,50% 100%,0 88%);
+  display:flex;align-items:flex-start;justify-content:center;padding-top:16px;
+  font-family:'Yuji Syuku',serif;font-size:30px;writing-mode:vertical-rl;letter-spacing:.2em;
+  box-shadow:0 8px 22px rgba(0,0,0,0.5);color:#fff;}
+.jin.aka .nobori{background:linear-gradient(180deg,#d84334,#7e2116);}
+.jin.ao .nobori{background:linear-gradient(180deg,#3d7ab8,#1b3a58);}
+.jin-crest{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Yuji Syuku',serif;font-size:30px;margin-bottom:14px;position:relative;color:#fff;}
+.jin-crest::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid currentColor;}
+.jin-crest::after{content:"";position:absolute;inset:6px;border-radius:50%;border:1px solid currentColor;opacity:.5;}
+.jin.aka .jin-crest{background:radial-gradient(circle at 35% 30%, #e0503c, #7e2116);}
+.jin.ao .jin-crest{background:radial-gradient(circle at 35% 30%, #4a8bd0, #1b3a58);}
+.jin-name{font-family:'Yuji Syuku',serif;font-size:clamp(28px,4.4vw,38px);letter-spacing:.1em;}
+.jin-general{margin:12px 0 20px;padding:12px 16px;background:rgba(0,0,0,0.32);border:1px solid var(--line-soft);
+  display:flex;align-items:center;gap:12px;}
+.jin-general .g-role{font-size:9.5px;letter-spacing:.28em;color:var(--gold);writing-mode:vertical-rl;border-right:1px solid var(--line-soft);padding-right:10px;}
+.jin-general .g-name{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(18px,3vw,23px);letter-spacing:.12em;}
+.jin-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.jin-stat{background:rgba(0,0,0,0.32);border:1px solid var(--line-soft);padding:12px 8px;text-align:center;}
+.jin-stat .v{font-family:'JetBrains Mono',monospace;font-size:clamp(18px,3vw,24px);font-weight:700;color:var(--gold-hi);}
+.jin-stat .k{font-size:10px;letter-spacing:.2em;color:rgba(240,231,211,0.5);margin-top:4px;}
+
+/* 番付 */
+.banzuke{overflow-x:auto;}
+table.banzuke-t{width:100%;border-collapse:collapse;min-width:560px;}
+.banzuke-t thead th{font-family:'Shippori Mincho',serif;font-size:11.5px;letter-spacing:.26em;color:var(--gold);
+  padding:13px 12px;border-bottom:2px solid var(--gold-dim);text-align:left;font-weight:800;
+  background:linear-gradient(180deg, rgba(201,162,39,0.08), transparent);}
+.banzuke-t td{padding:15px 12px;border-bottom:1px solid var(--line-soft);font-size:14px;}
+.banzuke-t tbody tr:hover{background:rgba(201,162,39,0.05);}
+.rank-i{font-family:'Yuji Syuku',serif;font-size:20px;white-space:nowrap;}
+.rank-i.top{color:var(--gold-hi);text-shadow:0 0 16px rgba(233,201,100,0.55);}
+.gumi-name{font-family:'Shippori Mincho',serif;font-weight:700;font-size:15px;}
+.camp{display:inline-block;padding:4px 15px;font-size:12px;font-weight:900;letter-spacing:.2em;text-indent:.2em;color:#fff;
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);}
+.camp.aka{background:linear-gradient(135deg,#d84334,#7e2116);}
+.camp.ao{background:linear-gradient(135deg,#3d7ab8,#1b3a58);}
+.koku{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--gold-hi);}
+.delta{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;}
+.delta.up{color:#8fd08f;}
+.delta.down{color:#e08a7c;}
+
+/* ===== アタック25風 国盗り盤 ===== */
+.board-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.terr{display:flex;gap:16px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;}
+.terr .t-aka{color:#ff9585;}
+.terr .t-ao{color:#96c6ee;}
+.terr .t-free{color:rgba(240,231,211,0.4);font-size:12px;align-self:center;}
+.compass{font-size:10px;letter-spacing:.2em;color:rgba(240,231,211,0.45);display:flex;gap:14px;}
+.a25{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+.a25 .pnl{
+  aspect-ratio:1;position:relative;cursor:pointer;border:1px solid var(--line);
+  background:linear-gradient(160deg,#221a10,#14100a);
+  display:flex;flex-direction:column;gap:0;
+  transition:transform .15s, box-shadow .2s, border-color .2s;overflow:hidden;
+}
+/* --- 重なり防止：上段はバッジ専用行。文字は下段に隔離し、絶対配置は使わない --- */
+.a25 .pnl .badge-row{flex:0 0 auto;height:14px;display:flex;align-items:center;justify-content:flex-end;
+  padding:3px 5px 0;pointer-events:none;}
+.a25 .pnl .badge-row .kan{font-family:'Yuji Syuku',serif;font-size:11px;line-height:1;color:var(--gold-hi);
+  text-shadow:0 0 8px rgba(233,201,100,0.9);}
+.a25 .pnl.aka .badge-row .kan,.a25 .pnl.ao .badge-row .kan{color:#fff;}
+.a25 .pnl .pnl-body{flex:1;min-height:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;padding:0 3px 6px;}
+.a25 .pnl:hover{transform:scale(1.045);z-index:2;border-color:var(--gold);box-shadow:0 0 24px rgba(201,162,39,0.35);}
+.a25 .pnl .no{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(15px,3.4vw,26px);color:var(--gold);line-height:1;}
+.a25 .pnl .nm{font-family:'Shippori Mincho',serif;font-weight:700;font-size:clamp(7.5px,1.55vw,11.5px);letter-spacing:.02em;
+  color:rgba(240,231,211,0.85);text-align:center;line-height:1.25;padding:0 2px;max-width:100%;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;}
+.a25 .pnl .pp{font-family:'JetBrains Mono',monospace;font-size:clamp(7px,1.3vw,9.5px);color:rgba(233,201,100,0.7);}
+.a25 .pnl.aka{background:linear-gradient(160deg,#e0503c,#8e2618);border-color:#ef5a45;box-shadow:inset 0 0 24px rgba(0,0,0,0.35);}
+.a25 .pnl.ao{background:linear-gradient(160deg,#4a8bd0,#1f405f);border-color:#5b9adf;box-shadow:inset 0 0 24px rgba(0,0,0,0.35);}
+.a25 .pnl.aka .no,.a25 .pnl.ao .no{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,0.6);}
+.a25 .pnl.aka .nm,.a25 .pnl.ao .nm{color:rgba(255,255,255,0.95);}
+.a25 .pnl.aka .pp,.a25 .pnl.ao .pp{color:rgba(255,255,255,0.75);}
+/* 旧: .a25 .pnl.kaname::after で絶対配置していた「要」は badge-row に移設(重なり解消) */
+.a25 .pnl.sel{outline:2px solid var(--gold-hi);outline-offset:2px;}
+.pnl-detail{margin-top:16px;padding:20px 22px;min-height:120px;}
+.pnl-detail .d-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+.pnl-detail .d-no{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--gold-hi);}
+.pnl-detail .d-name{font-family:'Shippori Mincho',serif;font-weight:800;font-size:20px;letter-spacing:.08em;}
+.pnl-detail .d-pt{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--gold-hi);}
+.pnl-detail .d-owner{font-size:11px;padding:3px 12px;font-weight:900;letter-spacing:.16em;color:#fff;
+  clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);}
+.pnl-detail .d-owner.aka{background:#b23325;}
+.pnl-detail .d-owner.ao{background:#31659a;}
+.pnl-detail .d-owner.free{background:rgba(240,231,211,0.15);color:rgba(240,231,211,0.6);}
+.pnl-detail .d-loc{font-size:12px;color:rgba(240,231,211,0.65);line-height:1.9;margin-bottom:8px;}
+.pnl-detail .d-loc b{color:var(--gold);font-weight:700;}
+.pnl-detail .d-mission{font-size:12.5px;line-height:1.9;padding:10px 14px;background:rgba(0,0,0,0.3);
+  border-left:3px solid var(--gold);}
+.pnl-detail .d-sensor{display:inline-block;margin-top:10px;padding:4px 11px;border:1px solid var(--line);
+  font-size:10px;letter-spacing:.12em;color:var(--gold);}
+.board-note{margin-top:18px;text-align:center;font-size:11px;color:rgba(240,231,211,0.5);letter-spacing:.08em;line-height:2.1;}
+.board-note b{color:var(--gold-hi);}
+
+/* ===== RPG 陣中コマンド ===== */
+.cmd-grid{display:grid;grid-template-columns:270px 1fr;gap:20px;align-items:start;}
+@media(max-width:820px){.cmd-grid{grid-template-columns:1fr;}}
+.cmd-window{
+  background:linear-gradient(165deg,#100d15,#0b0910);
+  border:3px double var(--gold);box-shadow:0 0 0 1px #000, 0 12px 34px rgba(0,0,0,0.6), inset 0 0 40px rgba(201,162,39,0.05);
+  padding:18px 14px;position:relative;
+}
+.cmd-window .w-ttl{font-family:'Shippori Mincho',serif;font-size:12px;letter-spacing:.3em;color:var(--gold);
+  text-align:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line);}
+.cmd{display:flex;align-items:center;gap:10px;width:100%;padding:13px 12px 13px 26px;cursor:pointer;
+  background:none;border:none;color:rgba(240,231,211,0.8);text-align:left;
+  font-family:'Shippori Mincho',serif;font-weight:800;font-size:15px;letter-spacing:.14em;position:relative;transition:.15s;}
+.cmd .ic{font-size:16px;}
+.cmd:hover{color:var(--gold-hi);background:rgba(201,162,39,0.07);}
+.cmd.sel{color:var(--gold-hi);background:rgba(201,162,39,0.1);}
+.cmd.sel::before{content:"▶";position:absolute;left:6px;font-size:11px;color:var(--gold-hi);
+  animation:cursorBlink 1s steps(2) infinite;}
+@keyframes cursorBlink{50%{opacity:0;}}
+.cmd.danger{color:#ff9585;}
+.cmd.danger:hover,.cmd.danger.sel{color:#ffb3a8;background:rgba(216,67,52,0.12);}
+.cmd.danger.sel::before{color:#ff9585;}
+.cmd-body{padding:24px;}
+.cmd-body h4{font-family:'Shippori Mincho',serif;font-size:15px;letter-spacing:.2em;color:var(--gold);margin-bottom:14px;}
+.cmd-body p{font-size:12.5px;line-height:2;color:rgba(240,231,211,0.7);}
+.quick-chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;}
+.chip{padding:10px 18px;border:1px solid var(--line);background:rgba(0,0,0,0.3);color:var(--paper);
+  cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.06em;transition:.15s;font-family:'Zen Kaku Gothic New',sans-serif;}
+.chip:hover{border-color:var(--gold);color:var(--gold-hi);box-shadow:0 0 14px rgba(201,162,39,0.25);}
+textarea.ippon{width:100%;min-height:96px;resize:vertical;background:rgba(0,0,0,0.4);border:1px solid var(--line);
+  color:var(--paper);padding:14px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;line-height:1.8;margin-top:12px;}
+textarea.ippon:focus{outline:none;border-color:var(--gold);box-shadow:0 0 18px rgba(201,162,39,0.2);}
+.g-btn{margin-top:12px;padding:13px 34px;cursor:pointer;border:1px solid #f2dc8c;
+  font-family:'Shippori Mincho',serif;font-weight:800;font-size:14px;letter-spacing:.3em;text-indent:.3em;color:#1a1206;
+  background:linear-gradient(160deg,#efd77e,#c9a227 45%,#a2801e);
+  box-shadow:0 0 22px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.5);transition:.15s;}
+.g-btn:hover{transform:translateY(-2px);box-shadow:0 0 38px rgba(233,201,100,0.5);}
+.g-btn.line{background:linear-gradient(160deg,#2fdd76,#06c755 50%,#049a42);border-color:#7ef0ab;color:#04240f;
+  box-shadow:0 0 22px rgba(6,199,85,0.35), inset 0 1px 0 rgba(255,255,255,0.4);}
+.g-btn.line:hover{box-shadow:0 0 38px rgba(6,199,85,0.55);}
+.g-btn.tel{background:linear-gradient(160deg,#ef8a7c,#d84334 50%,#a02a1c);border-color:#f7b0a5;color:#2a0a05;
+  box-shadow:0 0 22px rgba(216,67,52,0.35), inset 0 1px 0 rgba(255,255,255,0.4);}
+.emg-row{display:flex;gap:12px;flex-wrap:wrap;}
+.emg-note{margin-top:14px;font-size:11px;color:rgba(240,231,211,0.5);line-height:2;}
+.emg-note b{color:#ff9585;}
+.timeline{margin-top:22px;}
+.timeline .t-ttl{font-family:'Shippori Mincho',serif;font-size:12px;letter-spacing:.26em;color:var(--gold);margin-bottom:12px;}
+.t-entry{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;align-items:baseline;}
+.t-entry .t-time{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--gold);white-space:nowrap;}
+.t-entry .t-tag{font-size:9.5px;padding:2px 8px;font-weight:900;letter-spacing:.1em;color:#fff;white-space:nowrap;
+  clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
+.t-entry .t-tag.aka{background:#b23325;}
+.t-entry .t-tag.ao{background:#31659a;}
+.t-entry .t-tag.sys{background:rgba(201,162,39,0.7);color:#1a1206;}
+.t-entry .t-body{color:rgba(240,231,211,0.78);line-height:1.7;}
+
+/* ===== LINE UI モック ===== */
+.line-grid{display:grid;grid-template-columns:360px 1fr;gap:34px;align-items:center;justify-content:center;}
+@media(max-width:860px){.line-grid{grid-template-columns:1fr;justify-items:center;}}
+.phone{width:100%;max-width:360px;border-radius:38px;padding:12px;background:#111;
+  box-shadow:0 0 0 2px #2a2a2a, 0 30px 60px rgba(0,0,0,0.7), 0 0 60px rgba(201,162,39,0.08);}
+.phone .screen{border-radius:28px;overflow:hidden;background:#8cabd8;display:flex;flex-direction:column;height:640px;}
+.line-hd{background:#273246;color:#fff;padding:14px 16px 12px;display:flex;align-items:center;gap:10px;}
+.line-hd .back{font-size:16px;opacity:.8;}
+.line-hd .name{font-weight:700;font-size:14.5px;flex:1;}
+.line-hd .name small{display:block;font-weight:400;font-size:9.5px;opacity:.65;}
+.line-hd .icons{font-size:14px;opacity:.8;letter-spacing:6px;}
+.line-body{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:11px;
+  background:linear-gradient(180deg,#7e9ecf,#8cabd8);}
+.l-day{align-self:center;background:rgba(0,0,0,0.18);color:#fff;font-size:9.5px;padding:3px 12px;border-radius:100px;}
+.l-row{display:flex;gap:8px;align-items:flex-end;}
+.l-row.me{flex-direction:row-reverse;}
+.l-ava{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0503c,#7e2116);
+  display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;color:#fff;font-size:15px;flex-shrink:0;}
+.l-bbl{max-width:76%;padding:10px 13px;border-radius:16px;font-size:12.5px;line-height:1.75;color:#1c1c1c;position:relative;}
+.l-row:not(.me) .l-bbl{background:#fff;border-top-left-radius:4px;}
+.l-row.me .l-bbl{background:#8de055;border-top-right-radius:4px;}
+.l-bbl .b-ttl{font-weight:900;font-size:12px;margin-bottom:4px;}
+.l-bbl .b-pt{color:#b23325;font-weight:900;}
+.l-meta{font-size:8.5px;color:rgba(255,255,255,0.85);white-space:nowrap;display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.l-photo{width:190px;height:126px;border-radius:12px;overflow:hidden;position:relative;
+  background:
+    radial-gradient(ellipse at 50% 78%, rgba(240,231,211,0.55), transparent 46%),
+    radial-gradient(ellipse at 50% 30%, #34c0d8, #1a7fa0 70%);
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;}
+.l-photo .ppl{font-size:20px;letter-spacing:2px;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.4));}
+.l-photo .cam{position:absolute;top:8px;left:10px;font-size:9px;color:#fff;background:rgba(0,0,0,0.35);padding:2px 8px;border-radius:100px;}
+.l-judge{display:flex;align-items:center;gap:8px;}
+.l-judge .spin{width:12px;height:12px;border:2px solid #ccc;border-top-color:#06c755;border-radius:50%;
+  animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.l-quick{display:flex;gap:7px;flex-wrap:wrap;align-self:flex-start;margin-left:40px;}
+.l-quick button{background:#fff;border:1px solid #c9d6e8;border-radius:100px;padding:7px 13px;font-size:11px;
+  color:#2b6cb0;font-weight:700;cursor:pointer;}
+.line-ft{background:#f0f2f5;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.line-ft .plus{font-size:18px;color:#8a95a5;}
+.line-ft .input{flex:1;background:#fff;border-radius:100px;padding:9px 15px;font-size:11.5px;color:#9aa5b5;}
+.line-ft .mic{font-size:16px;color:#8a95a5;}
+.line-notes{display:flex;flex-direction:column;gap:16px;}
+.line-note{padding:18px 20px;}
+.line-note h4{font-family:'Shippori Mincho',serif;font-size:14px;letter-spacing:.14em;color:var(--gold);margin-bottom:8px;}
+.line-note p{font-size:12px;line-height:2;color:rgba(240,231,211,0.65);}
+
+/* 連携システム */
+.renkei-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+.renkei{padding:24px 20px;}
+.renkei .icon{width:48px;height:48px;border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:14px;background:rgba(201,162,39,0.06);transform:rotate(45deg);}
+.renkei .icon span{transform:rotate(-45deg);}
+.renkei h3{font-family:'Shippori Mincho',serif;font-size:15.5px;font-weight:800;letter-spacing:.1em;margin-bottom:9px;}
+.renkei p{font-size:12px;line-height:1.9;color:rgba(240,231,211,0.6);}
+.renkei .tech{display:inline-block;margin-top:12px;padding:4px 11px;font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--gold);border:1px dashed var(--gold-dim);letter-spacing:.05em;}
+
+/* ===== 第二章構想(ヘルスケア) ===== */
+.kosou-band{margin-bottom:34px;text-align:center;}
+.kosou-band .kb{display:inline-block;padding:8px 26px;border:1px solid var(--gold);color:var(--gold-hi);
+  font-family:'Shippori Mincho',serif;font-weight:800;letter-spacing:.34em;text-indent:.34em;font-size:12.5px;
+  background:rgba(201,162,39,0.06);}
+.hw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:15px;}
+.hw{padding:18px;position:relative;}
+.hw .hw-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.hw .hw-ic{font-size:20px;}
+.hw .hw-name{font-size:11px;letter-spacing:.14em;color:rgba(240,231,211,0.55);font-weight:700;}
+.hw .hw-val{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--gold-hi);}
+.hw .hw-val small{font-size:11px;color:var(--gold);}
+.hw .hw-game{margin-top:10px;font-size:10.5px;line-height:1.8;color:rgba(240,231,211,0.6);
+  padding:8px 10px;background:rgba(0,0,0,0.28);border-left:2px solid var(--gold-dim);}
+.hw .hw-game b{color:var(--gold-hi);}
+.hw-spark{margin-top:6px;display:flex;align-items:flex-end;gap:2px;height:26px;}
+.hw-spark i{flex:1;background:linear-gradient(180deg,#e9c964,#7d651f);opacity:.8;}
+.kosou-note{margin-top:26px;text-align:center;font-size:10.5px;color:rgba(240,231,211,0.45);line-height:2.1;letter-spacing:.06em;}
+
+/* ===== 疾風の采配(効率インセンティブ) ===== */
+.shippu-formula{padding:26px;text-align:center;margin-bottom:18px;}
+.shippu-formula .f-eq{font-family:'JetBrains Mono',monospace;font-size:clamp(13px,2.6vw,17px);color:var(--gold-hi);
+  line-height:2.2;letter-spacing:.02em;}
+.shippu-formula .f-eq .op{color:rgba(240,231,211,0.5);}
+.shippu-formula .f-note{margin-top:12px;font-size:11.5px;color:rgba(240,231,211,0.55);line-height:1.9;}
+.shippu-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:800px){.shippu-grid{grid-template-columns:1fr;}}
+.bonus-list{display:flex;flex-direction:column;gap:12px;}
+.bonus-item{padding:15px 17px;display:flex;gap:13px;align-items:flex-start;}
+.bonus-item .b-ic{font-size:22px;flex-shrink:0;}
+.bonus-item .b-name{font-family:'Shippori Mincho',serif;font-weight:800;font-size:14px;color:var(--gold-hi);margin-bottom:4px;}
+.bonus-item .b-desc{font-size:11.5px;line-height:1.8;color:rgba(240,231,211,0.65);}
+.reward-table{width:100%;border-collapse:collapse;}
+.reward-table th{font-family:'Shippori Mincho',serif;font-size:10.5px;letter-spacing:.16em;color:var(--gold);
+  padding:11px 10px;border-bottom:2px solid var(--gold-dim);text-align:left;font-weight:800;}
+.reward-table td{padding:13px 10px;border-bottom:1px solid var(--line-soft);font-size:12.5px;vertical-align:top;}
+.reward-table .r-rank{font-family:'Yuji Syuku',serif;font-size:17px;color:var(--gold-hi);white-space:nowrap;}
+.reward-table .r-title{font-family:'Shippori Mincho',serif;font-weight:800;font-size:13px;}
+.reward-table .r-slot{font-family:'JetBrains Mono',monospace;color:var(--gold-hi);font-weight:700;white-space:nowrap;}
+.reward-table .r-perk{font-size:11px;color:rgba(240,231,211,0.6);line-height:1.7;}
+.shippu-note{margin-top:20px;padding:15px 18px;background:rgba(216,67,52,0.06);border:1px solid rgba(216,67,52,0.3);
+  font-size:11.5px;line-height:1.9;color:rgba(240,231,211,0.75);}
+.shippu-note b{color:#ff9585;}
+
+/* ===== SNSアーカイブ ===== */
+.sns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.sns-card{padding:20px;text-decoration:none;color:inherit;display:block;}
+.sns-card .s-src{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.1em;color:var(--gold);margin-bottom:10px;}
+.sns-card .s-plat{padding:2px 9px;border:1px solid var(--gold-dim);font-size:9.5px;}
+.sns-card .s-body{font-size:12.5px;line-height:1.85;color:rgba(240,231,211,0.8);margin-bottom:10px;}
+.sns-card .s-link{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(240,231,211,0.4);word-break:break-all;}
+.sns-card:hover{border-color:rgba(201,162,39,0.5);}
+.sns-lead-note{margin-top:18px;text-align:center;font-size:10.5px;color:rgba(240,231,211,0.4);line-height:1.9;}
+
+footer{margin-top:60px;border-top:1px solid var(--line);padding:46px 22px 60px;text-align:center;
+  background:linear-gradient(180deg, transparent, rgba(201,162,39,0.04));position:relative;z-index:2;}
+footer .f-brand{font-family:'Yuji Syuku',serif;font-size:26px;letter-spacing:.16em;color:var(--gold-hi);margin-bottom:10px;}
+footer .f-sub{font-size:11px;letter-spacing:.26em;color:rgba(240,231,211,0.45);margin-bottom:6px;line-height:2;}
+footer .f-url{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s, transform .7s;}
+.reveal.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none;}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e9c964" stop-opacity="0.28"/>
+      <stop offset="0.5" stop-color="#c9a227" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#7d651f" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+</svg>
+<div class="embers" id="embers"></div>
+
+<nav class="top">
+  <div class="inner">
+    <a class="nav-brand" href="#top">
+      <div class="nav-seal">盗</div>
+      <div>
+        <div class="t1">REAL VALUE 合宿</div>
+        <div class="t2">別府国盗り合戦</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#senkyo">戦況</a>
+      <a href="#ryogun">両軍</a>
+      <a href="#banzuke">番付</a>
+      <a href="#board">国盗り盤</a>
+      <a href="#shippu">疾風の采配</a>
+      <a href="#command">陣中コマンド</a>
+      <a href="#line">LINE</a>
+      <a href="#renkei">連携</a>
+      <a href="#kosou">第二章構想</a>
+      <a href="#keifu">系譜</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <svg class="kumo" style="top:6%;left:-60px;width:420px;height:150px;" viewBox="0 0 420 150">
+    <path d="M20,110 q0,-46 46,-46 q6,-34 44,-34 q34,-12 52,14 q40,-10 52,22 q44,0 44,38 q30,4 30,30 l0,16 -268,0 q-28,0 -28,-24 q-14,-4 -14,-16 z"/>
+  </svg>
+  <svg class="kumo" style="bottom:10%;right:-80px;width:520px;height:170px;transform:scaleX(-1);" viewBox="0 0 420 150">
+    <path d="M20,110 q0,-46 46,-46 q6,-34 44,-34 q34,-12 52,14 q40,-10 52,22 q44,0 44,38 q30,4 30,30 l0,16 -268,0 q-28,0 -28,-24 q-14,-4 -14,-16 z"/>
+  </svg>
+  <svg class="kumo dim" style="top:38%;right:6%;width:260px;height:100px;" viewBox="0 0 420 150">
+    <path d="M20,110 q0,-46 46,-46 q6,-34 44,-34 q34,-12 52,14 q40,-10 52,22 q44,0 44,38 q30,4 30,30 l0,16 -268,0 q-28,0 -28,-24 q-14,-4 -14,-16 z"/>
+  </svg>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">天下分け目のREAL VALUE合宿</div>
+    <h1 class="hero-title"><span class="beni">別府</span>国盗り合戦</h1>
+    <div class="hero-sub">赤軍 対 青軍 ── 実在の別府市街を駆ける、<br>経営者たちのロゲイニング国盗り</div>
+    <div class="hero-tag">ROGAINING × STRATEGY RPG · BEPPU</div>
+    <div class="hero-vs">
+      <div class="vs-side">
+        <div class="vs-crest aka">赤</div>
+        <div class="vs-general" style="text-align:center;">
+          <div class="role">赤軍 総大将</div>
+          <div class="name">堀江 貴文 氏</div>
+        </div>
+      </div>
+      <div class="vs-mark">対</div>
+      <div class="vs-side">
+        <div class="vs-crest ao">青</div>
+        <div class="vs-general" style="text-align:center;">
+          <div class="role">青軍 総大将</div>
+          <div class="name">溝口 勇児 氏</div>
+        </div>
+      </div>
+    </div>
+    <a class="hero-cta" href="#senkyo">出陣</a>
+    <div class="hero-note">REAL VALUE · 会員制合宿 第一日</div>
+  </div>
+</header>
+
+<!-- 戦況 -->
+<section id="senkyo">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">現在の<span class="g">戦況</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+    </div>
+    <div class="fuda senkyo-panel reveal"><span class="c3"></span>
+      <div class="senkyo-top">
+        <span class="ttl">両軍 総石高</span>
+        <span class="upd" id="clock">--:--:-- 更新</span>
+      </div>
+      <div class="war-bar-labels">
+        <div class="aka-l">赤軍 <span class="gen">総大将 堀江貴文 氏</span><span class="num" id="akaNum">0</span></div>
+        <div class="ao-l">青軍 <span class="gen">総大将 溝口勇児 氏</span><span class="num" id="aoNum">0</span></div>
+      </div>
+      <div class="war-bar">
+        <div class="fill-r" id="fillR" style="width:50%;"></div>
+        <div class="fill-b" id="fillB"></div>
+        <div class="shine"></div>
+      </div>
+      <div class="senkyo-note" id="leadNote">──</div>
+
+      <div class="phases">
+        <div class="p-ttl">── 本日の戦局 ──</div>
+        <div class="phase-track" id="phaseTrack"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 両軍の陣 -->
+<section id="ryogun">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">両軍の<span class="g">陣</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+    </div>
+    <div class="jin-grid">
+      <div class="jin aka fuda reveal"><span class="c3"></span>
+        <div class="nobori">赤</div>
+        <div class="jin-crest">赤</div>
+        <div class="jin-name">赤軍の陣</div>
+        <div class="jin-general">
+          <div class="g-role">総大将</div>
+          <div class="g-name">堀江 貴文 氏</div>
+        </div>
+        <div class="jin-stats">
+          <div class="jin-stat"><div class="v" id="akaKoku">0</div><div class="k">石高</div></div>
+          <div class="jin-stat"><div class="v" id="akaKyoten">0</div><div class="k">制圧パネル</div></div>
+        </div>
+      </div>
+      <div class="jin ao fuda reveal"><span class="c3"></span>
+        <div class="nobori">青</div>
+        <div class="jin-crest">青</div>
+        <div class="jin-name">青軍の陣</div>
+        <div class="jin-general">
+          <div class="g-role">総大将</div>
+          <div class="g-name">溝口 勇児 氏</div>
+        </div>
+        <div class="jin-stats">
+          <div class="jin-stat"><div class="v" id="aoKoku">0</div><div class="k">石高</div></div>
+          <div class="jin-stat"><div class="v" id="aoKyoten">0</div><div class="k">制圧パネル</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 六組番付 -->
+<section id="banzuke">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">六組<span class="g">番付</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+      <p class="sec-lead">獲得スコア＝パネル制圧＋AI写真判定＋定時報告＋タイムボーナス。三十分ごとに番付更新。</p>
+    </div>
+    <div class="fuda banzuke reveal" style="padding:8px 18px 14px;"><span class="c3"></span>
+      <table class="banzuke-t">
+        <thead><tr><th>番付</th><th>組</th><th>陣営</th><th>石高(スコア)</th><th>前刻比</th></tr></thead>
+        <tbody id="banzukeBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 国盗り盤 -->
+<section id="board">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">別府<span class="g">国盗り盤</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+      <p class="sec-lead">二十五枚のパネルは、実在する別府の名所の位置関係そのまま。北は亀川から南は浜脇まで、パネルを制圧して面を塗り替えろ。パネルを押すと現地情報とミッションが開く。</p>
+    </div>
+    <div class="fuda reveal" style="padding:24px;"><span class="c3"></span>
+      <div class="board-head">
+        <div class="terr">
+          <span class="t-aka">赤 <span id="terrAka">0%</span></span>
+          <span class="t-ao">青 <span id="terrAo">0%</span></span>
+          <span class="t-free" id="terrFree">未制圧 25</span>
+        </div>
+        <div class="compass"><span>← 山側(西)</span><span>▲ 北(亀川)</span><span>海側(東) →</span></div>
+      </div>
+      <div class="a25" id="a25"></div>
+      <div class="pnl-detail fuda" id="pnlDetail" style="border-style:dashed;"><span class="c3"></span>
+        <p style="font-size:12.5px;color:rgba(240,231,211,0.5);letter-spacing:.1em;">▲ パネルを選ぶと、実在の所在地・得点・ミッション・センサー種別がここに開く。</p>
+      </div>
+      <div class="board-note">
+        <b>挟撃の法</b>：縦・横・斜めで敵パネルを自軍で挟むと、間のパネルがすべて寝返る ── 終盤の一手で戦況は覆る。<br>
+        パネル⑬「観海寺」は盤の<b>天下の要</b>。制圧軍には要害ボーナス。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 疾風の采配(効率インセンティブ) -->
+<section id="shippu">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">疾風の<span class="g">采配</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+      <p class="sec-lead">「疾如風」── 風林火山の一節そのまま。今回は車移動につき、<b style="color:var(--gold-hi);">移動距離が短く・所要時間が速いほど加点</b>される。がむしゃらに走り回るより、頭を使って最短で獲るほうが強い ── 経営者の意思決定そのものを競う仕組み。</p>
+    </div>
+
+    <div class="fuda shippu-formula reveal"><span class="c3"></span>
+      <div class="f-eq">疾風指数 <span class="op">=</span> 獲得PT <span class="op">÷</span> ( 走行距離 <span class="op">×</span> 3 <span class="op">+</span> 徒歩距離 <span class="op">×</span> 8 <span class="op">+</span> 所要時間(分) )</div>
+      <div class="f-note">徒歩は車の3倍近く「重く」評価される(体力配分の意思決定も采配のうち)。同じ石高でも、この指数が高い組ほど番付とは別の「疾風番付」で上位に立つ。</div>
+    </div>
+
+    <div class="shippu-grid">
+      <div class="bonus-list">
+        <div class="fuda bonus-item reveal"><span class="c3"></span>
+          <span class="b-ic">💨</span>
+          <div><div class="b-name">韋駄天ボーナス</div><div class="b-desc">全パネルの定めた期限内で最速完結した組に、固定+100PT。俊足の神・韋駄天の名を冠す。</div></div>
+        </div>
+        <div class="fuda bonus-item reveal"><span class="c3"></span>
+          <span class="b-ic">🗺️</span>
+          <div><div class="b-name">最短経路ボーナス</div><div class="b-desc">車の総走行距離が全組下位30%(＝短い方)に入った組は、獲得PTが1.3倍に。</div></div>
+        </div>
+        <div class="fuda bonus-item reveal"><span class="c3"></span>
+          <span class="b-ic">🌿</span>
+          <div><div class="b-name">低燃費軍功</div><div class="b-desc">急加速・急減速の少ないエコドライブにも加点(車載センサー連携)。ESG意識も戦績に。</div></div>
+        </div>
+        <div class="fuda bonus-item reveal"><span class="c3"></span>
+          <span class="b-ic">⚖️</span>
+          <div><div class="b-name">怠戦防止ルール</div><div class="b-desc">全パネル中60%以上のミッション達成が疾風番付の参加条件。動かずに効率だけ狙う「安全策」は成立しない。</div></div>
+        </div>
+      </div>
+
+      <div class="fuda reveal" style="padding:22px;"><span class="c3"></span>
+        <h4 style="font-family:'Shippori Mincho',serif;font-size:14px;letter-spacing:.16em;color:var(--gold);margin-bottom:14px;">疾風番付 上位への恩賞 ── 大将本陣ピッチ枠</h4>
+        <table class="reward-table">
+          <thead><tr><th>順位</th><th>称号</th><th>1on1枠</th><th>恩賞内容</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="r-rank">1位</td>
+              <td class="r-title">筆頭家老</td>
+              <td class="r-slot">15分・最速枠</td>
+              <td class="r-perk">大将(堀江貴文氏 or 溝口勇児氏)へ最優先で自社プレゼン。優秀な内容は後日「REAL VALUE」本編出演を大将陣に推薦。</td>
+            </tr>
+            <tr>
+              <td class="r-rank">2〜3位</td>
+              <td class="r-title">近習(そばしゅう)</td>
+              <td class="r-slot">10分</td>
+              <td class="r-perk">大将への1on1フィードバック枠。事業相談・資本提携の糸口も歓迎。</td>
+            </tr>
+            <tr>
+              <td class="r-rank">4〜6位</td>
+              <td class="r-title">陣借り</td>
+              <td class="r-slot">5分(抽選順)</td>
+              <td class="r-perk">短時間ながら大将への直接質問権を確保。夜の懇親でのフォローアップも設計。</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="shippu-note">
+          <b>なぜこれが効くのか</b>：経営者にとって最も希少な資源は「時間」。石高の勝ち負けだけでなく、<b>大将との1対1の時間そのものを賭けの対象にする</b>ことで、勝敗への当事者意識が跳ね上がる。HIU合宿で実際に人気の高い「大将への直接ピッチ」の枠を、ゲームの成果と直結させる設計。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 陣中コマンド -->
+<section id="command">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">陣中<span class="g">コマンド</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+      <p class="sec-lead">国盗りは初日の数時間が勝負。日報ではなく、戦いながら使う「コマンド」で本陣とつながる。すべてLINEにも同じボタンを配置。</p>
+    </div>
+    <div class="cmd-grid">
+      <div class="cmd-window reveal">
+        <div class="w-ttl">▼ コマンド ▼</div>
+        <button class="cmd sel" data-cmd="report"><span class="ic">📯</span>報告を送る</button>
+        <button class="cmd" data-cmd="quick"><span class="ic">⚡</span>クイック定型文</button>
+        <button class="cmd" data-cmd="hint"><span class="ic">💡</span>ヒントを求む</button>
+        <button class="cmd danger" data-cmd="emg"><span class="ic">🚨</span>緊急コール</button>
+        <button class="cmd danger" data-cmd="med"><span class="ic">🏥</span>病院・救護</button>
+      </div>
+      <div>
+        <div class="fuda cmd-body reveal"><span class="c3"></span>
+          <div id="cmdContent"></div>
+        </div>
+        <div class="fuda reveal" style="margin-top:18px;padding:20px 24px;"><span class="c3"></span>
+          <div class="timeline">
+            <div class="t-ttl">── 戦況タイムライン(定時報告＋随時) ──</div>
+            <div id="timelineBody"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LINE UI -->
+<section id="line">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">LINEで<span class="g">戦う</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+      <p class="sec-lead">ミッションの受領も、回答写真の提出も、AI判定も、すべて普段使いのLINEトークで完結。アプリのインストール障壁ゼロで36名が即参戦できる。</p>
+    </div>
+    <div class="line-grid">
+      <div class="phone reveal">
+        <div class="screen">
+          <div class="line-hd">
+            <span class="back">‹</span>
+            <div class="name">別府国盗り合戦【公式】<small>REAL VALUE 合宿 運営本陣</small></div>
+            <span class="icons">📞 ☰</span>
+          </div>
+          <div class="line-body">
+            <div class="l-day">本日</div>
+            <div class="l-row">
+              <div class="l-ava">盗</div>
+              <div class="l-bbl">
+                <div class="b-ttl">【ミッション ⑦ 海地獄】</div>
+                コバルトブルーの池を背に、組全員で「勝ち鬨」ポーズの写真を送れ。<br>
+                📍位置情報ON推奨 ／ 制限 15:30まで<br>
+                成功報酬 <span class="b-pt">+120PT</span>
+              </div>
+              <div class="l-meta"><span>14:02</span></div>
+            </div>
+            <div class="l-row me">
+              <div class="l-bbl" style="padding:5px;">
+                <div class="l-photo">
+                  <span class="cam">📷 写真</span>
+                  <span class="ppl">🙌🙌🙌🙌🙌</span>
+                </div>
+              </div>
+              <div class="l-meta"><span>既読</span><span>14:18</span></div>
+            </div>
+            <div class="l-row">
+              <div class="l-ava">盗</div>
+              <div class="l-bbl"><div class="l-judge"><span class="spin"></span>AI審判が判定中…(位置・人数・お題適合)</div></div>
+              <div class="l-meta"><span>14:18</span></div>
+            </div>
+            <div class="l-row">
+              <div class="l-ava">盗</div>
+              <div class="l-bbl">
+                ✅ <b>判定OK！</b> 位置情報一致・5名確認・お題適合 92点<br>
+                <span class="b-pt">+120PT</span> ── 赤軍が「海地獄」を制圧！<br>
+                現在：赤 4,820 ─ 青 4,655
+              </div>
+              <div class="l-meta"><span>14:19</span></div>
+            </div>
+            <div class="l-quick">
+              <button>次のミッション</button>
+              <button>戦況を見る</button>
+              <button>💡ヒント(-20PT)</button>
+              <button>🚨緊急</button>
+            </div>
+          </div>
+          <div class="line-ft">
+            <span class="plus">＋</span>
+            <div class="input">メッセージを入力</div>
+            <span class="mic">🎤</span>
+          </div>
+        </div>
+      </div>
+      <div class="line-notes">
+        <div class="fuda line-note reveal"><span class="c3"></span>
+          <h4>📜 ミッション配信</h4>
+          <p>戦局フェーズに合わせて公式アカウントがミッションを自動配信。リッチメニューには「国盗り盤」「番付」「コマンド」を常設し、迷子ゼロの導線に。</p>
+        </div>
+        <div class="fuda line-note reveal"><span class="c3"></span>
+          <h4>📷 写真回答 → AI審判</h4>
+          <p>トークに写真を送るだけで提出完了。AIが位置情報・被写体・お題適合を数十秒で採点し、判定と獲得PTを即レス。際どい判定のみGMが裁定。</p>
+        </div>
+        <div class="fuda line-note reveal"><span class="c3"></span>
+          <h4>🚨 緊急もLINE電話</h4>
+          <p>車両故障・体調不良・道迷いは、トーク内の「緊急」ボタンから本陣へLINE通話を一発発信。位置情報の共有もワンタップ。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 連携システム -->
+<section id="renkei">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">連携<span class="g">システム</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+    </div>
+    <div class="renkei-grid">
+      <div class="renkei fuda reveal"><span class="c3"></span>
+        <div class="icon"><span>📜</span></div>
+        <h3>LINE公式アカウント</h3>
+        <p>ミッション配信・写真提出・定時報告・緊急コールの受付。スコア通知と番付速報を配信。</p>
+        <span class="tech">Messaging API / LIFF</span>
+      </div>
+      <div class="renkei fuda reveal"><span class="c3"></span>
+        <div class="icon"><span>🥁</span></div>
+        <h3>Slack 実況Bot</h3>
+        <p>「三組が海地獄を制圧！」等の実況、運営向けアラートを自動転送。</p>
+        <span class="tech">Bolt SDK / Webhook</span>
+      </div>
+      <div class="renkei fuda reveal"><span class="c3"></span>
+        <div class="icon"><span>👁️</span></div>
+        <h3>AI画像判定</h3>
+        <p>お題写真の適合度を自動採点。不正検知の補助も担当。</p>
+        <span class="tech">Claude Vision</span>
+      </div>
+      <div class="renkei fuda reveal"><span class="c3"></span>
+        <div class="icon"><span>⚡</span></div>
+        <h3>センサー &amp; 音響</h3>
+        <p>GPS・BLEビーコン・NFC・音響トリガーで、現地アクションを検知。</p>
+        <span class="tech">Native App SDK</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 第二章構想 -->
+<section id="kosou">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">第二章<span class="g">構想</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+      <p class="sec-lead">2026年9月 ── 国盗り合戦を「歩くほど、健やかなほど強くなる」ヘルスケア連動アプリへ。日々のバイタルと生活記録が、そのまま武将の力になる。</p>
+    </div>
+    <div class="kosou-band reveal"><span class="kb">健康 × 国盗り ── HEALTH KUNITORI(仮)</span></div>
+    <div class="hw-grid">
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">❤️</span><span class="hw-name">心拍数</span></div>
+        <div class="hw-val">72<small> bpm</small></div>
+        <div class="hw-spark"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:85%"></i><i style="height:58%"></i><i style="height:66%"></i></div>
+        <div class="hw-game">Apple ヘルスケア連携。坂道アタック中の心拍ゾーンで<b>「猛将モード」発動＝獲得PT増</b>。</div>
+      </div>
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">👟</span><span class="hw-name">歩数</span></div>
+        <div class="hw-val">12,480<small> 歩</small></div>
+        <div class="hw-game">歩数がそのまま<b>「兵糧」</b>に。歩くほど翌日の陣立てが有利になる継続導線。</div>
+      </div>
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">🌤️</span><span class="hw-name">天気・気温</span></div>
+        <div class="hw-val">34<small> ℃ 晴</small></div>
+        <div class="hw-game">猛暑日は<b>「水分補給ミッション」自動発令</b>。天候で戦局イベントが変わる。</div>
+      </div>
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">🌡️</span><span class="hw-name">体温</span></div>
+        <div class="hw-val">36.5<small> ℃</small></div>
+        <div class="hw-game">朝の検温で出陣可否をセルフチェック。異常時は<b>自動で救護班に連絡</b>を提案。</div>
+      </div>
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">💊</span><span class="hw-name">服薬リマインド</span></div>
+        <div class="hw-val">12:30</div>
+        <div class="hw-game">薬の時間は<b>「休戦の合図」</b>としてゲーム内通知。飲み忘れゼロを演出で支える。</div>
+      </div>
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">📋</span><span class="hw-name">既往症プロフィール</span></div>
+        <div class="hw-val" style="font-size:16px;">非公開設定</div>
+        <div class="hw-game">本人と救護班のみ閲覧可。緊急コール時に<b>救護情報として自動添付</b>。</div>
+      </div>
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">⛩️</span><span class="hw-name">本日の軍師占い</span></div>
+        <div class="hw-val" style="font-size:20px;">大吉</div>
+        <div class="hw-game">「東の陣が吉」── 占いが<b>本日のおすすめルート</b>をゲーム的に提示する遊び。</div>
+      </div>
+      <div class="hw fuda reveal"><span class="c3"></span>
+        <div class="hw-top"><span class="hw-ic">🍱</span><span class="hw-name">食事・エクササイズ</span></div>
+        <div class="hw-val" style="font-size:16px;">地獄蒸し +30PT</div>
+        <div class="hw-game">あすけん的な食事記録と連携。<b>ご当地の健康食やエクササイズ実施がそのまま加点</b>に。</div>
+      </div>
+    </div>
+    <p class="kosou-note">
+      ※ 心拍・体温・既往症・服薬などの健康情報は要配慮個人情報にあたるため、<br>
+      本人同意・目的限定・暗号化保存・救護班限定閲覧を設計段階から組み込む(HealthKit / ヘルスコネクト準拠)。
+    </p>
+  </div>
+</section>
+
+<!-- REAL VALUEの系譜(SNSアーカイブ) -->
+<section id="keifu">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kanji">REAL VALUEの<span class="g">系譜</span></div>
+      <div class="sec-rule"><span class="dia"></span></div>
+      <p class="sec-lead">今回の合宿は思いつきではない。堀江貴文イノベーション大学校(HIU)で育った「ロゲイニング×合宿」の文化と、堀江・溝口両氏が本格始動させた経営者フィードバック企画「REAL VALUE」の系譜の上にある。</p>
+    </div>
+    <div class="sns-grid">
+      <a class="fuda sns-card reveal" href="https://x.com/mizoguchi_yuji/status/1846495997666771287" target="_blank" rel="noopener"><span class="c3"></span>
+        <div class="s-src"><span class="s-plat">X post</span>@mizoguchi_yuji</div>
+        <div class="s-body">溝口勇児氏が、堀江貴文氏・王子氏とともに始動した「REAL VALUE」を発表。志願する起業家が自社をプレゼンし、本物の経営者陣から企業価値を高めるフィードバックを受ける経営エンタメ企画、という趣旨が投稿されている。今回の合宿名「REAL VALUE合宿」はこの系譜を踏まえた命名。</div>
+        <div class="s-link">x.com/mizoguchi_yuji/status/1846495997666771287</div>
+      </a>
+      <a class="fuda sns-card reveal" href="https://note.com/takapon/n/n6b2352490919" target="_blank" rel="noopener"><span class="c3"></span>
+        <div class="s-src"><span class="s-plat">note</span>堀江貴文(ホリエモン)</div>
+        <div class="s-body">HIU合宿の実行委員経験の価値を語るnote内で、謎解きとロゲイニングを組み合わせた企画がHIU発の人気コンテンツとして紹介されており、事業化まで見据えられる完成度だと述べられている。別府国盗り合戦のロゲイニング要素は、この実績あるフォーマットの延長線上にある。</div>
+        <div class="s-link">note.com/takapon/n/n6b2352490919</div>
+      </a>
+      <a class="fuda sns-card reveal" href="https://x.com/hiu_gassyuku" target="_blank" rel="noopener"><span class="c3"></span>
+        <div class="s-src"><span class="s-plat">X account</span>@hiu_gassyuku</div>
+        <div class="s-body">HIU合宿の実行委員会による公式発信アカウント。歴代合宿の現地レポートや裏側をリアルタイムで発信しており、実行委員が合宿ごとにゼロから企画を作り上げる文化そのものが継承されている。</div>
+        <div class="s-link">x.com/hiu_gassyuku</div>
+      </a>
+    </div>
+    <p class="sns-lead-note">※ 上記は一般公開されている投稿・記事へのリンクです。本番のHUBページでは実行委員会の判断で、当日の実況ハッシュタグや参加者の投稿も同様の形式で追加掲載できます。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="f-brand">別府国盗り合戦</div>
+  <div class="f-sub">天下分け目のREAL VALUE合宿 ── ロゲイニング×戦国シミュレーション<br>赤軍 総大将 堀江貴文 氏 ／ 青軍 総大将 溝口勇児 氏</div>
+  <div class="f-url">art-crea.jp（予定）</div>
+</footer>
+
+<script src="rv_data.js"></script>
+<script>
+/* ================= データ ================= */
+const GUMI = [
+  {rank:"一位", name:"三組・鬼ヶ島衆", camp:"aka", koku:1780, delta:+120},
+  {rank:"二位", name:"二組・鶴見岳衆", camp:"ao",  koku:1705, delta:+95},
+  {rank:"三位", name:"五組・血の池衆", camp:"aka", koku:1590, delta:-20},
+  {rank:"四位", name:"六組・海地獄衆", camp:"ao",  koku:1540, delta:+60},
+  {rank:"五位", name:"一組・竹瓦衆",   camp:"aka", koku:1450, delta:+30},
+  {rank:"六位", name:"四組・明礬衆",   camp:"ao",  koku:1410, delta:-10}
+];
+
+/* 5x5=25パネル。行=北→南、列=山側(西)→海側(東)。すべて実在の別府の場所 */
+let PANELS = [
+ {n:"柴石温泉",pt:70,sensor:"NFCタッチ",owner:null,loc:"柴石。醍醐天皇の伝承が残る渓谷の湯",mis:"番台前で湯札にNFCタッチせよ"},
+ {n:"血の池地獄",pt:120,sensor:"GPS+写真AI",owner:"ao",loc:"野田。日本最古の天然の赤い熱泥地獄",mis:"赤い池を背に組全員で写真提出"},
+ {n:"龍巻地獄",pt:90,sensor:"GPS+写真AI",owner:null,loc:"血の池地獄隣。周期的に噴く間欠泉",mis:"噴出の瞬間を写真に収めよ(運も実力)"},
+ {n:"亀川",pt:60,sensor:"GPS",owner:null,loc:"亀川。北の玄関口・浜田温泉の湯町",mis:"エリア到達＋商店街の一枚を提出"},
+ {n:"上人ヶ浜",pt:50,sensor:"GPS",owner:null,loc:"上人ヶ浜公園。一遍上人が上陸した浜",mis:"別府湾を背にエリア到達を報告"},
+ {n:"明礬 湯の里",pt:100,sensor:"音響トリガー",owner:null,loc:"明礬。湯の花小屋が並ぶ山手の湯里",mis:"現地の音響トリガーで合図を受信せよ"},
+ {n:"海地獄",pt:120,sensor:"ビーコン",owner:"aka",loc:"鉄輪。コバルトブルーの名物地獄",mis:"青い池を背に組全員で勝ち鬨の写真"},
+ {n:"かまど地獄",pt:100,sensor:"GPS+写真AI",owner:null,loc:"鉄輪。一丁目から六丁目まで続く地獄",mis:"お気に入りの丁目を選び理由と写真を提出"},
+ {n:"鉄輪むし湯",pt:110,sensor:"NFCタッチ",owner:null,loc:"鉄輪。一遍上人ゆかりの石菖の蒸し湯",mis:"むし湯前で湯札にNFCタッチせよ"},
+ {n:"地獄原温泉",pt:60,sensor:"GPS",owner:null,loc:"鉄輪東部の共同湯エリア",mis:"エリア到達を報告せよ"},
+ {n:"鶴見岳 山頂",pt:200,sensor:"GPS+写真",owner:null,loc:"標高1,375m。ロープウェイで登る最難関",mis:"山頂到達＋別府湾一望の写真(最高難度)"},
+ {n:"堀田温泉",pt:70,sensor:"NFCタッチ",owner:null,loc:"堀田。山手の関門にあたる市営温泉",mis:"施設前で湯札にNFCタッチせよ"},
+ {n:"観海寺",pt:150,sensor:"GPS+写真AI",owner:null,loc:"観海寺。別府湾を見下ろす高台の湯【天下の要】",mis:"高台から市街を見下ろす写真で要害を制せ",kaname:true},
+ {n:"別府公園",pt:50,sensor:"GPS",owner:null,loc:"市中央の大緑地",mis:"園内のシンボルツリー前で報告"},
+ {n:"実相寺",pt:40,sensor:"GPS",owner:null,loc:"実相寺中央公園。丘陵のスポーツ公園",mis:"エリア到達を報告せよ"},
+ {n:"南立石公園",pt:40,sensor:"GPS",owner:null,loc:"南立石。四季の花の公園",mis:"エリア到達を報告せよ"},
+ {n:"富士見通り",pt:40,sensor:"GPS",owner:null,loc:"駅西へ伸びる桜並木の通り",mis:"通り沿いの一枚を提出"},
+ {n:"別府駅前",pt:40,sensor:"NFCタッチ",owner:null,loc:"駅前。手湯と油屋熊八像が出迎える",mis:"熊八像とハイタッチ風写真＋NFCタッチ"},
+ {n:"北浜・別府タワー",pt:60,sensor:"GPS",owner:"aka",loc:"北浜。1957年建設の海辺のランドマーク",mis:"タワーを収めた写真でエリア報告"},
+ {n:"的ヶ浜公園",pt:50,sensor:"GPS",owner:"ao",loc:"海沿いの砂浜公園(SPAビーチ)",mis:"波打ち際でエリア到達を報告"},
+ {n:"八幡朝見神社",pt:70,sensor:"GPS+写真",owner:null,loc:"朝見。別府の総鎮守",mis:"参拝し勝利祈願の写真を提出"},
+ {n:"南荘園",pt:30,sensor:"GPS",owner:null,loc:"南西の丘の住宅地",mis:"エリア到達を報告せよ"},
+ {n:"流川通り",pt:50,sensor:"GPS",owner:null,loc:"昭和の面影残る中心繁華街",mis:"レトロ看板を一枚提出"},
+ {n:"竹瓦温泉",pt:80,sensor:"NFCタッチ",owner:"aka",loc:"元町。明治12年創業・砂湯の殿堂",mis:"唐破風の正面で湯札にNFCタッチ"},
+ {n:"浜脇温泉",pt:70,sensor:"NFCタッチ",owner:null,loc:"浜脇。別府温泉発祥の地のひとつ",mis:"湯都ピア前で湯札にNFCタッチ"}
+];
+
+const PHASES = [
+  {t:"13:00", name:"開戦",           desc:"法螺貝・全軍出陣"},
+  {t:"14:00", name:"定時報告①",      desc:"各組コマンドで戦況報告"},
+  {t:"15:00", name:"ゴールデンタイム", desc:"全パネルPT×2"},
+  {t:"16:00", name:"定時報告②",      desc:"挟撃を狙う中盤戦"},
+  {t:"16:45", name:"総攻撃",         desc:"盤面PT×2・大逆転圏"},
+  {t:"17:30", name:"閉戦・首実検",    desc:"集計と表彰"}
+];
+
+const TIMELINE_INIT = [
+  {time:"15:12", tag:"sys", body:"⚡ゴールデンタイム発動中 ── 全パネルPT×2"},
+  {time:"15:04", tag:"aka", who:"三組・佐藤", body:"竹瓦温泉を制圧。湯けむりが最高の追い風です。"},
+  {time:"14:47", tag:"ao",  who:"二組・田中", body:"ルート再設計完了。海側から北浜を攻めます。"},
+  {time:"14:19", tag:"aka", who:"一組",       body:"海地獄ミッション成功(+120PT)。次はかまど地獄へ。"},
+  {time:"14:00", tag:"sys", body:"📯 定時報告① ── 全組の報告が出揃いました"}
+];
+
+/* ================= 共通 ================= */
+function fmt(n){ return n.toLocaleString('ja-JP'); }
+
+/* 火の粉 */
+(function makeEmbers(){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = document.getElementById('embers');
+  for(let i=0;i<26;i++){
+    const e = document.createElement('div');
+    e.className='ember';
+    const size = 2 + Math.random()*4;
+    e.style.width = e.style.height = size+'px';
+    e.style.left = Math.random()*100+'%';
+    e.style.setProperty('--drift',(Math.random()*120-60)+'px');
+    e.style.animationDuration = (7+Math.random()*9)+'s';
+    e.style.animationDelay = (-Math.random()*14)+'s';
+    box.appendChild(e);
+  }
+})();
+
+/* ================= 戦況 ================= */
+function renderSenkyo(){
+  const aka = GUMI.filter(g=>g.camp==='aka').reduce((s,g)=>s+g.koku,0);
+  const ao  = GUMI.filter(g=>g.camp==='ao').reduce((s,g)=>s+g.koku,0);
+  const total = aka+ao||1;
+  document.getElementById('akaNum').textContent = fmt(aka);
+  document.getElementById('aoNum').textContent  = fmt(ao);
+  document.getElementById('akaKoku').textContent = fmt(aka);
+  document.getElementById('aoKoku').textContent  = fmt(ao);
+  setTimeout(()=>{ document.getElementById('fillR').style.width=(aka/total*100)+'%'; },350);
+  const diff = Math.abs(aka-ao);
+  document.getElementById('leadNote').textContent =
+    aka===ao ? '両軍拮抗 ── まさに天下分け目'
+    : (aka>ao ? `赤軍が ${fmt(diff)} 石リード ── 青軍、挟撃の好機を待て` : `青軍が ${fmt(diff)} 石リード ── 赤軍、挟撃の好機を待て`);
+  const akaP = PANELS.filter(p=>p.owner==='aka').length;
+  const aoP  = PANELS.filter(p=>p.owner==='ao').length;
+  document.getElementById('akaKyoten').textContent = akaP;
+  document.getElementById('aoKyoten').textContent  = aoP;
+}
+function tickClock(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  document.getElementById('clock').textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())} 更新`;
+}
+setInterval(tickClock,1000); tickClock();
+
+function renderPhases(){
+  const now = new Date();
+  const nowMin = now.getHours()*60+now.getMinutes();
+  let activeIdx = 2; // デモ既定=ゴールデンタイム
+  const mins = PHASES.map(p=>{ const [h,m]=p.t.split(':').map(Number); return h*60+m; });
+  if(nowMin>=mins[0] && nowMin<=mins[mins.length-1]+60){
+    activeIdx = 0;
+    mins.forEach((m,i)=>{ if(nowMin>=m) activeIdx=i; });
+  }
+  document.getElementById('phaseTrack').innerHTML = PHASES.map((p,i)=>`
+    <div class="phase ${i===activeIdx?'now':''}">
+      <div class="node"></div>
+      <div class="p-time">${p.t}</div>
+      <div class="p-name">${p.name}</div>
+      <div class="p-desc">${p.desc}</div>
+    </div>`).join('');
+}
+
+/* ================= 番付 ================= */
+function renderBanzuke(){
+  document.getElementById('banzukeBody').innerHTML = GUMI.map((g,i)=>`
+    <tr>
+      <td><span class="rank-i ${i===0?'top':''}">${i===0?'👑 ':''}${g.rank}</span></td>
+      <td class="gumi-name">${g.name}</td>
+      <td><span class="camp ${g.camp}">${g.camp==='aka'?'赤':'青'}</span></td>
+      <td class="koku">${fmt(g.koku)}</td>
+      <td><span class="delta ${g.delta>=0?'up':'down'}">${g.delta>=0?'▲ +'+g.delta:'▼ '+Math.abs(g.delta)}</span></td>
+    </tr>`).join('');
+}
+
+/* ================= 国盗り盤 ================= */
+let selPanel = -1;
+function renderBoard(){
+  const grid = document.getElementById('a25');
+  grid.innerHTML = PANELS.map((p,i)=>`
+    <div class="pnl ${p.owner||''} ${p.kaname?'kaname':''} ${selPanel===i?'sel':''}" data-i="${i}" role="button" tabindex="0" aria-label="${p.n}">
+      <div class="badge-row"><span class="kan">${p.kaname?'要':''}</span></div>
+      <div class="pnl-body">
+        <div class="no">${i+1}</div>
+        <div class="nm">${p.n}</div>
+        <div class="pp">${p.pt}PT</div>
+      </div>
+    </div>`).join('');
+  grid.querySelectorAll('.pnl').forEach(el=>{
+    el.addEventListener('click', ()=>selectPanel(parseInt(el.dataset.i,10)));
+    el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectPanel(parseInt(el.dataset.i,10)); } });
+  });
+  // 領地率(PT加重)
+  const totalPt = PANELS.reduce((s,p)=>s+p.pt,0);
+  const akaPt = PANELS.filter(p=>p.owner==='aka').reduce((s,p)=>s+p.pt,0);
+  const aoPt  = PANELS.filter(p=>p.owner==='ao').reduce((s,p)=>s+p.pt,0);
+  document.getElementById('terrAka').textContent = Math.round(akaPt/totalPt*100)+'%';
+  document.getElementById('terrAo').textContent  = Math.round(aoPt/totalPt*100)+'%';
+  document.getElementById('terrFree').textContent = '未制圧 '+PANELS.filter(p=>!p.owner).length;
+}
+function selectPanel(i){
+  selPanel = i;
+  const p = PANELS[i];
+  const ownerCls = p.owner||'free';
+  const ownerTxt = p.owner==='aka'?'赤軍 制圧':(p.owner==='ao'?'青軍 制圧':'未制圧');
+  document.getElementById('pnlDetail').innerHTML = `<span class="c3"></span>
+    <div class="d-head">
+      <span class="d-no">${String(i+1).padStart(2,'0')}</span>
+      <span class="d-name">${p.n}${p.kaname?' <span style="color:var(--gold-hi);font-size:13px;">【天下の要】</span>':''}</span>
+      <span class="d-pt">${p.pt}PT</span>
+      <span class="d-owner ${ownerCls}">${ownerTxt}</span>
+    </div>
+    <div class="d-loc"><b>実在の所在</b>：${p.loc} ── 盤上の位置は実際の地理(北→南・山側→海側)に対応。</div>
+    <div class="d-mission">🎯 ${p.mis}</div>
+    <span class="d-sensor">判定：${p.sensor}</span>`;
+  renderBoard();
+}
+
+/* ================= 陣中コマンド ================= */
+const timeline = TIMELINE_INIT.slice();
+function pushTimeline(entry){ timeline.unshift(entry); renderTimeline(); }
+function renderTimeline(){
+  document.getElementById('timelineBody').innerHTML = timeline.slice(0,10).map(t=>`
+    <div class="t-entry">
+      <span class="t-time">${t.time}</span>
+      <span class="t-tag ${t.tag}">${t.tag==='aka'?'赤':(t.tag==='ao'?'青':'本陣')}</span>
+      <span class="t-body">${t.who?'<b>'+t.who+'</b>：':''}${t.body}</span>
+    </div>`).join('');
+}
+function nowHM(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return p(d.getHours())+':'+p(d.getMinutes()); }
+
+const CMD_CONTENT = {
+  report: `
+    <h4>📯 報告を送る(自由文)</h4>
+    <p>戦況・気づき・意気込みを本陣へ。定時(毎時0分)の報告で+10PT、内容のAI評価で最大+20PT。随時報告も歓迎。</p>
+    <textarea class="ippon" id="reportText" placeholder="例)海地獄を制圧。次はかまど地獄、その後は挟撃を狙って北浜へ。"></textarea>
+    <button class="g-btn" id="reportSend">報告する</button>`,
+  quick: `
+    <h4>⚡ クイック定型文(タップで即送信)</h4>
+    <p>移動中でも片手で送れるRPG式ショートコマンド。</p>
+    <div class="quick-chips">
+      <button class="chip" data-q="順調に進軍中">🚩 順調に進軍中</button>
+      <button class="chip" data-q="渋滞・移動に遅れ">🚗 渋滞・移動に遅れ</button>
+      <button class="chip" data-q="作戦を変更する">🔄 作戦を変更する</button>
+      <button class="chip" data-q="休憩に入る">☕ 休憩に入る</button>
+      <button class="chip" data-q="ミッション苦戦中">😤 ミッション苦戦中</button>
+      <button class="chip" data-q="挟撃の準備完了">⚔️ 挟撃の準備完了</button>
+    </div>`,
+  hint: `
+    <h4>💡 ヒントを求む</h4>
+    <p>本陣の軍師AIがミッションの助言を返す。<b style="color:var(--gold-hi);">1回につき-20PT</b>の代償あり ── 使いどころが勝負師の見せどころ。</p>
+    <div class="quick-chips">
+      <button class="chip" data-h="いまのミッションのヒント">🎯 いまのミッションのヒント</button>
+      <button class="chip" data-h="次に狙うべきパネル">🗺️ 次に狙うべきパネル</button>
+      <button class="chip" data-h="挟撃が成立する一手">⚔️ 挟撃が成立する一手</button>
+    </div>`,
+  emg: `
+    <h4>🚨 緊急コール</h4>
+    <p>車両故障・事故・道迷い・体調不良 ── ためらわず本陣へ直通。位置情報の共有もワンタップ。</p>
+    <div class="emg-row" style="margin-top:14px;">
+      <button class="g-btn line" onclick="alert('本番ではLINE通話が起動します(運営本陣直通)')">📞 本陣にLINE電話</button>
+      <button class="g-btn" onclick="alert('本番では現在地を本陣に共有します')">📍 位置情報を共有</button>
+    </div>
+    <p class="emg-note"><b>生命に関わる緊急時は迷わず 119(救急)・110(警察)へ。</b>ゲームより命。通報後に本陣へ一報を。</p>`,
+  med: `
+    <h4>🏥 病院・救護</h4>
+    <p>体調不良・けがの際の案内。軽症は本陣の救護班へ、緊急時は119へ。</p>
+    <div class="emg-row" style="margin-top:14px;">
+      <button class="g-btn tel" onclick="alert('緊急時は119へ通報してください')">🚑 救急 119</button>
+      <button class="g-btn line" onclick="alert('本番ではLINE通話が起動します(救護班直通)')">🩹 救護班にLINE電話</button>
+      <a class="g-btn" style="text-decoration:none;display:inline-block;" href="https://www.google.com/maps/search/%E5%88%A5%E5%BA%9C%E5%8C%BB%E7%99%82%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC" target="_blank" rel="noopener">🗺️ 最寄りの病院を地図で開く</a>
+    </div>
+    <p class="emg-note">熱中症サイン(めまい・頭痛・吐き気)を感じたら即座に日陰で休み、水分と塩分を。無理な進軍は禁物。</p>`
+};
+
+function bindCmdContent(cmd){
+  const box = document.getElementById('cmdContent');
+  box.innerHTML = CMD_CONTENT[cmd];
+  if(cmd==='report'){
+    document.getElementById('reportSend').addEventListener('click', ()=>{
+      const ta = document.getElementById('reportText');
+      const text = ta.value.trim(); if(!text) return;
+      pushTimeline({time:nowHM(), tag:'aka', who:'あなた', body:text+'(+10PT/AI評価待ち)'});
+      ta.value='';
+    });
+  }
+  if(cmd==='quick'){
+    box.querySelectorAll('.chip').forEach(c=>c.addEventListener('click', ()=>{
+      pushTimeline({time:nowHM(), tag:'aka', who:'あなた', body:c.dataset.q});
+    }));
+  }
+  if(cmd==='hint'){
+    box.querySelectorAll('.chip').forEach(c=>c.addEventListener('click', ()=>{
+      pushTimeline({time:nowHM(), tag:'sys', body:'💡 軍師AIより「'+c.dataset.h+'」への助言を送付(-20PT)'});
+    }));
+  }
+}
+document.querySelectorAll('.cmd').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.cmd').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+    bindCmdContent(btn.dataset.cmd);
+  });
+});
+
+/* ================= reveal ================= */
+function setupReveal(){
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+    return;
+  }
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}
+
+/* ================= init ================= */
+renderSenkyo();
+renderPhases();
+renderBanzuke();
+/* ================= 地点データの一本化(rv_data.js) =================
+   rv_checkpoints.json / 絵図の編集内容を読み、PANELSを差し替えて再描画。
+   読み込めない環境では、下に書いてある既定のPANELSがそのまま使われる。 */
+if(window.RV && RV.load){
+  RV.load().then(({source, checkpoints})=>{
+    const b = RV.board(checkpoints);
+    if(!b.length) return;
+    PANELS = b.map(c=>({
+      n:c.name, pt:c.pt, sensor:c.sensor, owner:c.flag||null,
+      loc:`${c.spot}｜${c.hint||''}`, mis:c.mission||'現地で証拠写真を提出せよ',
+      kaname:!!c.kaname, lat:c.lat, lng:c.lng, radius:c.radius
+    }));
+    selPanel = -1;
+    renderBoard();
+    console.info('[國盗リ盤] 地点データ:', source, PANELS.length+'件');
+  });
+}
+renderBoard();
+selectPanel(6); // 初期表示: ⑦海地獄(LINEモックと連動)
+renderTimeline();
+bindCmdContent('report');
+setupReveal();
+</script>
+</body>
+</html>
