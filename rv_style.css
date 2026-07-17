@@ -1,142 +1,67 @@
-/* rv_style.css — 別府國盗リ合戦 共通スタイル
-   設計原則：文字は必ずアイコンの「外側の独立した行」に置く。
-   SVG内に <text> を置かない／ラベルを absolute で重ねない。 */
-:root{
-  --sumi:#0d0c0f; --sumi-2:#16151a; --sumi-3:#1e1d24;
-  --washi:#e8e3d6; --washi-dim:#a49f92;
-  --shu:#c8102e; --shu-soft:#e04a5f;
-  --ai:#1f5fa9;  --ai-soft:#4a90d9;
-  --kin:#b9924a;
-  --line:rgba(232,227,214,.14);
-  --ok:#6fbf73; --ng:#e05252;
-  --r:4px;
-  --mincho:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif;
-  --gothic:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:var(--sumi);color:var(--washi);font-family:var(--gothic);font-size:14px;line-height:1.7;-webkit-text-size-adjust:100%}
-a{color:var(--kin)}
-:focus-visible{outline:2px solid var(--kin);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+# 00 はじめにお読みください
 
-header{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#131218,#0d0c0f);padding:14px 16px 0}
-.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.brand h1{font-family:var(--mincho);font-weight:600;letter-spacing:.14em;font-size:19px;margin:0}
-.brand h1 .shu{color:var(--shu-soft)} .brand h1 .ai{color:var(--ai-soft)}
-.brand .sub{font-size:11px;color:var(--washi-dim);letter-spacing:.08em}
-.brand .home{margin-left:auto;font-size:12px;text-decoration:none;border:1px solid var(--line);padding:4px 10px;border-radius:var(--r)}
-nav{display:flex;gap:2px;margin-top:12px;overflow-x:auto}
-nav button{background:none;border:0;border-bottom:2px solid transparent;color:var(--washi-dim);
-  font-family:var(--mincho);font-size:14px;letter-spacing:.1em;padding:9px 14px;cursor:pointer;white-space:nowrap}
-nav button[aria-selected="true"]{color:var(--washi);border-bottom-color:var(--kin)}
-main{padding:16px;max-width:1360px;margin:0 auto}
-.panel[hidden]{display:none}
-footer{border-top:1px solid var(--line);margin-top:32px;padding:16px;text-align:center;font-size:11px;color:var(--washi-dim)}
+**別府國盗リ合戦** は、REAL VALUE会員合宿（2026年8月27日・別府）のために作られた  
+リアルGPS陣取りゲームです。このリポジトリには、当日に動かすためのすべてのコードと資料が入っています。
 
-.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.btn{background:var(--sumi-2);border:1px solid var(--line);color:var(--washi);padding:6px 12px;border-radius:var(--r);cursor:pointer;font-size:12px;font-family:inherit}
-.btn:hover{border-color:var(--kin)}
-.btn.on{border-color:var(--kin);color:var(--kin)}
-.btn.red{border-color:rgba(200,16,46,.6)} .btn.blue{border-color:rgba(31,95,169,.6)}
-.btn.big{padding:14px 18px;font-size:15px;font-family:var(--mincho);letter-spacing:.1em;width:100%}
-.btn.go{background:var(--kin);color:#0d0c0f;border-color:var(--kin);font-weight:600}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.chip{font-size:11px;color:var(--washi-dim);border:1px solid var(--line);padding:4px 8px;border-radius:99px}
-.chip.live{color:var(--ok);border-color:rgba(111,191,115,.5)}
-.chip.off{color:var(--washi-dim)}
+---
 
-.score{display:flex;gap:10px;margin-bottom:12px}
-.score .side{flex:1;border:1px solid var(--line);border-radius:var(--r);padding:8px 12px;display:flex;justify-content:space-between;align-items:center}
-.score .side.r{border-left:3px solid var(--shu)} .score .side.b{border-left:3px solid var(--ai)}
-.score .side.turn{background:rgba(185,146,74,.1)}
-.score .nm{font-family:var(--mincho);letter-spacing:.08em}
-.score .n{font-family:var(--mincho);font-size:26px;line-height:1}
-.score .r .n{color:var(--shu-soft)} .score .b .n{color:var(--ai-soft)}
+## この資料の歩き方
 
-/* ── 盤：番号 / 家紋 / 名前 を別々の grid 行に固定 ── */
-.board{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
-.cell{position:relative;border:1px solid var(--line);border-radius:3px;background:var(--sumi-2);cursor:pointer;
-  display:grid;grid-template-rows:14px 1fr 26px;padding:4px 3px;gap:2px;min-height:76px;text-align:center;
-  transition:transform .12s,box-shadow .12s}
-.cell:hover{transform:translateY(-1px);box-shadow:0 0 0 1px var(--kin)}
-.cell .no{font-family:var(--mincho);font-size:10px;color:var(--washi-dim);line-height:14px}
-.cell .ic{display:grid;place-items:center;min-height:0}
-.cell .ic svg{width:min(100%,34px);height:auto;opacity:.5}
-.cell .nm{font-size:9px;line-height:1.25;color:var(--washi-dim);word-break:break-all;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cell.red{background:linear-gradient(180deg,rgba(200,16,46,.28),rgba(200,16,46,.14));border-color:var(--shu)}
-.cell.blue{background:linear-gradient(180deg,rgba(31,95,169,.28),rgba(31,95,169,.14));border-color:var(--ai)}
-.cell.red .ic svg,.cell.blue .ic svg{opacity:1}
-.cell.red .nm,.cell.blue .nm{color:var(--washi)}
-.cell.focus{box-shadow:0 0 0 2px var(--kin)}
-.cell.lock{opacity:.55;cursor:not-allowed}
-.cell .goal{position:absolute;top:2px;right:3px;font-size:8px;color:var(--kin);line-height:1}
-.board.mini .cell{min-height:46px;grid-template-rows:11px 1fr 0;padding:2px}
-.board.mini .cell .nm{display:none}
-.board.mini .cell .ic svg{width:20px}
+| ドキュメント | 読むべき人 | 所要 |
+|---|---|---|
+| **00（この文書）** | 全員 | 3分 |
+| **01 ファイル一覧** | 運営・開発者 | 5分 |
+| **02 役割分担** | 運営全員 | 5分 |
+| **03 変更箇所** | 地図・得点を変えたい人 | 10分 |
+| **04 LINE連携** | LINEを設定する人 | 20分 |
+| **05 バージョン管理** | 継続管理者 | 3分 |
+| **06 成功事例** | 企画・提案に使いたい人 | 10分 |
+| **07 検証チェックリスト** | 当日前に実機テストする人 | 30分 |
+| **08 GitHubアップロード** | 初めてGitHubに上げる人 | 10分 |
+| **09 Notion取り込み** | Notionで管理したい人 | 5分 |
 
-/* ── 武将カード：4行スタック ── */
-.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
-.bcard{border:1px solid var(--line);border-radius:var(--r);background:var(--sumi-2);display:grid;grid-template-rows:auto auto auto auto;overflow:hidden}
-.bcard .kabuto{aspect-ratio:1/1;display:grid;place-items:center;padding:8px 8px 2px}
-.bcard .kabuto svg{width:100%;height:100%}
-.bcard .kabuto img{width:100%;height:100%;object-fit:cover;border-radius:8px}
-.thumb{width:34px;height:34px;object-fit:cover;border-radius:50%;display:block;border:1px solid var(--line)}
-.bcard .name{font-family:var(--mincho);font-size:13px;text-align:center;padding:2px 6px 0}
-.bcard .meta{font-size:10px;color:var(--washi-dim);text-align:center;padding:2px 6px}
-.bcard .crest{display:flex;align-items:center;justify-content:center;gap:5px;border-top:1px solid var(--line);padding:5px 6px;margin-top:4px}
-.bcard .crest svg{width:16px;height:16px;flex:0 0 16px;color:var(--kin)}
-.bcard .crest span{font-size:10px;color:var(--washi-dim)}
-.bcard.r{border-top:2px solid var(--shu)} .bcard.r .kabuto svg{color:var(--shu-soft)}
-.bcard.b{border-top:2px solid var(--ai)}  .bcard.b .kabuto svg{color:var(--ai-soft)}
-.bcard.sel{box-shadow:0 0 0 2px var(--kin)}
+---
 
-.army-head{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
-.army-head .rule{flex:1;height:1px;background:var(--line)}
-.army-head h2{font-family:var(--mincho);font-size:16px;letter-spacing:.16em;margin:0}
-.army-head.r h2{color:var(--shu-soft)} .army-head.b h2{color:var(--ai-soft)}
+## 最初にやること（設営の最小手順）
 
-.box{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;background:var(--sumi-2)}
-.box h3{font-family:var(--mincho);font-size:13px;letter-spacing:.1em;margin:0 0 8px;color:var(--kin)}
-.box p{margin:0 0 8px;font-size:12px;color:var(--washi-dim)}
-label{display:block;font-size:11px;color:var(--washi-dim);margin:8px 0 3px}
-input[type=text],input[type=number],input[type=url],select,textarea{width:100%;background:var(--sumi);border:1px solid var(--line);color:var(--washi);padding:8px;border-radius:3px;font:inherit;font-size:13px}
-textarea{min-height:100px;font:12px/1.5 ui-monospace,monospace}
+```
+1. rv_config.js の ADMIN_TOKEN を変更（5秒）
+2. GASにrv_gas_backend.gsを貼り付けてデプロイ（5分）
+3. GitHubにプッシュ / GitHub Pages を有効化（10分）
+4. index.html を開いてセルフ検証を確認（3分）
+5. LINE連携が必要な場合は docs/04 を参照（20分）
+```
 
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:middle}
-th{background:var(--sumi-2);font-weight:500;color:var(--washi-dim);font-size:11px;white-space:nowrap}
-td input{width:100%;background:transparent;border:0;color:var(--washi);font:inherit;padding:2px}
-td input:focus{outline:1px solid var(--kin);border-radius:2px}
-td.n{width:34px;text-align:center;color:var(--washi-dim);font-family:var(--mincho)}
-.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
-.mini-btn{background:none;border:1px solid var(--line);color:var(--washi-dim);border-radius:3px;cursor:pointer;font-size:11px;padding:3px 7px;font-family:inherit}
-.mini-btn:hover{color:var(--kin);border-color:var(--kin)}
-.mini-btn.ok{color:var(--ok);border-color:rgba(111,191,115,.5)}
-.mini-btn.ng{color:var(--ng);border-color:rgba(224,82,82,.5)}
+---
 
-.mapwrap{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
-#map{height:min(66vh,620px);background:#1a1a20}
-.leaflet-container{background:#1a1a20}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#15141a;color:var(--washi);border:1px solid var(--line)}
-.leaflet-popup-content{margin:10px 12px;font-family:var(--gothic);font-size:12px}
-.pop-t{font-family:var(--mincho);font-size:14px;margin-bottom:4px}
-.pop-h{color:var(--kin);font-size:11px;margin:4px 0}
-#hud{position:absolute;right:10px;bottom:10px;z-index:600;width:270px;padding:8px;border-radius:6px;
-  background:rgba(13,12,15,.82);border:1px solid var(--kin);backdrop-filter:blur(3px)}
-#hud[hidden]{display:none}
-#hud .hud-t{font-family:var(--mincho);font-size:11px;letter-spacing:.1em;color:var(--kin);margin-bottom:6px}
-.side-note{font-size:11px;color:var(--washi-dim);margin-top:8px}
+## 動作確認済みの状態（引き継ぎ時点）
 
-.logline{font-size:11px;color:var(--washi-dim);border-bottom:1px dotted var(--line);padding:4px 0}
-.logline b{color:var(--washi);font-weight:400}
-.claim{border:1px solid var(--line);border-left:3px solid var(--kin);border-radius:var(--r);padding:10px;margin-bottom:8px;background:var(--sumi-2)}
-.claim.r{border-left-color:var(--shu)} .claim.b{border-left-color:var(--ai)}
-.claim .hd{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
-.claim .who{font-family:var(--mincho);font-size:14px}
-.claim .dt{font-size:10px;color:var(--washi-dim)}
-.claim .ans{font-size:12px;margin:6px 0;padding:6px 8px;background:var(--sumi);border-radius:3px}
-.claim img{max-width:100%;border-radius:3px;margin:6px 0;border:1px solid var(--line)}
-.claim .acts{display:flex;gap:6px;margin-top:6px}
-.far{color:var(--ng)} .near{color:var(--ok)}
+- **Playwright（ヘッドレスブラウザ）による自動検証**で以下を確認済み：
+  - 参加者画面でAdminタブが表示されないこと（セキュリティ確認）
+  - 運営URLでAdminタブが表示されること
+  - 25陣所・36将（赤18/青18）のデータ整合性
+  - GM本陣・武将画面が正常に起動すること
+  - JavaScriptエラーがゼロであること
+
+- **地図タイルについて**：  
+  サンドボックス環境では地図タイルのネットワークアクセスが制限されるため「マップ読込エラー」と表示されますが、  
+  本番環境（GitHub Pages / レンタルサーバー）では OpenStreetMap が正常に表示されます。  
+  さらに Google Maps API キー未設定・無応答・エラー時はすべて **自動でOSMにフォールバック**します。
+
+---
+
+## 秘密情報の扱い
+
+| 情報 | 置き場所 | GitHubに上げてOK？ |
+|---|---|---|
+| ADMIN_TOKEN | rv_config.js | △ 変更後は上げてよいが URL が割れたら変更 |
+| Google Maps APIキー | rv_config.js（本番固定時のみ） | ✕ 上げる前にリファラー制限必須 |
+| LINEアクセストークン | GASスクリプトプロパティ | ✕ コードに書かない |
+| LINE Webhook合言葉 | GASスクリプトプロパティ | ✕ コードに書かない |
+
+---
+
+## お問い合わせ
+
+山本加奈江（Art-Crea）  
+https://art-crea.jp
