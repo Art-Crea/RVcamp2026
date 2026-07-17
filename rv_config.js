@@ -1,25 +1,43 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>別府國盗リ合戦 — 25エリア盤 × リアル地図</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="./rv_style.css">
-</head>
-<body>
-<noscript><p style="padding:24px">このページはJavaScriptが必要です。</p></noscript>
+/* =====================================================================
+   rv_config.js — 別府國盗リ合戦 サイト設定
+   ---------------------------------------------------------------------
+   ★ 本番の地図はこのファイルで決まります。
+     普段は運営（?admin=…）が画面上で切り替えて試し、
+     決まったら「本番固定の設定を出力」で出た内容をここに貼ってコミット。
+   ===================================================================== */
+window.RV_CONFIG = {
 
-<!-- ===================================================================
-  地図は OpenStreetMap / Google のどちらでも動きます。
-  切り替えは rv_config.js（本番固定）と、運営の ?admin=… 画面から。
-  このHTMLを編集する必要はありません。
-  ================================================================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="./rv_config.js"></script>
-<script src="./rv_data.js"></script>
-<script src="./rv_sync.js"></script>
-<script src="./rv_gmap.js"></script>
-<script src="./rv_board_core.js"></script>
-</body>
-</html>
+  /* ── 地図 ───────────────────────────────────────────────
+     MAP_MODE  : 'osm'  … OpenStreetMap（APIキー不要）
+                 'gmap' … Google地図（GMAP_KEY か端末保存キーが必要）
+     GMAP_KEY  : 空 ''  … キーを全端末に配らない（＝GM端末だけGoogle地図）
+                 'AIza…' … 全端末（参加者含む）でGoogle地図になる
+                            ※必ずリファラー制限をかけてから入れること
+     LOCK_MAP  : true   … 本番固定。運営の端末上書きも無視して全員この設定
+                 false  … 運営は ?admin= から端末ごとに切り替えて試せる
+     ────────────────────────────────────────────────────── */
+  MAP_MODE: 'osm',
+  GMAP_KEY: '',
+  LOCK_MAP: false,
+
+  /* 地図の初期表示 */
+  MAP_CENTER: { lat: 33.300, lng: 131.470 },
+  MAP_ZOOM: 12,
+
+  /* Googleマイマップの共有URL（作ったら貼る。空ならボタンを出さない） */
+  MYMAP_URL: '',
+
+  /* 軍の呼称 */
+  ARMY_R: '堀江軍',
+  ARMY_B: '溝口軍',
+
+  /* ★必ず自分だけが知る文字列に変えてください★
+     URL に ?admin=<この文字列> を付けたときだけ
+     ・地図の切替／APIキー入力
+     ・盤の手動占領・初期化・陣所編集
+     が表示されます。参加者に配るURLには付けないこと。 */
+ ADMIN_TOKEN: 'RV2026@art-crea.jp',    /* ← 変更済み。さらに自分だけの文字列に変えて使用 */
+
+  /* 既定の同期バックエンド（GM本陣で上書き可） */
+  SYNC: { backend: 'local', room: 'RV827' }
+};

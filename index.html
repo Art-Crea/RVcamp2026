@@ -3,423 +3,197 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>武将画面 — 別府國盗リ合戦</title>
+<title>別府國盗リ合戦 — 設営・検証HUB</title>
 <link rel="stylesheet" href="./rv_style.css">
 <style>
-  main{max-width:560px}
-  .me{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;
-      border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--sumi-2)}
-  .me.r{border-left:3px solid var(--shu)} .me.b{border-left:3px solid var(--ai)}
-  .me .kb{width:64px;height:64px} .me .kb svg{width:100%;height:100%}
-  .me .kb img{width:100%;height:100%;object-fit:cover;border-radius:10px}
-  .me.r .kb svg{color:var(--shu-soft)} .me.b .kb svg{color:var(--ai-soft)}
-  .me .nm{font-family:var(--mincho);font-size:18px;letter-spacing:.06em}
-  .me .sub{font-size:11px;color:var(--washi-dim)}
-  .me .crest{display:flex;align-items:center;gap:5px;margin-top:3px}
-  .me .crest svg{width:15px;height:15px;color:var(--kin)}
-  .me .crest span{font-size:11px;color:var(--washi-dim)}
-  .near-list{display:grid;gap:8px;margin-top:10px}
-  .nc{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:var(--sumi-2);
-      display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;cursor:pointer}
-  .nc.sel{border-color:var(--kin);box-shadow:0 0 0 1px var(--kin)}
-  .nc .t{font-family:var(--mincho);font-size:14px}
-  .nc .d{font-size:11px;color:var(--washi-dim)}
-  .nc .m{font-size:13px;font-family:var(--mincho)}
-  .nc.own-r{border-left:3px solid var(--shu)} .nc.own-b{border-left:3px solid var(--ai)}
-  .status{padding:10px 12px;border-radius:var(--r);font-size:12px;margin:10px 0;border:1px solid var(--line)}
-  .status.ok{border-color:rgba(111,191,115,.5);color:var(--ok)}
-  .status.ng{border-color:rgba(224,82,82,.5);color:var(--ng)}
-  #photoPrev{max-width:100%;border-radius:var(--r);margin-top:8px;border:1px solid var(--line)}
+  .wrap{max-width:880px;margin:0 auto;padding:18px 16px 40px}
+  .hero{border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;margin-bottom:20px;
+        background:radial-gradient(1200px 200px at 20% -40%, rgba(200,16,46,.10), transparent),
+                   radial-gradient(1200px 200px at 90% -40%, rgba(31,95,169,.10), transparent), var(--sumi-2)}
+  .hero h1{font-family:var(--mincho);letter-spacing:.14em;margin:0 0 6px;font-size:24px}
+  .hero .shu{color:var(--shu-soft)} .hero .ai{color:var(--ai-soft)}
+  .hero p{margin:.3em 0;color:var(--washi-dim);font-size:13px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:8px 0 22px}
+  .card{display:block;border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;text-decoration:none;
+        color:var(--washi);background:var(--sumi-2);transition:border-color .15s}
+  .card:hover{border-color:var(--kin)}
+  .card .t{font-family:var(--mincho);font-size:16px;letter-spacing:.08em;margin-bottom:4px}
+  .card .t .em{color:var(--kin)}
+  .card .d{font-size:12px;color:var(--washi-dim);line-height:1.6}
+  .card .role{display:inline-block;font-size:10px;letter-spacing:.1em;padding:2px 7px;border-radius:99px;margin-top:8px;border:1px solid var(--line)}
+  .role.user{color:var(--ai-soft);border-color:rgba(74,144,217,.5)}
+  .role.gm{color:var(--shu-soft);border-color:rgba(224,74,95,.5)}
+  .role.doc{color:var(--kin);border-color:rgba(185,146,74,.5)}
+  h2.sec{font-family:var(--mincho);letter-spacing:.12em;font-size:16px;border-left:3px solid var(--kin);padding-left:10px;margin:26px 0 12px}
+  .check{border:1px solid var(--line);border-radius:var(--r);background:var(--sumi-2);overflow:hidden}
+  .check .row{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-top:1px solid var(--line);font-size:13px}
+  .check .row:first-child{border-top:0}
+  .dot{flex:0 0 auto;width:16px;height:16px;border-radius:50%;margin-top:2px;background:var(--washi-dim)}
+  .dot.ok{background:var(--ok)} .dot.ng{background:var(--ng)} .dot.warn{background:var(--kin)}
+  .check .k{font-weight:600} .check .v{color:var(--washi-dim);font-size:12px;margin-top:2px}
+  .summary{padding:12px 14px;font-family:var(--mincho);letter-spacing:.06em;background:var(--sumi-3)}
+  .opsbox{border:1px dashed rgba(185,146,74,.5);border-radius:var(--r);padding:14px;margin-top:10px;background:rgba(185,146,74,.05)}
+  code{background:var(--sumi-3);padding:1px 6px;border-radius:3px;font-size:12px}
+  .muted{color:var(--washi-dim);font-size:12px}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <h1>📱 武将<span class="shu">画</span><span class="ai">面</span></h1>
-    <span class="sub">個人ステータス・陣所占領</span>
-    <a class="home" href="./rv_kunitori_board25.html">盤を見る →</a>
+<div class="wrap">
+
+  <div class="hero">
+    <h1><span class="shu">堀江軍</span> ⚔ <span class="ai">溝口軍</span> ／ 別府國盗リ合戦</h1>
+    <p>REAL VALUE 会員合宿 2026.8.27（別府）｜ GPS陣取り × リアル地図</p>
+    <p class="muted">このページは<strong>設営・動作検証のためのHUB</strong>です。下の「セルフ検証」で全ファイルの状態を確認し、各画面を開いてテストできます。</p>
   </div>
-</header>
 
-<main>
-  <!-- 参戦 -->
-  <section id="login">
-    <div class="box">
-      <h3>参戦</h3>
-      <p id="connNote">合戦ルームに接続しています…</p>
-      <label>武将を選ぶ</label>
-      <select id="pickBusho"></select>
-      <label>暗証番号（4桁・武将カード記載）</label>
-      <input type="text" id="pin" inputmode="numeric" maxlength="4" placeholder="0000">
-      <button class="btn big go" id="joinBtn" style="margin-top:12px">出陣する</button>
-      <p class="side-note">位置情報の許可が必要です。ブラウザの許可ダイアログで「許可」を選んでください。</p>
-    </div>
-  </section>
+  <h2 class="sec">画面へ移動</h2>
+  <div class="grid" id="nav"></div>
 
-  <!-- 本体 -->
-  <section id="app" hidden>
-    <div class="me" id="me"></div>
+  <h2 class="sec">セルフ検証（このページで自動チェック）</h2>
+  <div class="check" id="check"><div class="summary" id="sum">検証中…</div></div>
+  <p class="muted" style="margin-top:8px">※ 地図タイルの読込チェックはネットワーク環境に依存します。赤(NG)が出ても、当日は自動でOpenStreetMapにフォールバックするため試合は止まりません。</p>
 
-    <div class="score" style="margin-top:12px">
-      <div class="side r" id="sc-r"><span class="nm">赤軍</span><span class="n" id="n-r">0</span></div>
-      <div class="side b" id="sc-b"><span class="nm">青軍</span><span class="n" id="n-b">0</span></div>
-    </div>
+  <div id="opszone"></div>
 
-    <div class="bar">
-      <span class="chip" id="gpsChip">📍測位中…</span>
-      <span class="chip" id="ruleChip"></span>
-      <span class="chip off" id="openChip">停戦中</span>
-    </div>
+  <h2 class="sec">🚀 次にやること（優先順）</h2>
+  <div class="check" id="todo">
+    <div class="row"><span class="dot warn"></span><div><div class="k">① ADMIN_TOKEN を自分だけの文字列に変更</div><div class="v">rv_config.js の ADMIN_TOKEN: の値を変更してコミット。現在は初期値から変更済みですが、さらに自分だけが知る文字列にしてください。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">② このZIPを GitHub にアップロード（iPhone Safari 可）</div><div class="v">github.com/Art-Crea/RVcamp2026 → Add file → Upload files → ZIPを展開してアップロード。手順は docs/08 と docs/10 を参照。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">③ GitHub Pages を有効化</div><div class="v">リポジトリ Settings → Pages → Source: main / ルート → Save。5分で https://art-crea.github.io/RVcamp2026/ が公開されます。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">④ GAS に rv_gas_backend.gs をデプロイ</div><div class="v">Googleスプレッドシート → 拡張機能 → Apps Script → コードを貼付 → デプロイ（全員アクセス可）。URLをGM本陣の接続欄に貼る。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">⑤ LINE 公式アカウントを接続（docs/04 参照）</div><div class="v">LINE Developers でチャネル作成 → トークン発行 → GASスクリプトプロパティに設定 → Webhook URL に ?key=合言葉付きURLを貼る。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">⑥ スマホ実機テスト（docs/07 チェックリスト）</div><div class="v">rv_player_app.html をスマホで開き GPS許可 → 陣所に近づいて申請ボタンが出るか確認。8/27の2週間前までに完了推奨。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">⑦ Googleマイマップ作成（参加者ナビ用）</div><div class="v">合戦盤「陣所一覧・書出」→ CSV書出 → Googleマイマップにインポート → 共有URL を rv_config.js の MYMAP_URL に貼る。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">⑧ 本番2週間前：36将QRカードを印刷</div><div class="v">GM本陣「参戦リンクを作る」→ 36将分のQRを生成 → A4カード印刷。当日は受付で配布。</div></div></div>
+  </div>
 
-    <div class="box">
-      <h3>近くの陣所</h3>
-      <div class="near-list" id="nearList"></div>
-    </div>
+  <h2 class="sec">📱 iPhone からの操作</h2>
+  <div class="check">
+    <div class="row"><span class="dot ok"></span><div><div class="k">Safari で GitHub.com を開く（推奨・無料）</div><div class="v">github.com/Art-Crea/RVcamp2026 → Add file → Upload files → ファイルアプリからZIP展開後のフォルダを選択。100ファイルまで1回でOK。</div></div></div>
+    <div class="row"><span class="dot ok"></span><div><div class="k">Working Copy アプリ（本格git・¥2,200）</div><div class="v">App Store で「Working Copy - Git Client」をインストール。Personal Access Tokenを発行してclone → 編集 → commit → push が全部iPhoneで完結。手順は docs/10 を参照。</div></div></div>
+    <div class="row"><span class="dot ok"></span><div><div class="k">1ファイルだけ編集（例：ADMIN_TOKEN変更）</div><div class="v">GitHub.com → rv_config.js → 鉛筆アイコン → 編集 → Commit changes。Safariだけで完結。</div></div></div>
+  </div>
 
-    <div class="box" id="claimBox" hidden>
-      <h3 id="claimTitle">陣所を攻める</h3>
-      <p id="claimHint"></p>
-      <div id="quizWrap" hidden>
-        <label>ヒントへの回答</label>
-        <input type="text" id="answer" placeholder="現地で確かめて入力">
-      </div>
-      <div id="photoWrap" hidden>
-        <label>現地写真（陣所が写るように）</label>
-        <input type="file" id="photo" accept="image/*" capture="environment">
-        <img id="photoPrev" hidden alt="提出する写真">
-      </div>
-      <div id="claimStatus"></div>
-      <button class="btn big go" id="submitBtn" style="margin-top:10px">⚔ 占領を申請する</button>
-      <a class="btn big" id="navBtn" target="_blank" rel="noopener" style="margin-top:8px;display:block;text-align:center;text-decoration:none">Googleマップでこの陣所へナビ</a>
-    </div>
+  <h2 class="sec">ドキュメント（Notionにも取り込めます）</h2>
+  <div class="grid" id="docs"></div>
 
-    <div class="box">
-      <h3>疾風の采配 ── 移動の記録</h3>
-      <p class="side-note">「疾如風」── 移動が少なく速いほど、獲得PTあたりの評価が上がります。今の移動手段を選んでください。</p>
-      <div class="bar" style="margin:8px 0">
-        <button class="btn" id="modeCar">🚗 車で移動中</button>
-        <button class="btn" id="modeWalk">🚶 徒歩で移動中</button>
-        <span class="chip" id="modeChip">現在：車</span>
-      </div>
-      <div class="bar" style="margin:8px 0">
-        <button class="btn" id="stepPermBtn">📳 徒歩数センサーを有効化</button>
-        <span class="chip" id="stepChip">徒歩数：未計測</span>
-      </div>
-      <table style="width:100%;font-size:13px;margin-top:8px">
-        <tr><td>走行距離（車）</td><td style="text-align:right" id="distCar">0.00 km</td></tr>
-        <tr><td>移動距離（徒歩）</td><td style="text-align:right" id="distWalk">0.00 km</td></tr>
-        <tr><td>徒歩数（推定・センサー計測）</td><td style="text-align:right" id="stepCount">0 歩</td></tr>
-        <tr><td>経過時間</td><td style="text-align:right" id="elapsedTime">0 分</td></tr>
-      </table>
-      <div style="margin-top:10px;padding:10px 12px;border:1px solid var(--kin);border-radius:var(--r)">
-        <div style="font-size:11px;color:var(--washi-dim)">疾風指数（獲得PT ÷ 移動負荷）</div>
-        <div style="font-family:var(--mincho);font-size:24px;color:var(--kin)" id="shippuIndex">—</div>
-      </div>
-      <p class="side-note" style="margin-top:8px">
-        算式：疾風指数 = 獲得PT ÷（走行距離km×3 + 徒歩距離km×8 + 経過分数）。数字が大きいほど効率的。<br>
-        ⚠ 徒歩数はブラウザの加速度センサーによる<b>簡易推定</b>です。Apple ヘルスケア等の公式歩数とは一致しません。iPhoneでは初回に許可ダイアログが出ます。
-      </p>
-    </div>
+  <footer style="border:0;text-align:left">
+    別府國盗リ合戦 v1.1 ｜ Art-Crea／REAL VALUE ｜ 参加者に配るURLには <code>?admin=</code> を付けないでください。
+  </footer>
+</div>
 
-    <div class="box">
-      <h3>戦況</h3>
-      <div class="board" id="board"></div>
-      <div id="log" style="margin-top:10px"></div>
-    </div>
-  </section>
-</main>
-
-<footer>RV CAMP ｜ 別府國盗リ合戦</footer>
-
+<!-- 設定とデータを読み込んで自己診断する -->
+<script src="./rv_config.js"></script>
 <script src="./rv_data.js"></script>
-<script src="./rv_sync.js"></script>
 <script>
-const $=id=>document.getElementById(id);
-let me=-1, pos=null, sel=-1, photoData=null, myClaimId=null;
+(function(){
+  var CFG = window.RV_CONFIG || {};
+  var qs = new URLSearchParams(location.search);
+  var admin = qs.get('admin');
+  var isAdmin = !!(CFG.ADMIN_TOKEN && admin === CFG.ADMIN_TOKEN);
+  var adminQS = isAdmin ? ('?admin=' + encodeURIComponent(CFG.ADMIN_TOKEN)) : '';
 
-/* ── URLハッシュ #j=<base64> から接続設定を取得 ── */
-function connFromHash(){
-  const m=location.hash.match(/j=([^&]+)/);
-  if(!m) return null;
-  try{
-    const o=JSON.parse(decodeURIComponent(escape(atob(m[1]))));
-    if(o.firebase && typeof o.firebase==='string' && o.firebase.trim()) o.firebase=JSON.parse(o.firebase);
-    else if(!o.firebase) delete o.firebase;
-    return o;
-  }catch(e){ return null; }
-}
+  /* ---- ナビカード ---- */
+  var nav = [
+    {t:'観戦HUB（公開トップ）', f:'Kunitori.html', d:'戦況バー・36将・タイムライン・別府の実況気象。参加者・見学者向けの入口。', role:'user', label:'参加者'},
+    {t:'合戦盤 × リアル地図', f:'rv_kunitori_board25.html', d:'25エリア盤と地図。参加者は観戦、運営は占領操作。', role:'user', label:'参加者'},
+    {t:'武将画面', f:'rv_player_app.html', d:'GPS占領申請・疾風の采配（移動計測）・写真提出。各自スマホ。', role:'user', label:'参加者'},
+    {t:'GM本陣', f:'rv_gm_dashboard.html', d:'ルール設定・承認キュー・武将割当・同期接続。運営専用。', role:'gm', label:'運営'}
+  ];
+  document.getElementById('nav').innerHTML = nav.map(function(n){
+    var href = n.f + ((n.role==='gm'||n.f.indexOf('board25')>=0) ? adminQS : '');
+    return '<a class="card" href="'+href+'">'
+      + '<div class="t">'+n.t+'</div><div class="d">'+n.d+'</div>'
+      + '<span class="role '+n.role+'">'+n.label+'</span></a>';
+  }).join('');
 
-/* ── 疾風の采配：移動記録の状態 ── */
-const Shippu = {
-  mode: 'car',           // 'car' | 'walk'
-  distCarKm: 0,
-  distWalkKm: 0,
-  steps: 0,
-  startedAt: Date.now(),
-  lastPos: null,
-  stepListenerOn: false
-};
+  /* ---- ドキュメントカード ---- */
+  var docs = [
+    ['00_はじめにお読みください', 'この資料一式の歩き方'],
+    ['01_ファイル一覧_役割', '何のファイルが何を実行するか'],
+    ['02_運営とユーザーの役割分担', 'どこが運営／どこが参加者か'],
+    ['03_ここを変える_地図_得点_ランキング', '地点・得点・ランキングの変更箇所'],
+    ['04_LINE連携_設定手順', '公式LINEとつなぐ手順'],
+    ['05_バージョン管理_変更履歴', 'バージョンと変更ログ'],
+    ['06_成功事例リサーチ_根拠とURL', '実在の成功事例と出典URL'],
+    ['07_テスト検証チェックリスト', '当日までの検証項目と結果'],
+    ['08_GitHubアップロード手順', 'そのまま貼れるコマンド'],
+    ['09_Notion取り込み手順', 'この資料をNotionへ'],
+    ['10_iPhone_GitHub操作手順', 'iPhone14からGitHubを使う完全手順']
+  ];
+  document.getElementById('docs').innerHTML = docs.map(function(d){
+    return '<a class="card" href="docs/'+d[0]+'.md"><div class="t"><span class="em">📄</span> '+d[0].replace(/_/g,' ')+'</div>'
+      + '<div class="d">'+d[1]+'</div><span class="role doc">ドキュメント</span></a>';
+  }).join('');
 
-function shippuIndex(earnedPt){
-  const minutes = (Date.now() - Shippu.startedAt) / 60000;
-  const load = Shippu.distCarKm*3 + Shippu.distWalkKm*8 + minutes;
-  return load > 0 ? (earnedPt / load) : 0;
-}
-function renderShippu(s){
-  $('distCar').textContent  = Shippu.distCarKm.toFixed(2)+' km';
-  $('distWalk').textContent = Shippu.distWalkKm.toFixed(2)+' km';
-  $('stepCount').textContent = Shippu.steps.toLocaleString('ja-JP')+' 歩';
-  const minutes = Math.round((Date.now()-Shippu.startedAt)/60000);
-  $('elapsedTime').textContent = minutes+' 分';
+  /* ---- セルフ検証 ---- */
+  var checks = [];
+  function add(state, k, v){ checks.push({state:state,k:k,v:v}); }
 
-  // 自分の武将が占領しているパネルの合計ptを「獲得PT」とみなす
-  let earned = 0;
-  if(me>=0 && s && s.cps && s.owner){
-    const myArmy = s.busho[me].a;
-    s.owner.forEach((o,i)=>{ if(o===myArmy && s.cps[i] && s.cps[i].pt) earned += s.cps[i].pt; });
+  // 1. config
+  add(window.RV_CONFIG ? 'ok':'ng', 'rv_config.js の読込', window.RV_CONFIG ? '設定を読み込めました' : '読み込めません。ファイル配置を確認');
+  // 2. admin token changed
+  if (CFG.ADMIN_TOKEN === 'honjin827') add('warn','ADMIN_TOKEN が初期値のまま','公開前に自分だけの文字列へ変更してください（rv_config.js）');
+  else add('ok','ADMIN_TOKEN','初期値から変更済み');
+  // 3. data 25 CPs
+  var cpOK = (typeof DEFAULT_CP !== 'undefined') && DEFAULT_CP.length === 25;
+  add(cpOK?'ok':'ng','25陣所データ', (typeof DEFAULT_CP!=='undefined') ? (DEFAULT_CP.length+' 件') : '読み込めません');
+  // 4. 36 busho
+  var buOK = (typeof BUSHO !== 'undefined') && BUSHO.length === 36;
+  var rCnt = buOK ? BUSHO.filter(function(b){return b.a==='r';}).length : 0;
+  var bCnt = buOK ? BUSHO.filter(function(b){return b.a==='b';}).length : 0;
+  add(buOK?'ok':'ng','三十六将データ', buOK ? (BUSHO.length+' 名（赤'+rCnt+'／青'+bCnt+'）') : '読み込めません');
+  // 5. portraits linked
+  if (buOK){
+    var withImg = BUSHO.filter(function(b){return b.img;}).length;
+    add(withImg===36?'ok':'warn','肖像の紐付け', withImg+' / 36 名に img 設定');
   }
-  const idx = shippuIndex(earned);
-  $('shippuIndex').textContent = earned>0 ? idx.toFixed(2) : '—（占領後に算出）';
-}
+  // 6. map mode
+  add('ok','地図モード（本番）', (CFG.MAP_MODE||'osm')+' ／ LOCK_MAP='+CFG.LOCK_MAP+' ／ GMAP_KEY='+(CFG.GMAP_KEY?'設定あり':'なし(OSM)'));
+  // 7. sync backend
+  var sync = CFG.SYNC || {};
+  add(sync.backend==='local'?'warn':'ok','同期バックエンド', (sync.backend||'local')+(sync.backend==='local'?'（GM1台モード。36人同時なら GM本陣で GAS/Firebase に切替）':''));
+  // 8. MyMap
+  add(CFG.MYMAP_URL?'ok':'warn','Googleマイマップ', CFG.MYMAP_URL ? '設定済み' : '未設定（任意。参加者ナビ用に推奨）');
 
-$('modeCar').onclick = () => { Shippu.mode='car'; $('modeChip').textContent='現在：車'; $('modeChip').className='chip live'; };
-$('modeWalk').onclick = () => { Shippu.mode='walk'; $('modeChip').textContent='現在：徒歩'; $('modeChip').className='chip live'; };
+  // 9. map tile reachability (async)
+  var mapRowId = 'map-tile-row';
+  add('warn','地図タイルの到達性', '確認中…');
 
-/* ── 徒歩数センサー（DeviceMotion・簡易ピーク検出） ──
-   ブラウザからApple HealthKit / Health Connectの歩数は直接読めないため、
-   加速度センサーの上下動ピークを数える簡易推定です。公式歩数計とは
-   ズレますが、「動いたかどうか」の相対指標としては十分機能します。 */
-function initStepCounter(){
-  if(typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function'){
-    // iOS：明示的な許可が必要
-    DeviceMotionEvent.requestPermission().then(state=>{
-      if(state === 'granted') attachStepListener();
-      else { $('stepChip').textContent='徒歩数：センサー許可が拒否されました'; $('stepChip').className='chip off'; }
-    }).catch(()=>{ $('stepChip').textContent='徒歩数：この端末では利用できません'; });
-  } else if(typeof DeviceMotionEvent !== 'undefined'){
-    // Android等：許可プロンプト不要
-    attachStepListener();
+  render();
+
+  // async tile check
+  var img = new Image();
+  var done=false;
+  var to = setTimeout(function(){ if(!done){ setTile('warn','8秒無応答（当日はOSM自動フォールバック）'); } }, 8000);
+  img.onload = function(){ done=true; clearTimeout(to); setTile('ok','OpenStreetMap タイル到達OK'); };
+  img.onerror = function(){ done=true; clearTimeout(to); setTile('warn','このネットワークでは不可（当日はOSM自動フォールバック）'); };
+  img.src = 'https://tile.openstreetmap.org/12/3638/1612.png?_=' + Date.now();
+  function setTile(state,msg){ var c=checks.find(function(x){return x.k==='地図タイルの到達性';}); if(c){c.state=state;c.v=msg;render();} }
+
+  function render(){
+    var el = document.getElementById('check');
+    var ng = checks.filter(function(c){return c.state==='ng';}).length;
+    var warn = checks.filter(function(c){return c.state==='warn';}).length;
+    var sumTxt = ng>0 ? ('⚠ 要対応 '+ng+'件・注意 '+warn+'件') :
+                 (warn>0 ? ('✔ 致命的な問題なし・注意 '+warn+'件') : '✔ すべて良好。設営完了です');
+    var rows = checks.map(function(c){
+      return '<div class="row"><span class="dot '+c.state+'"></span><div><div class="k">'+c.k+'</div><div class="v">'+c.v+'</div></div></div>';
+    }).join('');
+    el.innerHTML = '<div class="summary">'+sumTxt+'</div>' + rows;
+  }
+
+  /* ---- 運営ゾーン ---- */
+  var oz = document.getElementById('opszone');
+  if (isAdmin){
+    oz.innerHTML = '<div class="opsbox"><strong style="color:var(--kin)">🔐 運営モードで表示中</strong>'
+      + '<p class="muted" style="margin:.5em 0">上のリンクには自動で <code>?admin=</code> が付いています。'
+      + '合戦盤で地図切替・占領操作・陣所編集ができます。</p>'
+      + '<p class="muted">参加者に配るときは、このアドレスから <code>'+ '?admin=…' +'</code> を外して配布してください。</p></div>';
   } else {
-    $('stepChip').textContent='徒歩数：この端末は非対応';
-    $('stepChip').className='chip off';
+    oz.innerHTML = '<div class="opsbox"><span class="muted">運営の方は URL の末尾に '
+      + '<code>?admin=あなたのトークン</code> を付けて開くと、運営メニューが表示されます。</span></div>';
   }
-}
-function attachStepListener(){
-  if(Shippu.stepListenerOn) return;
-  Shippu.stepListenerOn = true;
-  let lastMag = 0, lastPeakAt = 0;
-  const THRESHOLD = 1.2;      // 加速度変化のしきい値（体感で調整可）
-  const MIN_INTERVAL_MS = 300; // 1歩あたりの最短間隔（連続誤検出を防ぐ）
-  window.addEventListener('devicemotion', e=>{
-    const a = e.accelerationIncludingGravity;
-    if(!a || a.x==null) return;
-    const mag = Math.sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
-    const delta = Math.abs(mag - lastMag);
-    lastMag = mag;
-    const now = Date.now();
-    if(delta > THRESHOLD && (now - lastPeakAt) > MIN_INTERVAL_MS){
-      lastPeakAt = now;
-      Shippu.steps++;
-    }
-  });
-  $('stepChip').textContent = '徒歩数：計測中';
-  $('stepChip').className = 'chip live';
-}
-$('stepPermBtn').onclick = initStepCounter;
-
-/* ── 測位 ── */
-function watch(){
-  if(!navigator.geolocation){ $('gpsChip').textContent='📍この端末は位置情報に未対応'; return; }
-  navigator.geolocation.watchPosition(p=>{
-    const np = {lat:p.coords.latitude, lng:p.coords.longitude, acc:Math.round(p.coords.accuracy)};
-
-    // 移動距離の累積（誤差の大きい測位はノイズとして除外）
-    if(pos && np.acc < 40){
-      const dKm = haversine(pos.lat,pos.lng,np.lat,np.lng) / 1000;
-      // 明らかなGPSジャンプ（信号切替直後など）は1回分として無視
-      if(dKm < 0.5){
-        if(Shippu.mode==='car') Shippu.distCarKm += dKm;
-        else Shippu.distWalkKm += dKm;
-      }
-    }
-    pos = np;
-    $('gpsChip').textContent='📍測位中（誤差 約'+pos.acc+'m）';
-    $('gpsChip').className='chip live';
-    if(Sync.state){ renderNear(Sync.state); renderShippu(Sync.state); }
-  },err=>{
-    $('gpsChip').textContent='📍位置情報が取得できません（'+err.message+'）';
-    $('gpsChip').className='chip off';
-  },{enableHighAccuracy:true, maximumAge:5000, timeout:15000});
-}
-setInterval(()=>{ if(Sync.state) renderShippu(Sync.state); }, 15000);
-
-/* ── 参戦 ── */
-function renderPicker(s){
-  $('pickBusho').innerHTML = s.busho.map((b,i)=>
-    '<option value="'+i+'">'+(b.a==='r'?'🔴':'🔵')+' '+b.name+(b.player?'（'+b.player+'）':'')+'</option>').join('');
-}
-$('joinBtn').onclick=()=>{
-  const i=+$('pickBusho').value;
-  const s=Sync.state, b=s.busho[i];
-  if($('pin').value.trim()!==String(b.pin)){ alert('暗証番号が違います'); return; }
-  me=i; localStorage.setItem('rv-me', JSON.stringify({i, pin:b.pin, room:s.room}));
-  $('login').hidden=true; $('app').hidden=false;
-  watch(); render(Sync.state);
-};
-
-/* ── 描画 ── */
-function renderMe(s){
-  const b=s.busho[me];
-  $('me').className='me '+b.a;
-  $('me').innerHTML='<div class="kb">'+(b.img
-      ? '<img src="./'+b.img+'" alt="'+esc(b.name)+'">'
-      : svgKabuto(b))+'</div>'
-    +'<div><div class="nm">'+esc(b.name)+'</div>'
-    +'<div class="sub">'+(b.a==='r'?'赤軍・朱雀':'青軍・蒼海')+' ／ 兜：'+esc(b.kbn)+(b.player?' ／ '+esc(b.player):'')+'</div>'
-    +'<div class="crest">'+svgKamon(b.km)+'<span>'+esc(b.kmn)+'</span></div></div>';
-}
-function renderNear(s){
-  if(!pos){ $('nearList').innerHTML='<p class="side-note">位置情報を取得中です…</p>'; return; }
-  const list=s.cps.map((cp,i)=>({i,cp,d:haversine(pos.lat,pos.lng,cp.lat,cp.lng)}))
-                  .sort((a,b)=>a.d-b.d).slice(0,6);
-  $('nearList').innerHTML=list.map(x=>{
-    const own=s.owner[x.i]==='r'?'own-r':s.owner[x.i]==='b'?'own-b':'';
-    const inR=x.d<=(s.cfg.radius||80);
-    const lock=(s.lockUntil&&s.lockUntil[x.i]>Date.now());
-    return '<div class="nc '+own+(sel===x.i?' sel':'')+'" data-i="'+x.i+'">'
-      +'<div><div class="t">'+(x.i+1)+'. '+esc(x.cp.name)+'</div>'
-      +'<div class="d">'+(s.owner[x.i]==='r'?'🔴赤軍':s.owner[x.i]==='b'?'🔵青軍':'⚪未占領')
-      +(lock?' ／ 🔒クールダウン中':'')+'</div></div>'
-      +'<div class="m '+(inR?'near':'far')+'">'+x.d+'m</div></div>';
-  }).join('');
-  $('nearList').querySelectorAll('.nc').forEach(el=>el.onclick=()=>{ sel=+el.dataset.i; render(Sync.state); });
-}
-function renderClaim(s){
-  if(sel<0){ $('claimBox').hidden=true; return; }
-  $('claimBox').hidden=false;
-  const cp=s.cps[sel], b=s.busho[me];
-  const d=pos?haversine(pos.lat,pos.lng,cp.lat,cp.lng):null;
-  const inR = d!==null && d<=(s.cfg.radius||80);
-  const lock = s.lockUntil && s.lockUntil[sel]>Date.now();
-  const mine = s.owner[sel]===b.a;
-
-  $('claimTitle').textContent=(sel+1)+'. '+cp.name;
-  $('claimHint').innerHTML='<b style="color:var(--kin)">ヒント：</b>'+esc(cp.hint||'—');
-  $('navBtn').href=gnavLink(cp);
-
-  $('quizWrap').hidden = (s.cfg.judge!=='gps_quiz');
-  $('photoWrap').hidden = (s.cfg.judge!=='photo');
-
-  let msg='', cls='', can=true;
-  if(!s.cfg.open){ msg='まだ開戦していません（GMの合図を待て）'; cls='ng'; can=false; }
-  else if(!pos){ msg='位置情報が取得できていません'; cls='ng'; can=false; }
-  else if(!inR){ msg='圏外です（あと約'+(d-(s.cfg.radius||80))+'m 近づけ／判定半径 '+(s.cfg.radius||80)+'m）'; cls='ng'; can=false; }
-  else if(lock){ msg='この陣所はクールダウン中です'; cls='ng'; can=false; }
-  else if(mine){ msg='すでに自軍の陣所です'; cls=''; can=false; }
-  else { msg='✅ 圏内（'+d+'m）。攻略可能。'; cls='ok'; }
-  if(myClaimId) { msg='📨 申請済み。GMの承認を待っています。'; cls=''; can=false; }
-  $('claimStatus').innerHTML='<div class="status '+cls+'">'+msg+'</div>';
-  $('submitBtn').disabled=!can;
-  $('submitBtn').textContent = s.cfg.judge==='gps' ? '⚔ この陣所を占領する' : '⚔ 占領を申請する';
-}
-function renderBoard(s){
-  $('board').innerHTML=Array.from({length:25},(_,i)=>{
-    const cp=s.cps[i]||{name:'—'};
-    const own=s.owner[i]==='r'?'red':s.owner[i]==='b'?'blue':'';
-    return '<div class="cell '+own+'" data-i="'+i+'"><span class="no">'+(i+1)+'</span>'
-      +'<span class="ic">'+svgKamon(PANEL_KAMON[i])+'</span><span class="nm">'+esc(cp.name)+'</span></div>';
-  }).join('');
-  $('board').querySelectorAll('.cell').forEach(el=>el.onclick=()=>{ sel=+el.dataset.i; render(Sync.state); });
-  const sc=Sync.score(s);
-  $('n-r').textContent=sc.r; $('n-b').textContent=sc.b;
-  $('log').innerHTML=(s.log||[]).slice(0,8).map(l=>'<div class="logline">'
-    +new Date(l.ts).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})+' <b>'+esc(l.t)+'</b></div>').join('');
-}
-function render(s){
-  if(me<0){ renderPicker(s); return; }
-  // 自分の申請が処理されたか確認
-  if(myClaimId && !(s.claims||[]).some(c=>String(c.id)===String(myClaimId))) myClaimId=null;
-  $('ruleChip').textContent = ({gps:'判定：GPSのみ',gps_quiz:'判定：GPS＋回答',photo:'判定：写真'})[s.cfg.judge]
-    + ' ／ ' + (s.cfg.turnMode==='free'?'早取り制':'交互手番');
-  $('openChip').textContent = s.cfg.open?'⚔ 開戦中':'停戦中';
-  $('openChip').className = 'chip '+(s.cfg.open?'live':'off');
-  renderMe(s); renderNear(s); renderClaim(s); renderBoard(s);
-}
-
-/* ── 写真（軽量化してから保持） ── */
-$('photo').onchange=e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const img=new Image();
-  img.onload=()=>{
-    const max=480, sc=Math.min(1,max/Math.max(img.width,img.height));
-    const cv=document.createElement('canvas');
-    cv.width=img.width*sc; cv.height=img.height*sc;
-    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
-    photoData=cv.toDataURL('image/jpeg',0.45);
-    $('photoPrev').src=photoData; $('photoPrev').hidden=false;
-  };
-  img.src=URL.createObjectURL(f);
-};
-
-/* ── 申請 ── */
-$('submitBtn').onclick=async()=>{
-  const s=Sync.state, b=s.busho[me], cp=s.cps[sel];
-  if(!pos) return alert('位置情報が必要です');
-  const d=haversine(pos.lat,pos.lng,cp.lat,cp.lng);
-  if(d>(s.cfg.radius||80)) return alert('圏外です');
-  if(s.cfg.judge==='gps_quiz' && !$('answer').value.trim()) return alert('ヒントへの回答を入力してください');
-  if(s.cfg.judge==='photo' && !photoData) return alert('現地写真を撮影してください');
-
-  const id=Date.now()+'-'+me;
-  $('submitBtn').disabled=true;
-  const moveSnap = { mode:Shippu.mode, distCarKm:+Shippu.distCarKm.toFixed(3),
-    distWalkKm:+Shippu.distWalkKm.toFixed(3), steps:Shippu.steps,
-    elapsedMin: Math.round((Date.now()-Shippu.startedAt)/60000) };
-  try{
-    await Sync.commit(st=>{
-      if(st.cfg.judge==='gps'){
-        // 即占領
-        Sync.applyClaim(st, sel, b.a, b.name+(b.player?'／'+b.player:''));
-      }else{
-        st.claims=st.claims||[];
-        st.claims.push({id, ts:Date.now(), bi:me, army:b.a, cell:sel,
-          lat:pos.lat, lng:pos.lng, answer:$('answer').value.trim()||'',
-          photo: st.cfg.judge==='photo'?photoData:null, status:'pending', move:moveSnap});
-        Sync.log(st,'📨 '+b.name+' が 陣所'+(sel+1)+'【'+cp.name+'】を申請（'+d+'m）');
-      }
-      // 武将ごとの移動サマリーをSyncに保存（GM本陣・観戦HUBで参照可能にする）
-      st.busho[me].move = moveSnap;
-    });
-    if(Sync.state.cfg.judge!=='gps'){ myClaimId=id; }
-    photoData=null; $('photoPrev').hidden=true; $('photo').value=''; $('answer').value='';
-  }catch(e){ alert('送信に失敗しました：'+e.message); }
-  render(Sync.state);
-};
-
-/* ── 起動 ── */
-(async()=>{
-  const hashCfg=connFromHash();
-  let saved=null; try{ saved=JSON.parse(localStorage.getItem('rv-conn')); }catch(e){}
-  const cfg = hashCfg || saved || {backend:'local', room:'RV827'};
-  if(hashCfg) localStorage.setItem('rv-conn', JSON.stringify(hashCfg));
-  try{
-    await Sync.init(cfg);
-    $('connNote').textContent = cfg.backend==='local'
-      ? '⚠ ローカルモードです。この端末だけで動き、GMには届きません。運営から配布された参戦リンク（QR）から開いてください。'
-      : '接続しました：ルーム '+cfg.room+'（'+(cfg.backend==='gas'?'スプレッドシート':'Firebase')+'）';
-  }catch(e){
-    await Sync.init({backend:'local', room:'RV827'});
-    $('connNote').textContent='⚠ 接続に失敗しました。運営に連絡してください。';
-  }
-  Sync.subscribe(render);
-  // 復帰
-  try{
-    const m=JSON.parse(localStorage.getItem('rv-me'));
-    if(m && Sync.state.busho[m.i] && String(Sync.state.busho[m.i].pin)===String(m.pin)){
-      me=m.i; $('login').hidden=true; $('app').hidden=false; watch();
-    }
-  }catch(e){}
-  render(Sync.state);
 })();
 </script>
 </body>

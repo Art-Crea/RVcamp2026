@@ -1,309 +1,279 @@
-/**
- * rv_line_bot.gs — 別府國盗リ合戦 LINE公式アカウント連携（v2）
- * =====================================================================
- * ⚠ 正直な前提：このスクリプトは Claude の環境では「実行検証」できません。
- *   LINE Developers の実チャネルの秘密情報が無いと動作確認ができないためです。
- *   LINE公式の Messaging API 仕様に忠実に書いてあります。初回だけご自身で
- *   「友だち追加 → メッセージ送信」までテストしてください（5分）。
- *
- * ── v2 での改善点 ──────────────────────────────────────────
- *  1. 秘密情報を「スクリプトプロパティ」に置く方式に変更（コードに直書きしない）
- *     → 万一このコードをGitHub等に上げても、トークンは漏れません。
- *  2. GASのdoPostは仕様上 X-Line-Signature ヘッダーを読めません（技術的事実）。
- *     そこで Webhook URL の末尾に ?key=あなたの合言葉 を付け、その一致で
- *     「なりすましPOST」を弾く簡易認証を追加しました（当日運用には十分）。
- *  3. コマンドを拡充：ヘルプ / 戦況 / ランキング / 陣所 / 登録 / 緊急
- *  4. 「戦況」に陣所名つきの内訳を追加。盤面URLもプロパティで差し替え可能に。
- * =====================================================================
- *
- * 【御社側で必要な準備（Claudeは代行できません）】
- *  1. LINE Developers (https://developers.line.biz/) でプロバイダー作成
- *  2. 「Messaging API」チャネルを新規作成（LINE公式アカウントが同時に作られます）
- *  3. チャネルアクセストークン（長期）を発行してコピー
- *
- * 【設営手順（このスクリプト側・5分）】
- *  1. rv_gas_backend.gs と同じ Apps Script プロジェクトに、このファイルを
- *     新しいスクリプトファイル（rv_line_bot.gs）として追加
- *  2. Apps Scriptエディタ左の「プロジェクトの設定（歯車）」→「スクリプト プロパティ」で
- *     次を登録（キー＝値）：
- *        LINE_ACCESS_TOKEN = 発行した長期アクセストークン
- *        LINE_WEBHOOK_KEY  = あなたが決める合言葉（例：rv827secret）
- *        BOARD_URL         = https://realvalue.art-crea.jp/  （任意・戦況返信に載る）
- *        ADMIN_LINE_IDS    = U... ,U...   （緊急通知の宛先。カンマ区切り・後から設定でOK）
- *  3. デプロイ →「新しいデプロイ」→ 種類：ウェブアプリ
- *        次のユーザーとして実行：自分 ／ アクセス：全員
- *  4. 発行された /exec URL の末尾に ?key=あなたの合言葉 を付けたものを、
- *     LINE Developers「Messaging API設定」→ Webhook URL に貼り、Webhook利用をON
- *        例：https://script.google.com/macros/s/XXXX/exec?key=rv827secret
- *  5. LINE公式アカウントを友だち追加し、「ヘルプ」と送って動作確認
- * =====================================================================
- */
+/* =====================================================================
+   rv_board_core.js — 合戦盤の本体（1枚のHTMLで完結）
+   依存：rv_config.js / rv_data.js / rv_sync.js / rv_gmap.js / Leaflet
+   ===================================================================== */
+(function () {
+  const CFG = window.RV_CONFIG || {};
+  const A_R = CFG.ARMY_R || '赤軍';
+  const A_B = CFG.ARMY_B || '青軍';
 
-/* ── 設定の読み込み（スクリプトプロパティ優先） ───────────────── */
-function CFG_() {
-  var p = PropertiesService.getScriptProperties();
-  return {
-    token:   p.getProperty('LINE_ACCESS_TOKEN') || '',
-    hookKey: p.getProperty('LINE_WEBHOOK_KEY')   || '',   // 空なら認証チェックしない
-    board:   p.getProperty('BOARD_URL')          || 'https://realvalue.art-crea.jp/',
-    admins:  (p.getProperty('ADMIN_LINE_IDS') || '').split(',').map(function (s) { return s.trim(); }).filter(String),
-    room:    p.getProperty('ROOM') || 'RV827'
-  };
-}
+  const qs = n => { const m = new RegExp('[?&]' + n + '=([^&#]*)').exec(location.search); return m ? decodeURIComponent(m[1]) : ''; };
+  const isAdmin = !!(CFG.ADMIN_TOKEN && qs('admin') === CFG.ADMIN_TOKEN);
+  const adminQS = isAdmin ? ('?admin=' + encodeURIComponent(CFG.ADMIN_TOKEN)) : '';
 
-var SHEET_PLAYERS = 'PLAYERS';
-var SHEET_PENDING = 'PENDING';
-var DRIVE_FOLDER_NAME = 'RV國盗リ_写真提出';
+  document.body.innerHTML = `
+<header>
+  <div class="brand">
+    <h1><span class="shu">別府</span>國盗リ<span class="ai">合戦</span></h1>
+    <span class="sub">25エリア陣取盤 × リアル地図 ｜ 8/27</span>
+    <a class="home" href="./index.html">← 本陣HUBへ</a>
+  </div>
+  <nav role="tablist">
+    <button role="tab" aria-selected="true"  data-tab="game">合戦盤</button>
+    <button role="tab" aria-selected="false" data-tab="busho">陣立 三十六将</button>
+    <button role="tab" aria-selected="false" data-tab="edit">陣所一覧・書出</button>
+    ${isAdmin ? '<button role="tab" aria-selected="false" data-tab="admin">🔐 運営</button>' : ''}
+  </nav>
+</header>
 
-/* ── LINE Webhook 受信 ───────────────────────────────────── */
-function doPost(e) {
-  try {
-    var cfg = CFG_();
+<main>
+<section class="panel" id="tab-game">
+  <div class="score">
+    <div class="side r" id="sc-r"><span class="nm">${A_R}</span><span class="n" id="n-r">0</span></div>
+    <div class="side b" id="sc-b"><span class="nm">${A_B}</span><span class="n" id="n-b">0</span></div>
+  </div>
+  <div class="bar">
+    <span class="chip" id="mapChip">地図を準備中…</span>
+    <span class="chip" id="modeChip"></span>
+    <button class="btn" id="hudBtn">盤を地図に重ねる</button>
+    <button class="btn" id="fitBtn">全陣所を表示</button>
+    <a class="btn" id="mymapBtn" target="_blank" rel="noopener" hidden>公式マイマップ</a>
+    ${isAdmin
+      ? '<button class="btn red on" id="t-r">手番：赤</button><button class="btn blue" id="t-b">手番：青</button><button class="btn" id="resetBtn">盤を初期化</button>'
+      : '<span class="chip off">観戦モード（占領は武将画面／GM本陣から）</span>'}
+  </div>
+  <div id="stage" style="display:grid;grid-template-columns:1fr 400px;gap:14px;align-items:start">
+    <div class="mapwrap">
+      <div id="map"></div>
+      <div id="hud" hidden>
+        <div class="hud-t">國盗リ盤（重ね表示）</div>
+        <div class="board mini" id="board-hud"></div>
+      </div>
+    </div>
+    <div>
+      <div class="board" id="board"></div>
+      <p class="side-note">パネル番号＝地図のピン番号。ホバーで連動。⚑＝GOAL。薄いパネル＝クールダウン中。</p>
+      <div class="box" style="margin-top:12px"><h3>戦況ログ</h3><div id="log"></div></div>
+    </div>
+  </div>
+</section>
 
-    // 簡易認証：Webhook URLに ?key=... を付けている場合、一致しないPOSTは無視
-    if (cfg.hookKey) {
-      var got = e && e.parameter && e.parameter.key;
-      if (got !== cfg.hookKey) {
-        return ContentService.createTextOutput('forbidden');
-      }
-    }
+<section class="panel" id="tab-busho" hidden>
+  <div class="bar"><span class="chip">兜の前立（20種）× 家紋（29種）で36名を識別</span></div>
+  <div class="army-head r"><h2>${A_R}　十八将</h2><span class="rule"></span></div>
+  <div class="roster" id="roster-r"></div>
+  <div class="army-head b"><h2>${A_B}　十八将</h2><span class="rule"></span></div>
+  <div class="roster" id="roster-b"></div>
+  <p class="side-note">※家紋・兜は識別性を優先した幾何簡略化の意匠です（正式紋の忠実再現ではありません）。</p>
+</section>
 
-    var json = JSON.parse(e.postData.contents);
-    (json.events || []).forEach(function (ev) { handleEvent_(ev, cfg); });
-    return ContentService.createTextOutput('ok');
-  } catch (err) {
-    logToSheet_('doPost error: ' + err);
-    return ContentService.createTextOutput('error');
+<section class="panel" id="tab-edit" hidden>
+  <div class="box">
+    <h3>Googleマイマップで参加者に配る（キー不要・無料）</h3>
+    <p>① CSVを書出 → ② <a href="https://www.google.com/maps/d/" target="_blank" rel="noopener">Googleマイマップ</a>で新規地図にインポート（緯度／経度列を指定・旗アイコン設定）→ ③「リンクを知る全員が閲覧可」で共有 → ④ URLを <code>rv_config.js</code> の MYMAP_URL に貼る。<br>
+      参加者はGoogleマップアプリでそのままナビできます。地点を直したらCSVを入れ替えるだけ。<b>APIキーは不要です。</b></p>
+    <div class="bar">
+      <button class="btn" id="expCsv">マイマップ用CSV</button>
+      <button class="btn" id="expKml">KML</button>
+      <button class="btn" id="expJson">JSON書出</button>
+      ${isAdmin ? '<button class="btn" id="impJson">JSON読込</button>' : ''}
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table><thead><tr><th>№</th><th>陣所名</th><th>緯度</th><th>経度</th><th>ヒント</th><th>旗</th><th>確度</th><th></th></tr></thead>
+    <tbody id="cpBody"></tbody></table>
+  </div>
+  <p class="side-note">${isAdmin ? '地図上のピンは<b>ドラッグで移動</b>でき、離した瞬間に座標が更新されます。<br>' : ''}確度：<b>確定</b>＝実測済／<b>候補</b>＝観光公開情報からの提案（要現地確認）。</p>
+  ${isAdmin ? `<div class="box" style="margin-top:14px">
+    <h3>控えの地（差し替え候補）</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>陣所名</th><th>緯度</th><th>経度</th><th>メモ</th><th></th></tr></thead><tbody id="spareBody"></tbody></table></div>
+  </div>
+  <div class="box"><h3>JSON入出力</h3><textarea id="io" spellcheck="false"></textarea></div>` : ''}
+</section>
+
+${isAdmin ? `<section class="panel" id="tab-admin" hidden>
+  <div id="mapAdmin"></div>
+  <div class="box">
+    <h3>この画面について</h3>
+    <p>URL に <code>?admin=…</code> が付いているため運営機能が出ています。
+      <b>参加者に配るURLにはこのパラメータを付けないでください。</b>
+      付いていない場合、地図の切替もキー入力欄も盤の操作ボタンもDOMに存在しません。</p>
+    <div class="bar">
+      <a class="btn" href="./rv_gm_dashboard.html">🎛️ GM本陣（ルール・承認・武将割当）</a>
+      <a class="btn" href="./rv_player_app.html">📱 武将画面</a>
+    </div>
+  </div>
+</section>` : ''}
+</main>
+<footer>RV CAMP — HONJIN ｜ 別府國盗リ合戦 · art-crea.jp</footer>`;
+
+  const $ = id => document.getElementById(id);
+  const TABS = ['game', 'busho', 'edit'].concat(isAdmin ? ['admin'] : []);
+  document.querySelectorAll('nav button').forEach(btn => btn.onclick = () => {
+    document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b === btn));
+    TABS.forEach(t => $('tab-' + t).hidden = (t !== btn.dataset.tab));
+    if (btn.dataset.tab === 'game') setTimeout(() => RVMap.resize(), 60);
+  });
+
+  /* ---------------- 盤 ---------------- */
+  function cellHTML(s, i) {
+    const cp = s.cps[i] || { name: '—' };
+    const own = s.owner[i] === 'r' ? 'red' : s.owner[i] === 'b' ? 'blue' : '';
+    const lock = (s.lockUntil && s.lockUntil[i] > Date.now()) ? ' lock' : '';
+    const goal = /GOAL/.test(cp.name) ? '<span class="goal">⚑</span>' : '';
+    return '<div class="cell ' + own + lock + '" data-i="' + i + '" tabindex="0">' + goal
+      + '<span class="no">' + (i + 1) + '</span>'
+      + '<span class="ic">' + svgKamon(PANEL_KAMON[i]) + '</span>'
+      + '<span class="nm">' + esc(cp.name) + '</span></div>';
   }
-}
-
-/* GASのdoPostは実行ログが残らないため、確認用にシートへ書く */
-function logToSheet_(text) {
-  try {
-    var sh = sheet_('LINE_LOG', ['時刻', '内容']);
-    sh.appendRow([new Date(), String(text)]);
-  } catch (e) {}
-}
-
-function handleEvent_(ev, cfg) {
-  var userId = ev.source && ev.source.userId;
-  var replyToken = ev.replyToken;
-
-  if (ev.type === 'follow') {
-    reply_(cfg, replyToken,
-      'はじめまして。別府國盗リ合戦の公式アカウントです。\n'
-      + '「ヘルプ」で使い方、「戦況」で現在のスコア、「登録 武将名」で参戦登録ができます。');
-    return;
-  }
-
-  if (ev.type !== 'message') return;
-  var msg = ev.message;
-
-  if (msg.type === 'text') {
-    var text = (msg.text || '').trim();
-
-    if (text === 'ヘルプ' || text === 'help' || text === '？' || text === '?') {
-      reply_(cfg, replyToken,
-        '【使えるコマンド】\n'
-        + '・戦況 … 今の赤/青のスコア\n'
-        + '・ランキング … 陣所の得点内訳\n'
-        + '・陣所 … 25陣所の一覧\n'
-        + '・登録 武将名 … 参戦登録（例：登録 武田信玄）\n'
-        + '・緊急 … 本陣へ緊急連絡\n'
-        + '写真・位置情報もそのまま送れます。');
-      return;
-    }
-    if (text === '戦況') { reply_(cfg, replyToken, buildStatusText_(cfg)); return; }
-    if (text === 'ランキング' || text === 'スコア') { reply_(cfg, replyToken, buildRankingText_(cfg)); return; }
-    if (text === '陣所' || text === '陣所一覧') { reply_(cfg, replyToken, buildCpListText_(cfg)); return; }
-
-    if (text.indexOf('登録') === 0) {
-      var name = text.replace('登録', '').trim();
-      if (!name) { reply_(cfg, replyToken, '「登録 武将名」の形で送ってください。例：登録 武田信玄'); return; }
-      registerPlayer_(userId, name);
-      reply_(cfg, replyToken, name + ' として登録しました。写真提出・位置情報の送信もこのトークでできます。');
-      return;
-    }
-    if (text === '緊急' || text === 'SOS') {
-      notifyAdmins_(cfg, '🚨緊急コール\n送信者: ' + (getPlayerName_(userId) || userId) + '\n至急、本人に連絡してください。');
-      reply_(cfg, replyToken, '本陣へ緊急連絡を送信しました。安全を最優先にしてください。');
-      return;
-    }
-    reply_(cfg, replyToken, '受け付けたコマンドがありません。「ヘルプ」と送ると使い方が出ます。');
-    return;
-  }
-
-  if (msg.type === 'image') {
-    var url = saveImageToDrive_(cfg, msg.id, userId);
-    appendPending_(userId, url);
-    reply_(cfg, replyToken, '写真を受け付けました。GM本陣の承認キューに入りました。判定をお待ちください。');
-    return;
-  }
-
-  if (msg.type === 'location') {
-    appendLog_(userId, msg.title || '', msg.latitude, msg.longitude);
-    reply_(cfg, replyToken, '位置情報を記録しました：' + (msg.title || '(地点名なし)'));
-    return;
-  }
-}
-
-/* ── STATEシート（rv_gas_backend.gs と共有）からスコアを要約 ── */
-function readSharedState_(cfg) {
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('STATE');
-  if (!sh) return null;
-  var rows = sh.getDataRange().getValues();
-  for (var i = 1; i < rows.length; i++) {
-    if (String(rows[i][0]) === String(cfg.room)) {
-      try { return JSON.parse(rows[i][1]); } catch (e) { return null; }
-    }
-  }
-  try { return JSON.parse(sh.getRange('A2').getValue()); } catch (e) { return null; }
-}
-
-function buildStatusText_(cfg) {
-  try {
-    var st = readSharedState_(cfg);
-    if (!st) return '戦況の取得に失敗しました（盤面がまだ初期化されていない可能性があります）。';
-    var owner = st.owner || [];
-    var r = owner.filter(function (o) { return o === 'r'; }).length;
-    var b = owner.filter(function (o) { return o === 'b'; }).length;
-    var free = owner.length - r - b;
-    var lead = r === b ? '互角' : (r > b ? '堀江軍(赤)リード' : '溝口軍(青)リード');
-    return '【現在の戦況】' + lead + '\n'
-      + '堀江軍（赤）: ' + r + ' 陣所\n'
-      + '溝口軍（青）: ' + b + ' 陣所\n'
-      + '未制圧: ' + free + '\n\n盤面: ' + cfg.board;
-  } catch (err) {
-    return '戦況の取得に失敗しました。';
-  }
-}
-
-/* 得点（cps[].pt）で重み付けした陣取りランキング */
-function buildRankingText_(cfg) {
-  try {
-    var st = readSharedState_(cfg);
-    if (!st) return 'ランキングを取得できません（盤面が未初期化の可能性）。';
-    var owner = st.owner || [];
-    var cps = st.cps || [];
-    var rPt = 0, bPt = 0;
-    for (var i = 0; i < owner.length; i++) {
-      var pt = (cps[i] && cps[i].pt) ? cps[i].pt : 40;
-      if (owner[i] === 'r') rPt += pt;
-      else if (owner[i] === 'b') bPt += pt;
-    }
-    var lead = rPt === bPt ? '互角' : (rPt > bPt ? '堀江軍(赤)リード' : '溝口軍(青)リード');
-    return '【得点ランキング】' + lead + '\n'
-      + '堀江軍（赤）: ' + rPt + ' pt\n'
-      + '溝口軍（青）: ' + bPt + ' pt\n'
-      + '※各陣所の得点は rv_data.js の pt で決まります。';
-  } catch (err) {
-    return 'ランキングを取得できません。';
-  }
-}
-
-function buildCpListText_(cfg) {
-  try {
-    var st = readSharedState_(cfg);
-    var cps = (st && st.cps) || [];
-    var owner = (st && st.owner) || [];
-    if (!cps.length) return '陣所一覧を取得できません。';
-    var mark = { r: '🔴', b: '🔵' };
-    var lines = cps.slice(0, 25).map(function (c, i) {
-      return (i + 1) + '. ' + (mark[owner[i]] || '⚪') + ' ' + c.name + (c.pt ? '（' + c.pt + 'pt）' : '');
+  function renderBoard(s) {
+    const html = Array.from({ length: 25 }, (_, i) => cellHTML(s, i)).join('');
+    $('board').innerHTML = html;
+    $('board-hud').innerHTML = html;
+    document.querySelectorAll('.cell').forEach(el => {
+      const i = +el.dataset.i;
+      el.onmouseenter = () => document.querySelectorAll('.cell')
+        .forEach(c => c.classList.toggle('focus', +c.dataset.i === i));
+      if (isAdmin) {
+        el.onclick = () => claim(i);
+        el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); claim(i); } };
+      } else { el.style.cursor = 'default'; }
     });
-    return '【25陣所】\n' + lines.join('\n');
-  } catch (err) {
-    return '陣所一覧を取得できません。';
   }
-}
-
-/* ── プレイヤー登録 ── */
-function registerPlayer_(userId, name) {
-  var sh = sheet_(SHEET_PLAYERS, ['userId', '武将名', '登録日時']);
-  var data = sh.getDataRange().getValues();
-  for (var i = 1; i < data.length; i++) {
-    if (data[i][0] === userId) { sh.getRange(i + 1, 2).setValue(name); return; }
+  async function claim(i) {
+    const s = Sync.state;
+    if (s.lockUntil && s.lockUntil[i] > Date.now()) return alert('この陣所はクールダウン中です');
+    const team = s.cfg.turnMode === 'alternate'
+      ? s.turn
+      : (prompt('どちらが占領しますか？  r＝' + A_R + ' ／ b＝' + A_B, 'r') || '').trim();
+    if (team !== 'r' && team !== 'b') return;
+    await Sync.commit(st => Sync.applyClaim(st, i, team, 'GM'));
   }
-  sh.appendRow([userId, name, new Date()]);
-}
-function getPlayerName_(userId) {
-  var sh = sheet_(SHEET_PLAYERS, ['userId', '武将名', '登録日時']);
-  var data = sh.getDataRange().getValues();
-  for (var i = 1; i < data.length; i++) if (data[i][0] === userId) return data[i][1];
-  return null;
-}
-
-/* ── 写真の保存＆承認キュー追加 ── */
-function saveImageToDrive_(cfg, messageId, userId) {
-  var res = UrlFetchApp.fetch('https://api-data.line.me/v2/bot/message/' + messageId + '/content', {
-    headers: { Authorization: 'Bearer ' + cfg.token }
-  });
-  var folder = getOrCreateFolder_(DRIVE_FOLDER_NAME);
-  var file = folder.createFile(res.getBlob().setName(messageId + '.jpg'));
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  return file.getUrl();
-}
-function getOrCreateFolder_(name) {
-  var it = DriveApp.getFoldersByName(name);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(name);
-}
-function appendPending_(userId, photoUrl) {
-  var sh = sheet_(SHEET_PENDING, ['日時', 'userId', '武将名', '写真URL', 'ステータス']);
-  sh.appendRow([new Date(), userId, getPlayerName_(userId) || '(未登録)', photoUrl, '承認待ち']);
-}
-
-/* ── 位置情報ログ（rv_gas_backend.gs の LOG シートに合流） ── */
-function appendLog_(userId, title, lat, lng) {
-  var sh = sheet_('LOG', ['時刻', 'ルーム', '内容', '赤', '青']);
-  var name = getPlayerName_(userId) || userId;
-  sh.appendRow([new Date(), '', 'LINEチェックイン: ' + name + ' が ' + title + '（' + lat + ',' + lng + '）から報告', '', '']);
-}
-
-/* ── 管理者へのPush通知（緊急コール） ── */
-function notifyAdmins_(cfg, text) {
-  cfg.admins.forEach(function (uid) { if (uid) push_(cfg, uid, text); });
-}
-
-/* ── LINE API 呼び出し ── */
-function reply_(cfg, replyToken, text) {
-  if (!cfg.token) { logToSheet_('LINE_ACCESS_TOKEN 未設定。返信できません'); return; }
-  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', {
-    method: 'post',
-    contentType: 'application/json',
-    headers: { Authorization: 'Bearer ' + cfg.token },
-    muteHttpExceptions: true,
-    payload: JSON.stringify({ replyToken: replyToken, messages: [{ type: 'text', text: text }] })
-  });
-}
-function push_(cfg, userId, text) {
-  if (!cfg.token) return;
-  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
-    method: 'post',
-    contentType: 'application/json',
-    headers: { Authorization: 'Bearer ' + cfg.token },
-    muteHttpExceptions: true,
-    payload: JSON.stringify({ to: userId, messages: [{ type: 'text', text: text }] })
-  });
-}
-
-/* ── 全登録プレイヤーへの一斉配信（ミッション告知用・手動実行） ──
-   スクリプトプロパティ BROADCAST_TEXT に本文を入れてから、
-   Apps Scriptエディタで broadcastPlayers を選び「実行」します。 */
-function broadcastPlayers() {
-  var cfg = CFG_();
-  var text = PropertiesService.getScriptProperties().getProperty('BROADCAST_TEXT') || '（本文未設定）';
-  var sh = sheet_(SHEET_PLAYERS, ['userId', '武将名', '登録日時']);
-  var data = sh.getDataRange().getValues();
-  var n = 0;
-  for (var i = 1; i < data.length; i++) {
-    if (data[i][0]) { push_(cfg, data[i][0], text); n++; }
+  function renderScore(s) {
+    const sc = Sync.score(s);
+    $('n-r').textContent = sc.r; $('n-b').textContent = sc.b;
+    const alt = s.cfg.turnMode === 'alternate';
+    $('sc-r').classList.toggle('turn', alt && s.turn === 'r');
+    $('sc-b').classList.toggle('turn', alt && s.turn === 'b');
+    $('modeChip').textContent = alt ? '交互手番（GM1台）' : '早取り制（36人モード）';
+    if (isAdmin) {
+      $('t-r').classList.toggle('on', s.turn === 'r');
+      $('t-b').classList.toggle('on', s.turn === 'b');
+      $('t-r').style.display = alt ? '' : 'none';
+      $('t-b').style.display = alt ? '' : 'none';
+    }
   }
-  logToSheet_('broadcast sent to ' + n + ' players');
-}
+  function renderLog(s) {
+    $('log').innerHTML = (s.log || []).slice(0, 20).map(l => '<div class="logline">'
+      + new Date(l.ts).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
+      + ' <b>' + esc(l.t) + '</b></div>').join('') || '<p class="side-note">まだ動きはありません。</p>';
+  }
 
-function sheet_(name, headers) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sh = ss.getSheetByName(name);
-  if (!sh) { sh = ss.insertSheet(name); if (headers) sh.appendRow(headers); }
-  return sh;
-}
+  /* ---------------- 地図ピン ---------------- */
+  function renderPins(s) {
+    if (!RVMap.map) return;
+    RVMap.clearMarkers();
+    s.cps.forEach((cp, i) => {
+      const col = s.owner[i] === 'r' ? '#c8102e' : s.owner[i] === 'b' ? '#1f5fa9' : '#8d8878';
+      RVMap.addMarker({
+        lat: cp.lat, lng: cp.lng, label: String(i + 1),
+        title: (cp.flag || '') + ' ' + cp.name, color: col,
+        draggable: isAdmin,
+        onClick: () => {
+          document.querySelectorAll('.cell').forEach(c => c.classList.toggle('focus', +c.dataset.i === i));
+          if (isAdmin && confirm((i + 1) + '. ' + cp.name + '\nこの陣所を占領しますか？')) claim(i);
+        },
+        onDragEnd: async (la, ln) =>
+          Sync.commit(st => { st.cps[i].lat = +la.toFixed(6); st.cps[i].lng = +ln.toFixed(6); })
+      });
+    });
+  }
+  const fitAll = () => RVMap.fitAll(Sync.state.cps.map(c => ({ lat: c.lat, lng: c.lng })));
+
+  /* ---------------- 陣立 ---------------- */
+  function renderRoster(s) {
+    const mk = b => '<div class="bcard ' + b.a + '">'
+      + '<div class="kabuto">' + (b.img
+          ? '<img src="./' + b.img + '" alt="' + esc(b.name) + '" loading="lazy">'
+          : svgKabuto(b)) + '</div>'
+      + '<div class="name">' + esc(b.name) + '</div>'
+      + '<div class="meta">兜：' + esc(b.kbn) + (b.player ? '<br>👤 ' + esc(b.player) : '') + '</div>'
+      + '<div class="crest">' + svgKamon(b.km) + '<span>' + esc(b.kmn) + '</span></div></div>';
+    $('roster-r').innerHTML = s.busho.filter(b => b.a === 'r').map(mk).join('');
+    $('roster-b').innerHTML = s.busho.filter(b => b.a === 'b').map(mk).join('');
+  }
+
+  /* ---------------- 一覧・書出 ---------------- */
+  function renderEditor(s) {
+    const ro = isAdmin ? '' : ' readonly';
+    $('cpBody').innerHTML = s.cps.map((cp, i) => '<tr><td class="n">' + (i + 1) + '</td>'
+      + ['name', 'lat', 'lng', 'hint', 'flag', 'conf']
+        .map(k => '<td><input value="' + esc(cp[k]) + '" data-i="' + i + '" data-k="' + k + '"' + ro + '></td>').join('')
+      + '<td><a class="mini-btn" href="' + gmapLink(cp) + '" target="_blank" rel="noopener">地図</a></td></tr>').join('');
+    if (!isAdmin) return;
+    $('cpBody').querySelectorAll('input').forEach(inp => inp.onchange = async () => {
+      const i = +inp.dataset.i, k = inp.dataset.k, v = inp.value;
+      await Sync.commit(st => { st.cps[i][k] = (k === 'lat' || k === 'lng') ? (parseFloat(v) || 0) : v; });
+    });
+    $('spareBody').innerHTML = DEFAULT_SPARE.map((sp, i) =>
+      '<tr><td>' + esc(sp.name) + '</td><td>' + sp.lat + '</td><td>' + sp.lng + '</td><td>' + esc(sp.memo) + '</td>'
+      + '<td><button class="mini-btn" data-add="' + i + '">25に追加</button></td></tr>').join('');
+    $('spareBody').querySelectorAll('[data-add]').forEach(b => b.onclick = async () => {
+      const sp = DEFAULT_SPARE[+b.dataset.add];
+      await Sync.commit(st => { st.cps.push({ name: sp.name, lat: sp.lat, lng: sp.lng, hint: sp.memo, flag: '⚔', conf: '候補' }); });
+    });
+  }
+  function dl(name, text, type) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: type || 'text/plain;charset=utf-8' }));
+    a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  $('expCsv').onclick = () => dl('beppu_kunitori_25.csv',
+    '\ufeff番号,陣所名,緯度,経度,ヒント,旗,確度,Googleマップ\n'
+    + Sync.state.cps.map((c, i) => [i + 1, q(c.name), c.lat, c.lng, q(c.hint), c.flag, c.conf, gmapLink(c)].join(',')).join('\n'),
+    'text/csv;charset=utf-8');
+  $('expKml').onclick = () => dl('beppu_kunitori_25.kml',
+    '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n<name>別府國盗リ合戦 25陣所</name>\n'
+    + Sync.state.cps.map((c, i) => '  <Placemark><name>' + (i + 1) + '. ' + esc(c.name) + '</name>'
+      + '<description>' + esc(c.hint) + '</description><Point><coordinates>'
+      + c.lng + ',' + c.lat + ',0</coordinates></Point></Placemark>').join('\n')
+    + '\n</Document></kml>', 'application/vnd.google-earth.kml+xml');
+  $('expJson').onclick = () => {
+    const t = JSON.stringify({ cps: Sync.state.cps }, null, 2);
+    if ($('io')) $('io').value = t;
+    dl('beppu_kunitori_25.json', t, 'application/json');
+  };
+  if (isAdmin) $('impJson').onclick = async () => {
+    try { const d = JSON.parse($('io').value); if (d.cps) await Sync.commit(st => { st.cps = d.cps; }); fitAll(); }
+    catch (e) { alert('JSONを解析できません'); }
+  };
+
+  /* ---------------- ボタン ---------------- */
+  $('hudBtn').onclick = e => { const h = $('hud'); h.hidden = !h.hidden; e.target.classList.toggle('on', !h.hidden); };
+  $('fitBtn').onclick = fitAll;
+  if (isAdmin) {
+    $('t-r').onclick = () => Sync.commit(s => { s.turn = 'r'; });
+    $('t-b').onclick = () => Sync.commit(s => { s.turn = 'b'; });
+    $('resetBtn').onclick = () => { if (confirm('盤・ログ・申請をすべて初期化します。よろしいですか？')) Sync.reset(); };
+  }
+  if (CFG.MYMAP_URL) { $('mymapBtn').href = CFG.MYMAP_URL; $('mymapBtn').hidden = false; }
+  if (window.innerWidth < 1000) $('stage').style.gridTemplateColumns = '1fr';
+
+  /* ---------------- 起動 ---------------- */
+  (async () => {
+    await RVMap.init('map');
+    $('mapChip').textContent = RVMap.statusText() + (RVMap.locked ? ' 🔒' : '');
+    $('mapChip').className = 'chip ' + (RVMap.provider === 'google' ? 'live' : 'off');
+    if (isAdmin) RVMap.mountAdminPanel($('mapAdmin'));
+
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem('rv-conn')); } catch (e) {}
+    try { await Sync.init(saved || CFG.SYNC || { backend: 'local', room: 'RV827' }); }
+    catch (e) { await Sync.init({ backend: 'local', room: 'RV827' }); }
+
+    Sync.subscribe(s => { renderBoard(s); renderScore(s); renderLog(s); renderPins(s); renderRoster(s); renderEditor(s); });
+    fitAll();
+    setInterval(() => { if (Sync.state) renderBoard(Sync.state); }, 5000);
+  })();
+})();
