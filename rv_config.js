@@ -36,7 +36,7 @@ window.RV_CONFIG = {
      ・地図の切替／APIキー入力
      ・盤の手動占領・初期化・陣所編集
      が表示されます。参加者に配るURLには付けないこと。 */
- ADMIN_TOKEN: 'RV2026@art-crea.jp',    /* ← 変更済み。さらに自分だけの文字列に変えて使用 */
+ ADMIN_TOKEN: 'art-crea',    /* ← 変更済み。さらに自分だけの文字列に変えて使用 */
 
   /* 既定の同期バックエンド（GM本陣で上書き可） */
   SYNC: { backend: 'local', room: 'RV827' }
