@@ -144,10 +144,7 @@ window.RV_CONFIG = {
     lockToConfig: true,
     mymapUrl: ''
   },
-
-  /* ★★ 公開前に必ず変更してください ★★
-     URL に ?admin=<この文字列> を付けたときだけ運営卓が開きます。 */
-  ADMIN_TOKEN: 'CHANGE-ME-BEFORE-PUBLISH',
+  ADMIN_TOKEN: 'RV2026camp',
   COMPARE_VIEW: 'admin',
 
   SYNC: {
