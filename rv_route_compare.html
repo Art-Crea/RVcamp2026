@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>陣所改訂 — v1 / v2 比較｜別府國盗リ合戦</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--sumi:#0d0c0a;--sumi2:#16140f;--washi:#e8e2d4;--kin:#c9a227;--shu:#c0392b;--ai:#2c5f8a;
+  --gray:#7c766a;--line:rgba(201,162,39,.22);--ok:#4a8f5f;--ng:#b5432f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--sumi);color:var(--washi);font-family:'Zen Kaku Gothic New',sans-serif;line-height:1.7}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+header{padding:48px 0 28px;border-bottom:1px solid var(--line);margin-bottom:32px}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;color:var(--kin);margin-bottom:12px}
+h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(26px,4.5vw,40px);letter-spacing:.06em;line-height:1.3}
+.lede{margin-top:14px;max-width:64ch;color:#bdb6a6;font-size:14.5px}
+h2{font-family:'Shippori Mincho',serif;font-size:19px;font-weight:600;letter-spacing:.1em;
+  display:flex;align-items:center;gap:14px;margin:44px 0 6px}
+h2::before{content:'';width:22px;height:1px;background:var(--kin)}
+.sub{color:var(--gray);font-size:13px;margin:0 0 18px 36px}
+#map{height:520px;border:1px solid var(--line);border-radius:3px;background:#111}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.ctl button{font-family:'JetBrains Mono',monospace;font-size:12px;padding:8px 15px;cursor:pointer;
+  background:transparent;color:var(--kin);border:1px solid var(--line);border-radius:2px;transition:.15s}
+.ctl button.on{background:var(--kin);color:var(--sumi);font-weight:600}
+.ctl button:focus-visible{outline:2px solid var(--washi);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}#map{height:380px}}
+.panel{border:1px solid var(--line);background:var(--sumi2);border-radius:3px;padding:16px 18px}
+.panel.v1{border-left:3px solid var(--gray)}
+.panel.v2{border-left:3px solid var(--kin)}
+.ver{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--kin);margin-bottom:8px}
+.panel.v1 .ver{color:var(--gray)}
+.panel h3{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;margin-bottom:10px}
+.panel p{font-size:13px;color:#a8a294;margin-bottom:8px}
+.panel ul{list-style:none;font-size:12.5px;color:#a8a294}
+.panel li{padding:5px 0 5px 16px;position:relative;border-top:1px solid rgba(201,162,39,.10)}
+.panel li:first-child{border-top:none}
+.panel li::before{content:'—';position:absolute;left:0;color:var(--kin)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid rgba(201,162,39,.14);vertical-align:top}
+th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--kin);font-weight:600}
+tr.leg td{background:rgba(201,162,39,.06);font-family:'Shippori Mincho',serif;font-size:13px;color:var(--kin);letter-spacing:.1em}
+td.pt{font-family:'JetBrains Mono',monospace;color:var(--kin);text-align:right;white-space:nowrap}
+td.no{font-family:'JetBrains Mono',monospace;color:var(--gray)}
+.badge{font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:1px 6px;border-radius:2px;
+  border:1px solid var(--line);color:#bdb6a6;white-space:nowrap}
+.badge.k{color:var(--shu);border-color:rgba(192,57,43,.45)}
+.wide{overflow-x:auto}
+.note{border-left:3px solid var(--kin);background:rgba(201,162,39,.06);padding:12px 15px;margin-top:14px;
+  font-size:13px;color:#bdb6a6;border-radius:0 3px 3px 0}
+footer{border-top:1px solid var(--line);margin-top:52px;padding-top:22px;color:var(--gray);font-size:12px}
+.leaflet-popup-content-wrapper{background:#16140f;color:#e8e2d4;border-radius:3px}
+.leaflet-popup-tip{background:#16140f}
+.leaflet-container{background:#0d0c0a}
+</style>
+</head>
+<body>
+<div id="gate" style="max-width:560px;margin:16vh auto;padding:0 24px;font-family:'Zen Kaku Gothic New',sans-serif;color:#e8e2d4">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;color:#c9a227;margin-bottom:14px">RESTRICTED / ORGANISERS ONLY</div>
+  <h1 style="font-family:'Shippori Mincho',serif;font-size:26px;letter-spacing:.08em;margin-bottom:14px">運営限定ページ</h1>
+  <p style="font-size:14px;color:#bdb6a6;line-height:1.8">
+    旧案（v1）との比較資料です。参加者向けの資料ではありません。<br>
+    URL の末尾に <code style="color:#c9a227">?admin=（合言葉）</code> を付けて開いてください。<br><br>
+    参加者向けのルールは <a href="./rv_rules.html" style="color:#c9a227">合戦の掟</a> をご覧ください。
+  </p>
+</div>
+<div class="wrap" id="main" hidden>
+
+<header>
+  <div class="eyebrow">RVcamp2026 / CHECKPOINT REVISION / v1 &rarr; v2</div>
+  <h1>陣所改訂 — 移動そのものを合戦にする</h1>
+  <p class="lede">
+    8月27日の合戦は 13:30 大分空港を出陣し、17:30 グランヴェルデリゾート着城。
+    この4時間のうち、およそ2時間は移動に消えます。v1 は別府市内に陣所が散在しており、
+    この日程では回りきれません。v2 は空港から宿までの走行ルート上に陣所を並べ替え、
+    移動時間そのものを競技時間に変える設計です。旧案も比較のため残しています。
+  </p>
+</header>
+
+<section>
+  <h2>地図で見る</h2>
+  <p class="sub">朱＝v1（旧・別府市内散在型）／金＝v2（新・ルート連結型）。線は移動の順序です。</p>
+  <div id="map"></div>
+  <div class="ctl">
+    <button id="b2" class="on">v2 を表示（新）</button>
+    <button id="b1">v1 を表示（旧）</button>
+    <button id="bb">両方を重ねる</button>
+    <button id="bf">全体を表示</button>
+  </div>
+  <div class="note">
+    v1 の陣所は鶴見岳山頂・志高湖・城島高原まで広がっています。鶴見岳はロープウェイ往復だけで約1時間、
+    志高湖と城島高原は山中で片道20〜30分。実質プレイ時間が約1時間半しかない今回の日程では成立しません。
+  </div>
+</section>
+
+<section>
+  <h2>設計の違い</h2>
+  <p class="sub">同じ25陣所でも、置き方で競技の性質が変わります。</p>
+  <div class="grid2">
+    <div class="panel v1">
+      <div class="ver">v1 / 2026-07-13</div>
+      <h3>別府市内 散在型</h3>
+      <p>別府市内を一日かけて巡る前提。ロゲイニングとしては正統だが、今回の日程には収まらない。</p>
+      <ul>
+        <li>起点と終点が定まっていない</li>
+        <li>山頂・湖・遊園地など、片道30分級の目的地を含む</li>
+        <li>空港からの移動50分が競技外の空白になる</li>
+        <li>食事枠が競技と切り離されている</li>
+        <li>GOALがグランシア別府鉄輪（宿と不一致）</li>
+      </ul>
+    </div>
+    <div class="panel v2">
+      <div class="ver">v2 / 2026-07-18</div>
+      <h3>ルート連結型</h3>
+      <p>空港から宿までの走行ルートに沿って陣所を配置。降りる／降りないの判断が戦術になる。</p>
+      <ul>
+        <li>起点＝大分空港、終点＝グランヴェルデリゾート</li>
+        <li>全陣所が国道213号〜国道10号〜県道11号の沿線</li>
+        <li>移動50分がそのまま競技時間になる</li>
+        <li>16:00-17:00の食事が地獄蒸しミッション（150点）</li>
+        <li>徒歩で複数取れる密集地を3か所（杵築・別府市街・鉄輪）</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">
+    <b>25陣所すべては取れません。それが狙いです。</b>
+    実際に停まれるのは1組あたり5〜7か所。どこを捨てるかの判断が勝敗を分けます。
+    配点は迂回の大きさに比例させてあり、寄り道の少ない陣所は40〜60点、
+    大きく迂回する陣所は100〜150点に設定しています。
+  </div>
+</section>
+
+<section>
+  <h2>v2 陣所一覧</h2>
+  <p class="sub">出陣から着城まで、東から西へ。要＝要衝（配点が高く、勝敗を左右する）。</p>
+  <div class="wide"><table id="tbl">
+    <thead><tr><th>No</th><th>陣所</th><th>ミッション</th><th>判定</th><th>半径</th><th>点</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+
+<footer>
+  RVcamp2026 ／ 別府國盗リ合戦 ・ 2026年8月27日（木）〜28日（金）<br>
+  座標は Google Places の実測値。半径は現地でのGPS実測後に確定してください。<br>
+  差し替えファイル：<code>rv_checkpoints_v2.json</code>／旧案：<code>rv_checkpoints_v1.json</code>
+</footer>
+
+</div>
+
+<script src="./rv_config.js"></script>
+<script>
+(function(){
+  var tok = new URLSearchParams(location.search).get('admin');
+  var ok  = tok && window.RV_CONFIG && tok === window.RV_CONFIG.ADMIN_TOKEN;
+  if(ok){ document.getElementById('gate').hidden = true;
+          document.getElementById('main').hidden = false; }
+  window.__RV_ADMIN_OK__ = ok;
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const V1 = [{"no": 1, "id": "cp01", "name": "十文字原", "spot": "十文字原展望台", "lat": 33.3297195, "lng": 131.4602103, "radius": 120, "pt": 80, "status": "ok", "sensor": "GPS+写真", "hint": "日本夜景遺産。別府湾と国東半島を一望", "mission": "展望台から別府湾を望む一枚を提出", "memo": "駐車8台程度。道が狭い", "kaname": false, "flag": ""}, {"no": 2, "id": "cp02", "name": "柴石", "spot": "柴石温泉(市営)", "lat": 33.3257541, "lng": 131.4730186, "radius": 80, "pt": 70, "status": "ok", "sensor": "NFC", "hint": "渓谷沿いの湯。醍醐天皇の伝承が残る", "mission": "渓谷沿いの湯屋の外観を一枚", "memo": "水曜休", "kaname": false, "flag": ""}, {"no": 3, "id": "cp03", "name": "血の池地獄", "spot": "血の池地獄", "lat": 33.3271734, "lng": 131.4781731, "radius": 120, "pt": 120, "status": "ok", "sensor": "GPS+写真AI", "hint": "日本最古の赤い熱泥地獄", "mission": "赤い熱泥と湯けむりを収めた一枚", "memo": "", "kaname": false, "flag": ""}, {"no": 4, "id": "cp04", "name": "龍巻地獄", "spot": "龍巻地獄", "lat": 33.3271408, "lng": 131.4794006, "radius": 100, "pt": 90, "status": "ok", "sensor": "GPS+写真AI", "hint": "30〜40分に一度の間欠泉。噴出待ちも作戦のうち", "mission": "間欠泉の噴出を動画または写真で", "memo": "", "kaname": false, "flag": ""}, {"no": 5, "id": "cp05", "name": "亀川", "spot": "ドローンサッカーアリーナ大分", "lat": 33.331379, "lng": 131.4902243, "radius": 120, "pt": 110, "status": "ok", "sensor": "GPS", "hint": "北の玄関口・亀川の確定地点", "mission": "アリーナ前で隊員全員の集合写真", "memo": "Slack確定地", "kaname": false, "flag": ""}, {"no": 6, "id": "cp06", "name": "明礬", "spot": "明礬 湯の里(湯の花小屋)", "lat": 33.3200867, "lng": 131.4527838, "radius": 120, "pt": 100, "status": "ok", "sensor": "音響", "hint": "藁葺きの湯の花小屋が並ぶ山手の湯里", "mission": "藁葺きの湯の花小屋を背景に一枚", "memo": "", "kaname": false, "flag": ""}, {"no": 7, "id": "cp07", "name": "上人ヶ浜", "spot": "別府海浜砂湯(上人ヶ浜公園内)", "lat": 33.3120889, "lng": 131.5015273, "radius": 100, "pt": 50, "status": "ok", "sensor": "GPS", "hint": "上人ヶ浜の砂湯。8:00-21:00・駐車場あり", "mission": "浜辺で軍旗を掲げた一枚", "memo": "公園は広く中心を取れないため、砂湯の建物を基準点に(Places実測)。ロケハンで最終確認", "kaname": false, "flag": ""}, {"no": 8, "id": "cp08", "name": "かまど地獄", "spot": "かまど地獄", "lat": 33.3163879, "lng": 131.4723906, "radius": 80, "pt": 100, "status": "ok", "sensor": "GPS+写真AI", "hint": "一丁目から六丁目まで続く地獄", "mission": "六丁目までの地獄を一枚に", "memo": "", "kaname": false, "flag": ""}, {"no": 9, "id": "cp09", "name": "鉄輪むし湯", "spot": "鉄輪むし湯", "lat": 33.3163444, "lng": 131.4780083, "radius": 80, "pt": 80, "status": "ok", "sensor": "NFC", "hint": "石菖を敷いた蒸し風呂。鎌倉期の一遍上人が開いたと伝わる", "mission": "むし湯の外観と隊名を記した札", "memo": "", "kaname": false, "flag": ""}, {"no": 10, "id": "cp10", "name": "湯けむり", "spot": "湯けむり展望台", "lat": 33.3156683, "lng": 131.4853258, "radius": 100, "pt": 70, "status": "ok", "sensor": "GPS+写真", "hint": "鉄輪の湯けむりと鶴見岳。24時間・無料", "mission": "湯けむりと鶴見岳を同じ画角で", "memo": "夜景も可", "kaname": false, "flag": ""}, {"no": 11, "id": "cp11", "name": "永福寺", "spot": "永福寺(一遍上人ゆかり)", "lat": 33.316057, "lng": 131.4771659, "radius": 80, "pt": 100, "status": "ok", "sensor": "GPS+写真", "hint": "一遍上人ゆかりの寺。参拝ボーナス+40pt", "mission": "山門で参拝の一枚(参拝ボーナス+40pt)", "memo": "採否を委員会で確認", "kaname": false, "flag": ""}, {"no": 12, "id": "cp12", "name": "地獄蒸し", "spot": "地獄蒸し工房 鉄輪", "lat": 33.3154852, "lng": 131.4762201, "radius": 120, "pt": 100, "status": "ok", "sensor": "GPS+写真AI", "hint": "噴気で蒸す鉄輪名物。行列必至、時間読みが勝負", "mission": "蒸し上がった食材を掲げて一枚", "memo": "待ち15分〜", "kaname": false, "flag": ""}, {"no": 13, "id": "cp13", "name": "鉄輪", "spot": "縁間(えんま)", "lat": 33.3147301, "lng": 131.4773158, "radius": 80, "pt": 110, "status": "ok", "sensor": "NFC", "hint": "【天下の要】鉄輪の湯けむり通り。制圧軍に要害ボーナス", "mission": "縁間の看板と隊員全員【天下の要】", "memo": "Slack確定地・盤の中心", "kaname": true, "flag": ""}, {"no": 14, "id": "cp14", "name": "海地獄", "spot": "地獄温泉ミュージアム", "lat": 33.3156603, "lng": 131.4740591, "radius": 120, "pt": 120, "status": "ok", "sensor": "ビーコン", "hint": "コバルトブルーの海地獄に隣接する確定地点", "mission": "コバルトブルーの海地獄を一枚", "memo": "Slack確定地", "kaname": false, "flag": ""}, {"no": 15, "id": "cp15", "name": "白池地獄", "spot": "白池地獄", "lat": 33.3152711, "lng": 131.4741269, "radius": 80, "pt": 90, "status": "ok", "sensor": "GPS+写真AI", "hint": "冷えると青白く濁る国指定名勝", "mission": "白濁した池を一枚", "memo": "", "kaname": false, "flag": ""}, {"no": 16, "id": "cp16", "name": "坊主地獄", "spot": "鬼石坊主地獄", "lat": 33.3152885, "lng": 131.4696131, "radius": 80, "pt": 90, "status": "ok", "sensor": "GPS+写真AI", "hint": "灰色の熱泥が坊主頭のように沸く", "mission": "坊主頭の熱泥を接写で一枚", "memo": "", "kaname": false, "flag": ""}, {"no": 17, "id": "cp17", "name": "実相寺", "spot": "胡月(別府冷麺)", "lat": 33.302379, "lng": 131.499291, "radius": 80, "pt": 80, "status": "ok", "sensor": "GPS+写真", "hint": "別府名物・冷麺の確定地点", "mission": "冷麺の器を掲げて一枚", "memo": "Slack確定地", "kaname": false, "flag": ""}, {"no": 18, "id": "cp18", "name": "堀田", "spot": "堀田温泉(市営)", "lat": 33.2885017, "lng": 131.4611182, "radius": 80, "pt": 70, "status": "ok", "sensor": "NFC", "hint": "山手の関門にあたる市営温泉。露天あり", "mission": "市営温泉の入口で一枚", "memo": "Places実測(南立石堀田556-4)。第1水曜休の情報あり—ロケハンで確認", "kaname": false, "flag": ""}, {"no": 19, "id": "cp19", "name": "別府公園", "spot": "別府市立図書館 こもれびパーク(別府公園隣)", "lat": 33.2842674, "lng": 131.4899654, "radius": 120, "pt": 50, "status": "ok", "sensor": "GPS", "hint": "別府公園に隣接する新しい図書館。駐車場・トイレあり", "mission": "黒松並木を背景に一枚", "memo": "別府公園の中心(33.28156,131.49101)は基準にしづらいため、隣接の図書館を基準点に(Places実測)", "kaname": false, "flag": ""}, {"no": 20, "id": "cp20", "name": "観海寺", "spot": "グローバルタワー(ビーコンプラザ)", "lat": 33.2831944, "lng": 131.4861111, "radius": 120, "pt": 90, "status": "ok", "sensor": "GPS+写真", "hint": "高さ100mの展望デッキ。別府湾を見下ろす", "mission": "展望デッキから市街を見下ろす一枚", "memo": "観海寺エリアの代表として設定", "kaname": false, "flag": ""}, {"no": 21, "id": "cp21", "name": "北浜", "spot": "別府タワー", "lat": 33.2817713, "lng": 131.5059174, "radius": 80, "pt": 60, "status": "ok", "sensor": "GPS", "hint": "1957年建設・海辺のランドマーク", "mission": "タワーを見上げる構図で一枚", "memo": "", "kaname": false, "flag": ""}, {"no": 22, "id": "cp22", "name": "鶴見岳", "spot": "別府ロープウェイ(鶴見岳)", "lat": 33.2779012, "lng": 131.4487593, "radius": 300, "pt": 200, "status": "ok", "sensor": "GPS+写真", "hint": "標高1,375m。最高難度・最高報酬。運行時間に注意", "mission": "山頂(または山麓駅)で軍旗を掲げよ", "memo": "9:00-17:00", "kaname": false, "flag": ""}, {"no": 23, "id": "cp23", "name": "ラクテンチ", "spot": "別府ラクテンチ", "lat": 33.274941, "lng": 131.4855361, "radius": 200, "pt": 80, "status": "ok", "sensor": "GPS", "hint": "ケーブルカーで上る昭和の遊園地", "mission": "ケーブルカーと隊員を同じ画角で", "memo": "火・水休のことあり", "kaname": false, "flag": ""}, {"no": 24, "id": "cp24", "name": "竹瓦", "spot": "竹瓦温泉", "lat": 33.2774556, "lng": 131.5059894, "radius": 80, "pt": 80, "status": "ok", "sensor": "NFC", "hint": "明治12年創業・砂湯の殿堂", "mission": "竹瓦の唐破風を背景に一枚", "memo": "水曜休", "kaname": false, "flag": ""}, {"no": 25, "id": "cp25", "name": "浜脇", "spot": "八幡朝見神社", "lat": 33.2716217, "lng": 131.4951489, "radius": 80, "pt": 70, "status": "ok", "sensor": "GPS+写真", "hint": "別府の総鎮守。勝利祈願の写真ミッション", "mission": "社殿の前で勝利祈願の一枚", "memo": "", "kaname": false, "flag": ""}, {"no": 26, "id": "cp26", "name": "【盤外】遠国", "spot": "羯諦寺(日出町)", "lat": 33.3684862, "lng": 131.5034878, "radius": 150, "pt": 200, "status": "far", "sensor": "GPS+写真", "hint": "日出町への遠征。往復の時間コストと200ptを天秤に", "mission": "【遠征】山門で軍旗を掲げた一枚", "memo": "Slack記載「祇園寺」は誤記→羯諦寺が正", "kaname": false, "flag": ""}];
+const V2 = [{"no": 1, "id": "cp01", "name": "大分空港", "spot": "大分空港 出陣の地", "lat": 33.4796632, "lng": 131.7362008, "radius": 200, "pt": 0, "status": "ok", "sensor": "GPS", "hint": "ハローキティ空港。足湯はどこにある？", "mission": "全員集合の記念写真を提出（出陣の証）", "memo": "開会式会場。13:30出陣", "leg": "国東", "kaname": false, "flag": "🛫"}, {"no": 2, "id": "cp02", "name": "杵築城", "spot": "杵築城", "lat": 33.4147511, "lng": 131.6277461, "radius": 120, "pt": 100, "status": "ok", "sensor": "GPS+写真", "hint": "日本一小さい天守とも。築城は何年？", "mission": "天守を背にした一枚", "memo": "10:00-17:00 / 駐車場あり", "leg": "杵築", "kaname": true, "flag": "🏯"}, {"no": 3, "id": "cp03", "name": "酢屋の坂", "spot": "酢屋の坂", "lat": 33.4168439, "lng": 131.6198307, "radius": 80, "pt": 90, "status": "ok", "sensor": "GPS+写真", "hint": "坂の上と下、二つの坂が一枚に収まる場所を探せ", "mission": "二つの坂を一枚に収めた写真", "memo": "24h / 徒歩。志納坂と対", "leg": "杵築", "kaname": false, "flag": "⛰"}, {"no": 4, "id": "cp04", "name": "大原邸", "spot": "大原邸", "lat": 33.4169128, "lng": 131.6201786, "radius": 80, "pt": 90, "status": "ok", "sensor": "GPS+クイズ", "hint": "松平藩家老の屋敷。屋根は何葺き？", "mission": "茅葺屋根の写真＋答えを入力", "memo": "10:00-17:00 / 酢屋の坂から徒歩1分", "leg": "杵築", "kaname": false, "flag": "🏘"}, {"no": 5, "id": "cp05", "name": "若栄屋", "spot": "若栄屋（うれしの）", "lat": 33.4167696, "lng": 131.6280598, "radius": 80, "pt": 60, "status": "ok", "sensor": "クイズ", "hint": "創業320年。現当主は何代目？", "mission": "店先で答えを聞き、入力せよ", "memo": "11:00-15:00 / 城のふもと", "leg": "杵築", "kaname": false, "flag": "🍵"}, {"no": 6, "id": "cp06", "name": "日出城", "spot": "日出城跡（暘谷城）", "lat": 33.3667515, "lng": 131.5316979, "radius": 100, "pt": 90, "status": "ok", "sensor": "GPS+写真", "hint": "石垣の上に建つのは何の施設？", "mission": "別府湾を望む石垣からの一枚", "memo": "24h / 小学校敷地内。児童に配慮", "leg": "日出", "kaname": false, "flag": "🏯"}, {"no": 7, "id": "cp07", "name": "的山荘", "spot": "的山荘", "lat": 33.3666231, "lng": 131.533864, "radius": 80, "pt": 80, "status": "ok", "sensor": "クイズ", "hint": "国指定重要文化財。名物の魚は？", "mission": "門前で一枚＋魚の名を入力", "memo": "外観のみ可。営業中は静粛に", "leg": "日出", "kaname": false, "flag": "🐟"}, {"no": 8, "id": "cp08", "name": "亀川駅", "spot": "亀川駅", "lat": 33.3312028, "lng": 131.4931333, "radius": 80, "pt": 40, "status": "ok", "sensor": "GPS", "hint": "駅スタンプの惹句は「◯◯と砂湯の駅」", "mission": "駅名標と一枚", "memo": "24h / 通行の妨げにならぬこと", "leg": "別府北", "kaname": false, "flag": "🚉"}, {"no": 9, "id": "cp09", "name": "別府海浜砂湯", "spot": "別府海浜砂湯", "lat": 33.3120889, "lng": 131.5015273, "radius": 80, "pt": 90, "status": "ok", "sensor": "GPS+写真", "hint": "砂に埋まる時間は何分間？", "mission": "砂浜と施設を収めた一枚", "memo": "8:00-21:00 / 入浴は時間的に不可", "leg": "別府北", "kaname": false, "flag": "🏖"}, {"no": 10, "id": "cp10", "name": "別府駅", "spot": "別府駅（油屋熊八像）", "lat": 33.27924, "lng": 131.50086, "radius": 100, "pt": 50, "status": "ok", "sensor": "クイズ", "hint": "両手を挙げた銅像の人物は誰？", "mission": "像と一枚＋人物名を入力", "memo": "24h / 東口駅前", "leg": "別府市街", "kaname": false, "flag": "🚉"}, {"no": 11, "id": "cp11", "name": "トキハ別府", "spot": "トキハ別府", "lat": 33.2803239, "lng": 131.5053767, "radius": 80, "pt": 40, "status": "ok", "sensor": "GPS", "hint": "地下にあるのは足湯？それとも温泉？", "mission": "館内マップの一枚", "memo": "10:00-19:00", "leg": "別府市街", "kaname": false, "flag": "🏬"}, {"no": 12, "id": "cp12", "name": "別府タワー", "spot": "別府タワー", "lat": 33.281771, "lng": 131.505917, "radius": 80, "pt": 60, "status": "ok", "sensor": "クイズ", "hint": "展望階は何階？", "mission": "見上げた一枚＋階数を入力", "memo": "登塔は時間的に不可。外観で可", "leg": "別府市街", "kaname": false, "flag": "🗼"}, {"no": 13, "id": "cp13", "name": "竹瓦温泉", "spot": "竹瓦温泉", "lat": 33.277456, "lng": 131.505989, "radius": 80, "pt": 80, "status": "ok", "sensor": "GPS+写真", "hint": "名物は砂湯。破風造の入口を見よ", "mission": "唐破風の入口と一枚", "memo": "6:30-22:30 / 入浴は任意", "leg": "別府市街", "kaname": true, "flag": "♨"}, {"no": 14, "id": "cp14", "name": "竹瓦小路", "spot": "竹瓦小路アーケード", "lat": 33.277033, "lng": 131.505911, "radius": 60, "pt": 60, "status": "ok", "sensor": "クイズ", "hint": "日本最古級の木造アーケード。何造り？", "mission": "アーケード内から一枚", "memo": "24h / 竹瓦温泉から徒歩30秒", "leg": "別府市街", "kaname": false, "flag": "🏮"}, {"no": 15, "id": "cp15", "name": "別府公園", "spot": "別府公園", "lat": 33.281557, "lng": 131.491006, "radius": 150, "pt": 50, "status": "ok", "sensor": "GPS+写真", "hint": "園内の竹林を探せ", "mission": "竹林で全員の一枚", "memo": "24h / 駐車場あり", "leg": "別府市街", "kaname": false, "flag": "🌳"}, {"no": 16, "id": "cp16", "name": "湯けむり展望台", "spot": "湯けむり展望台", "lat": 33.3156683, "lng": 131.4853258, "radius": 100, "pt": 70, "status": "ok", "sensor": "GPS+写真", "hint": "日本夜景遺産。街から立ち昇るものは？", "mission": "湯けむりの立つ街並みを一枚", "memo": "8:00-21:00 / 駐車8台。道が狭い", "leg": "鉄輪", "kaname": false, "flag": "💨"}, {"no": 17, "id": "cp17", "name": "血の池地獄", "spot": "血の池地獄", "lat": 33.327173, "lng": 131.478173, "radius": 100, "pt": 120, "status": "ok", "sensor": "GPS+写真AI", "hint": "日本最古の天然地獄。赤の正体は？", "mission": "池の赤を収めた一枚＋成分名", "memo": "8:00-17:00 / 入場料要", "leg": "鉄輪", "kaname": true, "flag": "🩸"}, {"no": 18, "id": "cp18", "name": "龍巻地獄", "spot": "龍巻地獄", "lat": 33.327141, "lng": 131.479401, "radius": 100, "pt": 100, "status": "ok", "sensor": "クイズ", "hint": "間欠泉の噴出間隔は約何分？", "mission": "噴出の瞬間を捉えよ", "memo": "8:00-17:00 / 血の池と隣接", "leg": "鉄輪", "kaname": false, "flag": "⛲"}, {"no": 19, "id": "cp19", "name": "地獄蒸し工房", "spot": "地獄蒸し工房 鉄輪", "lat": 33.3154852, "lng": 131.4762201, "radius": 80, "pt": 150, "status": "ok", "sensor": "写真AI", "hint": "蒸し釜の温度は約何度？", "mission": "★食事ミッション：地獄蒸しの完成写真を提出", "memo": "10:00-18:00 / 16:00-17:00の食事枠。混雑注意", "leg": "鉄輪", "kaname": true, "flag": "🍚"}, {"no": 20, "id": "cp20", "name": "鉄輪むし湯", "spot": "鉄輪むし湯", "lat": 33.316165, "lng": 131.477793, "radius": 80, "pt": 80, "status": "ok", "sensor": "クイズ", "hint": "石室に入る時間は何分？", "mission": "石菖（せきしょう）の名を入力", "memo": "10:00-20:00 / 地獄蒸し工房から徒歩3分", "leg": "鉄輪", "kaname": false, "flag": "♨"}, {"no": 21, "id": "cp21", "name": "かまど地獄", "spot": "かまど地獄", "lat": 33.316388, "lng": 131.472391, "radius": 80, "pt": 110, "status": "ok", "sensor": "GPS+写真AI", "hint": "飲泉は1杯何円？", "mission": "一丁目〜六丁目のいずれかで一枚", "memo": "8:00-17:00 / 入場料要", "leg": "鉄輪", "kaname": false, "flag": "🔥"}, {"no": 22, "id": "cp22", "name": "海地獄", "spot": "海地獄", "lat": 33.316812, "lng": 131.468738, "radius": 100, "pt": 120, "status": "ok", "sensor": "GPS+写真AI", "hint": "コバルトブルーの正体となる成分は？", "mission": "青い池と一枚＋成分名", "memo": "8:00-17:00 / 入場料要。駐車場広い", "leg": "鉄輪", "kaname": true, "flag": "🌊"}, {"no": 23, "id": "cp23", "name": "明礬 湯の里", "spot": "明礬温泉 湯の里", "lat": 33.31963, "lng": 131.4538, "radius": 120, "pt": 110, "status": "ok", "sensor": "GPS+写真", "hint": "湯の花の結晶は何色？", "mission": "藁葺きの湯の花小屋を一枚", "memo": "8:30-18:00 / 駐車場広い", "leg": "明礬", "kaname": false, "flag": "🏚"}, {"no": 24, "id": "cp24", "name": "湯の花小屋", "spot": "湯の花小屋", "lat": 33.317978, "lng": 131.452513, "radius": 80, "pt": 100, "status": "ok", "sensor": "クイズ", "hint": "国指定の何文化財？", "mission": "小屋の内部または外観を一枚", "memo": "見学可。立入禁止区域に注意", "leg": "明礬", "kaname": false, "flag": "🌾"}, {"no": 25, "id": "cp25", "name": "グランヴェルデリゾート", "spot": "グランヴェルデリゾート（GOAL）", "lat": 33.3236545, "lng": 131.4103905, "radius": 200, "pt": 200, "status": "ok", "sensor": "GPS", "hint": "天と地の間、天間（あまま）へ。旗を掲げよ", "mission": "★入城の証：全員でドームテント前の一枚", "memo": "17:30チェックイン。ここが本陣", "leg": "天間", "kaname": true, "flag": "🏁"}];
+
+if(!window.__RV_ADMIN_OK__) throw 0;
+const map = L.map('map',{scrollWheelZoom:false}).setView([33.37,131.57],10);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:18, attribution:'&copy; OpenStreetMap'}).addTo(map);
+
+function layerFor(list, color, withLine){
+  const g = L.layerGroup();
+  const pts = [];
+  list.forEach(c=>{
+    pts.push([c.lat,c.lng]);
+    L.circleMarker([c.lat,c.lng],{radius:6,color:color,weight:2,
+      fillColor:color,fillOpacity:.55}).bindPopup(
+      '<b>'+c.no+'. '+c.name+'</b><br>'+(c.spot||'')+'<br>'+(c.pt||0)+'点 / 半径'+c.radius+'m'
+    ).addTo(g);
+    L.circle([c.lat,c.lng],{radius:c.radius,color:color,weight:1,opacity:.35,fill:false}).addTo(g);
+  });
+  if(withLine) L.polyline(pts,{color:color,weight:2,opacity:.45,dashArray:'5,6'}).addTo(g);
+  return {group:g, bounds:L.latLngBounds(pts)};
+}
+
+const L1 = layerFor(V1,'#c0392b',false);
+const L2 = layerFor(V2,'#c9a227',true);
+L2.group.addTo(map);
+map.fitBounds(L2.bounds,{padding:[30,30]});
+
+const btns = {b1:document.getElementById('b1'),b2:document.getElementById('b2'),bb:document.getElementById('bb')};
+function setOn(k){ Object.keys(btns).forEach(x=>btns[x].classList.toggle('on',x===k)); }
+btns.b2.onclick=()=>{map.removeLayer(L1.group);L2.group.addTo(map);setOn('b2');map.fitBounds(L2.bounds,{padding:[30,30]});};
+btns.b1.onclick=()=>{map.removeLayer(L2.group);L1.group.addTo(map);setOn('b1');map.fitBounds(L1.bounds,{padding:[30,30]});};
+btns.bb.onclick=()=>{L1.group.addTo(map);L2.group.addTo(map);setOn('bb');
+  map.fitBounds(L.latLngBounds(L1.bounds).extend(L2.bounds),{padding:[30,30]});};
+document.getElementById('bf').onclick=()=>{
+  map.fitBounds(L.latLngBounds(L1.bounds).extend(L2.bounds),{padding:[30,30]});};
+
+const tb = document.querySelector('#tbl tbody');
+let leg = null;
+V2.forEach(c=>{
+  if(c.leg !== leg){
+    leg = c.leg;
+    const r = document.createElement('tr');
+    r.className='leg';
+    r.innerHTML = '<td colspan="6">'+leg+'</td>';
+    tb.appendChild(r);
+  }
+  const r = document.createElement('tr');
+  r.innerHTML =
+    '<td class="no">'+c.no+'</td>'+
+    '<td><b>'+c.flag+' '+c.spot+'</b>'+(c.kaname?' <span class="badge k">要</span>':'')+
+      '<br><span style="color:#7c766a;font-size:11.5px">'+c.hint+'</span></td>'+
+    '<td style="color:#a8a294">'+c.mission+'<br><span style="color:#7c766a;font-size:11px">'+c.memo+'</span></td>'+
+    '<td><span class="badge">'+c.sensor+'</span></td>'+
+    '<td class="pt">'+c.radius+'m</td>'+
+    '<td class="pt">'+c.pt+'</td>';
+  tb.appendChild(r);
+});
+</script>
+</body>
+</html>

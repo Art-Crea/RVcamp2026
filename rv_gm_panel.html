@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>本陣 — 運営卓｜別府國盗リ合戦</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--sumi:#0d0c0a;--sumi2:#16140f;--washi:#e8e2d4;--kin:#c9a227;--shu:#c0392b;
+  --ai:#2c5f8a;--gray:#7c766a;--line:rgba(201,162,39,.22);--ok:#4a8f5f;--ng:#b5432f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--sumi);color:var(--washi);font-family:'Zen Kaku Gothic New',sans-serif;line-height:1.7}
+.wrap{max-width:1000px;margin:0 auto;padding:0 18px 90px}
+header{padding:34px 0 20px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.28em;color:var(--kin);margin-bottom:10px}
+h1{font-family:'Shippori Mincho',serif;font-size:28px;font-weight:800;letter-spacing:.1em}
+.hd{font-size:12.5px;color:var(--gray);margin-top:8px}
+
+/* 緊急停止 */
+.estop{margin:20px 0 26px;border:2px solid rgba(181,67,47,.5);border-radius:4px;
+  background:linear-gradient(180deg,rgba(181,67,47,.14),rgba(181,67,47,.05));padding:18px 20px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.estop .t{flex:1;min-width:220px}
+.estop h2{font-family:'Shippori Mincho',serif;font-size:18px;letter-spacing:.1em;margin-bottom:4px}
+.estop p{font-size:12.5px;color:#d8b8b0}
+.bigbtn{font-family:'Shippori Mincho',serif;font-size:19px;letter-spacing:.16em;padding:16px 34px;
+  border-radius:3px;cursor:pointer;border:1px solid rgba(181,67,47,.6);background:var(--ng);
+  color:#fff;font-weight:600;transition:.15s;min-width:190px}
+.bigbtn:hover{filter:brightness(1.12)}
+.bigbtn.on{background:var(--ok);border-color:rgba(74,143,95,.6)}
+.bigbtn:focus-visible{outline:3px solid var(--washi);outline-offset:3px}
+
+h3{font-family:'Shippori Mincho',serif;font-size:17px;letter-spacing:.1em;margin:34px 0 4px;
+  display:flex;align-items:center;gap:12px}
+h3::before{content:'';width:18px;height:1px;background:var(--kin)}
+.sub{color:var(--gray);font-size:12.5px;margin:0 0 14px 30px}
+.card{border:1px solid var(--line);background:var(--sumi2);border-radius:3px;padding:16px 18px}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button.sw{font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;padding:11px 18px;cursor:pointer;
+  background:transparent;color:var(--kin);border:1px solid var(--line);border-radius:3px;transition:.15s;
+  min-height:44px}
+button.sw:hover{border-color:var(--kin)}
+button.sw.on{background:var(--kin);color:var(--sumi);font-weight:700}
+button.sw:focus-visible{outline:2px solid var(--washi);outline-offset:2px}
+button.sw small{display:block;font-size:10.5px;opacity:.72;font-weight:400;margin-top:2px}
+.now{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--gray);margin-top:12px}
+.now b{color:var(--kin);font-weight:600}
+.locked{border-left:3px solid var(--ok);background:rgba(74,143,95,.07);padding:11px 14px;
+  font-size:12.5px;color:#b9cfbe;border-radius:0 3px 3px 0;margin-top:12px}
+.slider{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.slider input[type=range]{flex:1;min-width:200px;accent-color:var(--kin)}
+.slider b{font-family:'JetBrains Mono',monospace;color:var(--kin);min-width:70px}
+.wide{overflow-x:auto;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px}
+th,td{text-align:left;padding:8px 9px;border-bottom:1px solid rgba(201,162,39,.14);vertical-align:middle}
+th{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.13em;color:var(--kin);font-weight:600}
+tr.leg td{background:rgba(201,162,39,.06);font-family:'Shippori Mincho',serif;font-size:12.5px;
+  color:var(--kin);letter-spacing:.12em}
+td.no{font-family:'JetBrains Mono',monospace;color:var(--gray)}
+td.pt{font-family:'JetBrains Mono',monospace;color:var(--kin);text-align:right}
+select{font-family:'Zen Kaku Gothic New',sans-serif;font-size:12.5px;padding:7px 8px;min-height:38px;
+  background:#100e0b;color:var(--washi);border:1px solid var(--line);border-radius:3px;width:100%}
+select:focus-visible{outline:2px solid var(--kin)}
+.chip{font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 5px;border-radius:2px;
+  border:1px solid var(--line);color:#bdb6a6;white-space:nowrap}
+.chip.close{color:#e07a63;border-color:rgba(181,67,47,.45)}
+.chip.park{color:var(--ai);border-color:rgba(44,95,138,.5)}
+textarea{width:100%;height:190px;background:#100e0b;color:#a8a294;border:1px solid var(--line);
+  border-radius:3px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;margin-top:10px}
+footer{border-top:1px solid var(--line);margin-top:48px;padding-top:20px;color:var(--gray);font-size:11.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">HONJIN / ORGANISER CONSOLE / 2026.08.27</div>
+  <h1>本陣 — 運営卓</h1>
+  <p class="hd">当日の運用はこの画面のボタンだけで変えられます。設定ファイルを開く必要はありません。</p>
+</header>
+
+<div class="estop">
+  <div class="t">
+    <h2>合戦の一時中断</h2>
+    <p>事故・急病・悪天候のとき。全端末の判定を止め、「安全な場所に停車し本陣の指示を待て」だけを表示します。</p>
+  </div>
+  <button class="bigbtn" id="estop">合戦を中断する</button>
+</div>
+
+<h3>測位する端末</h3>
+<p class="sub">当日いちばん使う切り替えです。押した瞬間に全端末へ反映されます。</p>
+<div class="card">
+  <div class="row" id="scope"></div>
+  <p class="now">現在：<b id="scopeNow">—</b></p>
+</div>
+
+<h3>判定方式（一括）</h3>
+<p class="sub">全陣所の方式をまとめて変えます。「陣所ごとの設定に戻す」で個別設定に戻ります。</p>
+<div class="card">
+  <div class="row" id="modeAll"></div>
+  <p class="now">現在：<b id="modeNow">陣所ごとの設定</b></p>
+</div>
+
+<h3>自動占領の一括切替</h3>
+<p class="sub">25陣所すべてを自動にする／自動を外す、をひと押しで。個別の指定は下の表で上書きできます。</p>
+<div class="card">
+  <div class="row">
+    <button class="sw" id="autoAll">全陣所を自動占領にする<small>止まって20秒で成立</small></button>
+    <button class="sw" id="autoNone">自動占領を全て外す<small>陣所ごとの既定に戻す</small></button>
+  </div>
+  <p class="now">自動占領の陣所：<b id="autoCount">—</b> / 25</p>
+</div>
+
+<h3>細かい調整</h3>
+<p class="sub">現地の電波状況に合わせて。判定半径は全陣所に一括でかかります。</p>
+<div class="card">
+  <div class="slider">
+    <span style="font-size:13px">判定半径</span>
+    <input type="range" id="rad" min="50" max="200" step="10" value="100">
+    <b id="radV">×1.0</b>
+  </div>
+  <div class="slider">
+    <span style="font-size:13px">自動占領までの滞在</span>
+    <input type="range" id="dwell" min="5" max="60" step="5" value="20">
+    <b id="dwellV">20 秒</b>
+  </div>
+  <div class="slider">
+    <span style="font-size:13px">接近を知らせる距離</span>
+    <input type="range" id="near" min="30" max="200" step="10" value="80">
+    <b id="nearV">80 m</b>
+  </div>
+</div>
+
+<h3>安全装置</h3>
+<p class="sub">ここは運営卓からも切れません。設定ファイルで false にしても起動時に戻ります。</p>
+<div class="card">
+  <div class="locked">
+    <b style="color:#8fc7a0">走行中ロック（時速15km超で操作不可・停止5秒後に解除）</b><br>
+    走っている間は画面が使えません。停まらないと陣所は取れない、という状態を作ります。
+  </div>
+  <div class="locked" style="margin-top:8px">
+    <b style="color:#8fc7a0">速度は得点にならない</b><br>
+    速く着いても、飛ばしても、点は1点も増えません。ルール説明にも明記してあります。
+  </div>
+  <div class="locked" style="margin-top:8px">
+    <b style="color:#8fc7a0">助手席運用・単独行動の禁止・30分ごとの水分補給案内</b><br>
+    隊長端末は助手席で扱います。組は2名以上で行動してください。
+  </div>
+</div>
+
+<h3>陣所ごとの判定方式</h3>
+<p class="sub">ここだけ自動、ここは写真、ここは本陣承認、と個別に決められます。★は駐車台数が少ない陣所です。</p>
+<div class="wide"><table id="tbl">
+  <thead><tr><th>No</th><th>陣所</th><th>開門</th><th>駐車</th><th>点</th><th>自動</th><th style="width:200px">判定方式</th></tr></thead>
+  <tbody></tbody>
+</table></div>
+
+<h3>設定の書き出し</h3>
+<p class="sub">次回からこの設定を初期値にしたいときは、下の文字列を rv_config.js に反映してください。</p>
+<div class="card">
+  <div class="row">
+    <button class="sw" id="exp">現在の設定を書き出す</button>
+    <button class="sw" id="rst">すべて初期値に戻す</button>
+  </div>
+  <textarea id="out" readonly placeholder="「現在の設定を書き出す」を押すとここに表示されます"></textarea>
+</div>
+
+<footer>
+  別府國盗リ合戦 ／ 本陣運営卓 v2.2<br>
+  この画面での変更はこの端末内でのみ有効です。全端末へ配るには
+  <code>SYNC.backend</code> を <code>'php'</code> にしてサーバー同期を有効にしてください。
+</footer>
+
+</div>
+
+<script src="./rv_config.js"></script>
+<script>
+const CPS   = [{"no": 1, "id": "cp01", "name": "大分空港", "spot": "大分空港 出陣の地", "lat": 33.4796632, "lng": 131.7362008, "radius": 200, "pt": 0, "mode": "photo_group", "status": "ok", "hint": "ハローキティ空港。足湯はどこにある", "mission": "全員そろった一枚（出陣の証）", "memo": "開会式会場。13:30出陣", "leg": "国東", "open_from": "00:00", "open_to": "24:00", "trim": "lock", "flag": "🛫", "parking": "広い"}, {"no": 2, "id": "cp02", "name": "杵築城", "spot": "杵築城", "lat": 33.4147511, "lng": 131.6277461, "radius": 120, "pt": 100, "mode": "photo", "status": "ok", "hint": "日本一小さい天守とも。築城は何年か", "mission": "天守を背にした一枚", "memo": "10:00-17:00", "leg": "杵築", "open_from": "10:00", "open_to": "17:00", "trim": "core", "flag": "🏯", "parking": "あり"}, {"no": 3, "id": "cp03", "name": "酢屋の坂", "spot": "酢屋の坂", "lat": 33.4168439, "lng": 131.6198307, "radius": 80, "pt": 90, "mode": "photo", "status": "ok", "hint": "坂の上と下、二つの坂が一枚に収まる場所を探せ", "mission": "二つの坂を一枚に収めた写真", "memo": "24時間。徒歩のみ", "leg": "杵築", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "⛰", "parking": "市内無料Pへ"}, {"no": 4, "id": "cp04", "name": "大原邸", "spot": "大原邸", "lat": 33.4169128, "lng": 131.6201786, "radius": 80, "pt": 90, "mode": "quiz", "status": "ok", "hint": "松平藩家老の屋敷。屋根は何葺きか", "mission": "屋根の葺き方を入力", "memo": "10:00-17:00。酢屋の坂から徒歩1分", "leg": "杵築", "open_from": "10:00", "open_to": "17:00", "trim": "core", "flag": "🏘", "parking": "市内無料Pへ"}, {"no": 5, "id": "cp05", "name": "的山荘", "spot": "的山荘", "lat": 33.3666231, "lng": 131.533864, "radius": 80, "pt": 80, "mode": "quiz", "status": "ok", "hint": "国指定重要文化財。名物の魚は", "mission": "魚の名を入力", "memo": "外観のみ。営業中は静粛に", "leg": "日出", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🐟", "parking": "少"}, {"no": 6, "id": "cp06", "name": "日出城", "spot": "日出城跡（暘谷城）", "lat": 33.3667515, "lng": 131.5316979, "radius": 100, "pt": 90, "mode": "photo", "status": "ok", "hint": "石垣の上に建つのは何の施設か", "mission": "別府湾を望む石垣からの一枚", "memo": "24時間。小学校敷地内。児童に配慮", "leg": "日出", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🏯", "parking": "少"}, {"no": 7, "id": "cp07", "name": "シーガーデンひじ", "spot": "シーガーデンひじ", "lat": 33.361888, "lng": 131.5034888, "radius": 100, "pt": 60, "mode": "auto", "status": "ok", "hint": "別府湾を望む直売所。名物のパンは", "mission": "車を降りずとも判定される", "memo": "9:00-19:00。国道10号直上。駐車場が広い", "leg": "日出", "open_from": "09:00", "open_to": "19:00", "trim": "core", "flag": "🛍", "parking": "広い"}, {"no": 8, "id": "cp08", "name": "亀川駅", "spot": "亀川駅", "lat": 33.3312028, "lng": 131.4931333, "radius": 80, "pt": 40, "mode": "auto", "status": "ok", "hint": "駅スタンプの惹句は「◯◯と砂湯の駅」", "mission": "停車20秒で自動判定", "memo": "24時間。通行の妨げにならぬこと", "leg": "別府北", "open_from": "00:00", "open_to": "24:00", "trim": "trim2", "flag": "🚉", "parking": "少"}, {"no": 9, "id": "cp09", "name": "別府海浜砂湯", "spot": "別府海浜砂湯", "lat": 33.3120889, "lng": 131.5015273, "radius": 80, "pt": 90, "mode": "photo", "status": "ok", "hint": "砂に埋まる時間は何分間か", "mission": "砂浜と施設を収めた一枚", "memo": "8:00-21:00。入浴は時間的に不可", "leg": "別府北", "open_from": "08:00", "open_to": "21:00", "trim": "core", "flag": "🏖", "parking": "あり"}, {"no": 10, "id": "cp10", "name": "別府駅", "spot": "別府駅（油屋熊八像）", "lat": 33.27924, "lng": 131.50086, "radius": 100, "pt": 50, "mode": "quiz", "status": "ok", "hint": "両手を挙げた銅像の人物は誰か", "mission": "人物名を入力", "memo": "24時間。東口駅前", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🚉", "parking": "有料"}, {"no": 11, "id": "cp11", "name": "トキハ別府", "spot": "トキハ別府", "lat": 33.2803239, "lng": 131.5053767, "radius": 80, "pt": 40, "mode": "auto", "status": "ok", "hint": "地下にあるのは足湯か、温泉か", "mission": "停車20秒で自動判定", "memo": "10:00-19:00", "leg": "別府市街", "open_from": "10:00", "open_to": "19:00", "trim": "trim1", "flag": "🏬", "parking": "あり"}, {"no": 12, "id": "cp12", "name": "別府タワー", "spot": "別府タワー", "lat": 33.281771, "lng": 131.505917, "radius": 80, "pt": 60, "mode": "quiz", "status": "ok", "hint": "展望階は何階か", "mission": "階数を入力", "memo": "登塔は時間的に不可。外観で可", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🗼", "parking": "近隣有料"}, {"no": 13, "id": "cp13", "name": "竹瓦温泉", "spot": "竹瓦温泉", "lat": 33.277456, "lng": 131.505989, "radius": 80, "pt": 80, "mode": "photo", "status": "ok", "hint": "名物は砂湯。入口の屋根の形を見よ", "mission": "唐破風の入口と一枚", "memo": "6:30-22:30", "leg": "別府市街", "open_from": "06:30", "open_to": "22:30", "trim": "lock", "flag": "♨", "parking": "なし"}, {"no": 14, "id": "cp14", "name": "竹瓦小路", "spot": "竹瓦小路アーケード", "lat": 33.277033, "lng": 131.505911, "radius": 60, "pt": 60, "mode": "manual", "status": "ok", "hint": "日本最古級の木造アーケード。何造りか", "mission": "★屋根下でGPS不可。写真で手動判定", "memo": "24時間。竹瓦温泉から徒歩30秒", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🏮", "parking": "なし"}, {"no": 15, "id": "cp15", "name": "別府公園", "spot": "別府公園", "lat": 33.281557, "lng": 131.491006, "radius": 150, "pt": 50, "mode": "photo", "status": "ok", "hint": "園内の竹林を探せ", "mission": "竹林で全員の一枚", "memo": "24時間。市街から2km西に外れる", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "trim2", "flag": "🌳", "parking": "広い"}, {"no": 16, "id": "cp16", "name": "湯けむり展望台", "spot": "湯けむり展望台", "lat": 33.3156683, "lng": 131.4853258, "radius": 100, "pt": 70, "mode": "photo", "status": "ok", "hint": "日本夜景遺産。街から立ち昇るものは", "mission": "湯けむりの立つ街並みを一枚", "memo": "8:00-21:00。★駐車8台・道幅狭い", "leg": "鉄輪", "open_from": "08:00", "open_to": "21:00", "trim": "core", "flag": "💨", "parking": "8台・狭"}, {"no": 17, "id": "cp17", "name": "血の池地獄", "spot": "血の池地獄", "lat": 33.327173, "lng": 131.478173, "radius": 100, "pt": 120, "mode": "photo", "status": "ok", "hint": "日本最古の天然地獄。赤の正体は", "mission": "池の赤を収めた一枚", "memo": "8:00-17:00。★17時閉門。入場料要", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "core", "flag": "🩸", "parking": "あり"}, {"no": 18, "id": "cp18", "name": "龍巻地獄", "spot": "龍巻地獄", "lat": 33.327141, "lng": 131.479401, "radius": 100, "pt": 100, "mode": "quiz", "status": "ok", "hint": "間欠泉の噴出間隔は約何分か", "mission": "間隔を入力", "memo": "8:00-17:00。★噴出待ちで時間が読めない", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "trim3", "flag": "⛲", "parking": "あり"}, {"no": 19, "id": "cp19", "name": "地獄蒸し工房", "spot": "地獄蒸し工房 鉄輪", "lat": 33.3154852, "lng": 131.4762201, "radius": 80, "pt": 150, "mode": "photo_group", "status": "ok", "hint": "蒸し釜の温度は約何度か", "mission": "★食事：組の全員と料理が写った一枚", "memo": "10:00-18:00。16:00-17:00の食事枠", "leg": "鉄輪", "open_from": "10:00", "open_to": "18:00", "trim": "lock", "flag": "🍚", "parking": "あり"}, {"no": 20, "id": "cp20", "name": "鉄輪むし湯", "spot": "鉄輪むし湯", "lat": 33.316165, "lng": 131.477793, "radius": 80, "pt": 80, "mode": "quiz", "status": "ok", "hint": "石室に敷かれた薬草の名は", "mission": "薬草名を入力", "memo": "10:00-20:00。工房から徒歩3分", "leg": "鉄輪", "open_from": "10:00", "open_to": "20:00", "trim": "core", "flag": "♨", "parking": "少"}, {"no": 21, "id": "cp21", "name": "かまど地獄", "spot": "かまど地獄", "lat": 33.316388, "lng": 131.472391, "radius": 80, "pt": 110, "mode": "photo", "status": "ok", "hint": "飲泉は1杯何円か", "mission": "一丁目〜六丁目のいずれかで一枚", "memo": "8:00-17:00。★17時閉門。入場料要", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "core", "flag": "🔥", "parking": "あり"}, {"no": 22, "id": "cp22", "name": "海地獄", "spot": "海地獄", "lat": 33.316812, "lng": 131.468738, "radius": 100, "pt": 120, "mode": "photo", "status": "ok", "hint": "コバルトブルーの正体となる成分は", "mission": "青い池と一枚", "memo": "8:00-17:00。★17時閉門。駐車場広い", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "lock", "flag": "🌊", "parking": "広い"}, {"no": 23, "id": "cp23", "name": "十文字原展望台", "spot": "十文字原展望台", "lat": 33.3297195, "lng": 131.4602103, "radius": 120, "pt": 90, "mode": "photo", "status": "ok", "hint": "日本夜景遺産。別府湾と国東半島を一望", "mission": "展望台からの一枚", "memo": "★24時間開放。17時以降も取れる数少ない陣所。駐車7-8台・進入路が狭い", "leg": "鉄輪-明礬", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🌃", "parking": "7台・狭"}, {"no": 24, "id": "cp24", "name": "明礬 湯の里", "spot": "明礬温泉 湯の里", "lat": 33.3195656, "lng": 131.4539899, "radius": 120, "pt": 110, "mode": "photo", "status": "ok", "hint": "湯の花の結晶は何色か", "mission": "藁葺きの湯の花小屋を一枚", "memo": "9:00-18:00。駐車場広い", "leg": "明礬", "open_from": "09:00", "open_to": "18:00", "trim": "core", "flag": "🏚", "parking": "広い"}, {"no": 25, "id": "cp25", "name": "グランヴェルデリゾート", "spot": "グランヴェルデリゾート（着城）", "lat": 33.3236545, "lng": 131.4103905, "radius": 200, "pt": 200, "mode": "photo_group", "status": "ok", "hint": "天と地の間、天間（あまま）", "mission": "★着城：組の全員が写った一枚", "memo": "17:30チェックイン。ここが本陣", "leg": "天間", "open_from": "00:00", "open_to": "24:00", "trim": "lock", "flag": "🏁", "parking": "広い"}];
+const MODES = {"auto": "圏内に一定時間とどまれば自動占領", "near": "接近すると通知。ボタンを押して確定", "manual": "GPSを使わず写真のみで判定", "photo": "圏内＋写真の提出", "photo_group": "圏内＋組の全員が写った写真", "quiz": "圏内＋クイズの正解", "gm": "必ず運営が承認する"};
+const C = window.RV_CONFIG || {GPS:{},JUDGE:{},SAFETY:{}};
+
+const SCOPES = [
+  ['off',   'GPSを使わない', '雨天・機器不調のとき'],
+  ['admin', '運営1名のみ',   '下見・リハーサル'],
+  ['leader','各組の隊長のみ','本番（6組×1台）'],
+  ['all',   '全36名',        '電池と通信量が6倍']
+];
+const MODEALL = [
+  ['default','陣所ごとの設定','個別設定に戻す'],
+  ['auto',   '全て自動',     '止まれば自動で占領'],
+  ['near',   '全て接近通知', '近づいたら押して確定'],
+  ['photo',  '全て写真',     '写真の提出が必須'],
+  ['gm',     '全て本陣承認', '運営が1件ずつ承認']
+];
+
+let state = { scope: C.GPS.scope || 'leader', modeAll: 'default',
+              radius: 100, dwell: 20, near: 80, per: {}, estop: false };
+
+function drawBtns(host, defs, cur, on){
+  const el = document.getElementById(host); el.innerHTML='';
+  defs.forEach(([v,label,note])=>{
+    const b=document.createElement('button');
+    b.className='sw'+(v===cur?' on':''); b.type='button';
+    b.innerHTML = label + '<small>'+note+'</small>';
+    b.onclick = ()=>on(v);
+    el.appendChild(b);
+  });
+}
+function setScope(v){
+  state.scope=v; C.GPS.scope=v;
+  if(window.RVGeo) RVGeo.setScope(v);
+  drawBtns('scope',SCOPES,v,setScope);
+  document.getElementById('scopeNow').textContent =
+    SCOPES.filter(s=>s[0]===v)[0][1] + '（' + SCOPES.filter(s=>s[0]===v)[0][2] + '）';
+}
+function setModeAll(v){
+  state.modeAll=v; state.per={};
+  C.JUDGE.override = (v==='default'? null : v);
+  if(window.RVGeo) RVGeo.setModeAll(v);
+  drawBtns('modeAll',MODEALL,v,setModeAll);
+  document.getElementById('modeNow').textContent =
+    MODEALL.filter(m=>m[0]===v)[0][1];
+  drawTable();
+}
+setScope(state.scope);
+setModeAll('default');
+
+/* 緊急停止 */
+const eb=document.getElementById('estop');
+eb.onclick=()=>{
+  state.estop=!state.estop;
+  C.SAFETY.emergencyStop=state.estop;
+  if(window.RVGeo) RVGeo.emergency(state.estop);
+  eb.textContent = state.estop ? '合戦を再開する' : '合戦を中断する';
+  eb.classList.toggle('on', state.estop);
+};
+
+/* スライダー */
+function bind(id, vid, fmt, apply){
+  const s=document.getElementById(id), o=document.getElementById(vid);
+  const upd=()=>{ o.textContent=fmt(+s.value); apply(+s.value); };
+  s.oninput=upd; upd();
+}
+bind('rad','radV', v=>'×'+(v/100).toFixed(1), v=>{
+  state.radius=v; C.JUDGE.radiusScale=v/100;
+  if(window.RVGeo) RVGeo.setRadiusScale(v/100);
+});
+bind('dwell','dwellV', v=>v+' 秒', v=>{
+  state.dwell=v; C.JUDGE.dwellSec=v; if(window.RVGeo) RVGeo.setDwell(v);
+});
+bind('near','nearV', v=>v+' m', v=>{ state.near=v; C.JUDGE.nearNoticeM=v; });
+
+/* 陣所ごと */
+function drawTable(){
+  const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
+  let leg=null;
+  CPS.forEach(c=>{
+    if(c.leg!==leg){ leg=c.leg;
+      const lr=document.createElement('tr'); lr.className='leg';
+      lr.innerHTML='<td colspan="7">'+leg+'</td>'; tb.appendChild(lr); }
+    const closes = c.open_to && c.open_to!=='24:00';
+    const small  = /台|少|なし/.test(c.parking||'');
+    const r=document.createElement('tr');
+    const eff = state.per[c.id] || (state.modeAll!=='default'? state.modeAll : c.mode);
+    const opts = ['default'].concat(Object.keys(MODES))
+      .map(m=>{
+        const cur = state.per[c.id] || 'default';
+        const lbl = (m==='default') ? ('既定：'+(MODES[c.mode]||c.mode)) : MODES[m];
+        return '<option value="'+m+'"'+(cur===m?' selected':'')+'>'+lbl+'</option>';
+      }).join('');
+    r.innerHTML =
+      '<td class="no">'+c.no+'</td>'+
+      '<td><b>'+c.flag+' '+c.name+'</b></td>'+
+      '<td><span class="chip '+(closes?'close':'')+'">'+
+        (closes ? c.open_from+'–'+c.open_to : '24時間')+'</span></td>'+
+      '<td><span class="chip '+(small?'park':'')+'">'+(small?'★':'')+(c.parking||'—')+'</span></td>'+
+      '<td class="pt">'+c.pt+'</td>'+
+      '<td><button type="button" class="sw tog'+(eff==='auto'?' on':'')+
+        '" data-tog="'+c.id+'" style="padding:6px 12px;min-height:34px;font-size:12px">'+
+        (eff==='auto'?'自動':'手動')+'</button></td>'+
+      '<td><select data-id="'+c.id+'">'+opts+'</select></td>';
+    tb.appendChild(r);
+  });
+  tb.querySelectorAll('[data-tog]').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.dataset.tog;
+      const cp=CPS.filter(x=>x.id===id)[0];
+      const eff=state.per[id] || (state.modeAll!=='default'? state.modeAll : cp.mode);
+      if(eff==='auto'){ delete state.per[id];
+        if(cp.mode==='auto') state.per[id]='photo';
+      } else { state.per[id]='auto'; }
+      if(window.RVGeo) RVGeo.setMode(id, state.per[id]||'default');
+      drawTable();
+    };
+  });
+  tb.querySelectorAll('select').forEach(s=>{
+    s.onchange=()=>{
+      const id=s.dataset.id, v=s.value;
+      if(v==='default') delete state.per[id]; else state.per[id]=v;
+      if(window.RVGeo) RVGeo.setMode(id,v);
+      drawTable();
+    };
+  });
+  const n = CPS.filter(c=>(state.per[c.id] ||
+    (state.modeAll!=='default'? state.modeAll : c.mode))==='auto').length;
+  document.getElementById('autoCount').textContent = n;
+}
+drawTable();
+
+/* 自動占領の一括 */
+document.getElementById('autoAll').onclick=()=>{
+  CPS.forEach(c=>{ state.per[c.id]='auto';
+    if(window.RVGeo) RVGeo.setMode(c.id,'auto'); });
+  drawTable();
+};
+document.getElementById('autoNone').onclick=()=>{
+  state.per={};
+  if(window.RVGeo) CPS.forEach(c=>RVGeo.setMode(c.id,'default'));
+  drawTable();
+};
+
+/* 書き出し */
+document.getElementById('exp').onclick=()=>{
+  document.getElementById('out').value = JSON.stringify({
+    GPS:{ provider:C.GPS.provider, scope:state.scope, teams:C.GPS.teams },
+    JUDGE:{ override:(state.modeAll==='default'?null:state.modeAll),
+            dwellSec:state.dwell, radiusScale:state.radius/100, nearNoticeM:state.near },
+    perCheckpointMode: state.per
+  },null,2);
+};
+document.getElementById('rst').onclick=()=>{
+  state.per={}; setScope('leader'); setModeAll('default');
+  document.getElementById('rad').value=100;
+  document.getElementById('dwell').value=20;
+  document.getElementById('near').value=80;
+  ['rad','dwell','near'].forEach(i=>document.getElementById(i).dispatchEvent(new Event('input')));
+  document.getElementById('out').value='';
+};
+</script>
+</body>
+</html>

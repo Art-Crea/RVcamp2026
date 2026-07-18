@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>軍議 — 合戦の掟｜別府國盗リ合戦</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--sumi:#0d0c0a;--sumi2:#16140f;--washi:#e8e2d4;--kin:#c9a227;--shu:#c0392b;
+  --ai:#2c5f8a;--gray:#7c766a;--line:rgba(201,162,39,.22);--ok:#4a8f5f;--ng:#b5432f}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--sumi);color:var(--washi);line-height:1.75;
+  font-family:'Zen Kaku Gothic New',sans-serif;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(ellipse at 15% -5%,rgba(192,57,43,.12),transparent 55%),
+    radial-gradient(ellipse at 88% 8%,rgba(44,95,138,.12),transparent 55%);
+  background-attachment:fixed}
+.wrap{max-width:820px;margin:0 auto;padding:0 20px 90px}
+
+header{padding:60px 0 34px;text-align:center;border-bottom:1px solid var(--line);margin-bottom:14px}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--kin);margin-bottom:16px}
+h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(30px,7vw,52px);letter-spacing:.14em}
+.when{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--gray);letter-spacing:.1em}
+.lede{margin:26px auto 0;max-width:52ch;font-size:15px;color:#c6bfae;text-align:left}
+
+/* ── 署名要素：閉門の壁 ── */
+.clock{margin:44px 0 8px;border:1px solid var(--line);border-radius:3px;background:var(--sumi2);
+  padding:26px 22px 20px;position:relative;overflow:hidden}
+.clock h3{font-family:'Shippori Mincho',serif;font-size:16px;letter-spacing:.1em;margin-bottom:4px}
+.clock .cap{font-size:12.5px;color:var(--gray);margin-bottom:22px}
+.bar{position:relative;height:76px;margin:0 4px}
+.track{position:absolute;top:30px;left:0;right:0;height:2px;background:rgba(201,162,39,.25)}
+.fill{position:absolute;top:30px;left:0;height:2px;background:var(--kin);width:87.5%}
+.wall{position:absolute;top:0;bottom:0;left:87.5%;width:2px;background:var(--ng)}
+.wall::after{content:'';position:absolute;left:2px;top:0;bottom:0;width:56px;
+  background:repeating-linear-gradient(45deg,rgba(181,67,47,.16),rgba(181,67,47,.16) 5px,transparent 5px,transparent 10px)}
+.wall .lab{position:absolute;left:8px;top:-4px;font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:#e07a63;letter-spacing:.1em;white-space:nowrap}
+.tk{position:absolute;top:22px;transform:translateX(-50%);text-align:center}
+.tk i{display:block;width:9px;height:9px;border-radius:50%;background:var(--kin);margin:0 auto 8px}
+.tk b{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--kin);font-weight:600;display:block}
+.tk s{display:block;font-size:10.5px;color:var(--gray);text-decoration:none;margin-top:2px;white-space:nowrap}
+@media(max-width:640px){.tk s{display:none}.bar{height:60px}}
+
+/* ── 掟 ── */
+.oki{margin-top:22px;border-top:1px solid var(--line);padding-top:26px}
+.rule{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid rgba(201,162,39,.13)}
+.rule .n{font-family:'Shippori Mincho',serif;font-size:34px;color:var(--kin);line-height:1;
+  flex:0 0 46px;text-align:center;opacity:.85}
+.rule h2{font-family:'Shippori Mincho',serif;font-size:20px;font-weight:600;letter-spacing:.08em;margin-bottom:9px}
+.rule p{font-size:14px;color:#bdb6a6;margin-bottom:9px}
+.rule p:last-child{margin-bottom:0}
+.rule em{font-style:normal;color:var(--kin)}
+.rule .hit{border-left:3px solid var(--shu);background:rgba(192,57,43,.09);
+  padding:11px 14px;font-size:13px;color:#e0c9c4;border-radius:0 3px 3px 0;margin-top:12px}
+
+.stat{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.stat div{border:1px solid var(--line);border-radius:3px;padding:9px 13px;background:rgba(255,255,255,.02)}
+.stat b{font-family:'JetBrains Mono',monospace;font-size:19px;color:var(--kin);display:block;line-height:1.3}
+.stat s{text-decoration:none;font-size:11px;color:var(--gray)}
+
+h4{font-family:'Shippori Mincho',serif;font-size:18px;letter-spacing:.1em;margin:52px 0 6px;
+  display:flex;align-items:center;gap:13px}
+h4::before{content:'';width:20px;height:1px;background:var(--kin)}
+.sub{color:var(--gray);font-size:12.5px;margin:0 0 18px 33px}
+.wide{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:560px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid rgba(201,162,39,.14);vertical-align:top}
+th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--kin);font-weight:600}
+tr.leg td{background:rgba(201,162,39,.06);font-family:'Shippori Mincho',serif;
+  font-size:13px;color:var(--kin);letter-spacing:.12em}
+td.pt{font-family:'JetBrains Mono',monospace;color:var(--kin);text-align:right;white-space:nowrap}
+td.no{font-family:'JetBrains Mono',monospace;color:var(--gray)}
+.chip{font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:1px 6px;border-radius:2px;
+  border:1px solid var(--line);color:#bdb6a6;white-space:nowrap}
+.chip.close{color:#e07a63;border-color:rgba(181,67,47,.45)}
+.chip.auto{color:var(--ok);border-color:rgba(74,143,95,.42)}
+.chip.hand{color:var(--ai);border-color:rgba(44,95,138,.5)}
+footer{border-top:1px solid var(--line);margin-top:56px;padding-top:22px;color:var(--gray);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">BEPPU KUNITORI 2026.08.27</div>
+  <h1>合戦の掟</h1>
+  <div class="when">13:30 大分空港 出陣 &nbsp;―&nbsp; 17:30 天間 着城</div>
+  <p class="lede">
+    四時間で二十五の陣所。だが全部は取れません。<br>
+    走った距離ではなく、<em style="color:#c9a227;font-style:normal">どこで停まらなかったか</em>で勝敗が決まります。
+  </p>
+</header>
+
+<div class="clock">
+  <h3>時刻という名の敵</h3>
+  <p class="cap">この合戦には、敵軍のほかにもう一つ相手がいます。閉門です。</p>
+  <div class="bar">
+    <div class="track"></div><div class="fill"></div>
+    <div class="tk" style="left:0%"><i></i><b>13:30</b><s>空港 出陣</s></div>
+    <div class="tk" style="left:25%"><i></i><b>14:30</b><s>杵築</s></div>
+    <div class="tk" style="left:50%"><i></i><b>15:30</b><s>別府市街</s></div>
+    <div class="tk" style="left:75%"><i></i><b>16:30</b><s>鉄輪・地獄蒸し</s></div>
+    <div class="tk" style="left:100%"><i></i><b>17:30</b><s>着城</s></div>
+    <div class="wall"><span class="lab">17:00 地獄 全門閉鎖</span></div>
+  </div>
+  <p style="font-size:13px;color:#bdb6a6;margin-top:10px">
+    海地獄・かまど地獄・血の池地獄・龍巻地獄は<em style="color:#e07a63;font-style:normal">十七時に門を閉じます</em>。
+    合計四百五十点が、時報とともに盤上から消えます。着城は十七時三十分。
+    つまり最後の三十分、地獄はもう取れません。
+  </p>
+</div>
+
+<div class="oki">
+
+  <div class="rule">
+    <div class="n">一</div>
+    <div>
+      <h2>全ては取れぬ</h2>
+      <p>陣所は二十五。しかし四時間のうち、およそ<em>二時間は走っている</em>時間です。
+         実際に降りて何かができるのは、一組あたり<em>五から七か所</em>。</p>
+      <p>だから配点は「行きにくさ」に比例させてあります。道端の陣所は四十点。
+         山を上がる陣所は百五十点。安全に数を稼ぐか、一点に賭けるか。出陣直後に最初の判断が来ます。</p>
+      <div class="stat">
+        <div><b>25</b><s>陣所</s></div>
+        <div><b>2,140</b><s>満点</s></div>
+        <div><b>5〜7</b><s>実際に取れる数</s></div>
+        <div><b>約55km</b><s>空港から本陣まで</s></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="n">二</div>
+    <div>
+      <h2>門は待ってくれぬ</h2>
+      <p>杵築城と大原邸は十七時、地獄群も十七時、明礬の湯の里は十八時で閉まります。
+         早い時間にしか取れない陣所と、いつでも取れる陣所がある。</p>
+      <p>盤面では、閉門した陣所は自動的に灰色に落ちます。追いかけても意味がありません。
+         二十五のうち<em>十一が二十四時間開放</em>。酢屋の坂、日出城跡、十文字原展望台。<em>終盤に残すならこちらです</em>。</p>
+      <div class="hit">
+        序盤に杵築へ寄れば九十点が三つ。しかし往復で三十分を失います。
+        その三十分で、別府市街の徒歩圏を四つ取れる。さあ、どちらへ。<br>
+        ——そして十七時。地獄が閉じたあと、まだ打てる手は十文字原の九十点だけです。
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="n">三</div>
+    <div>
+      <h2>止まって二十秒</h2>
+      <p>占領にボタンは要りません。陣所に近づけば、端末が勝手に判定します。
+         ただし<em>圏内に二十秒とどまること</em>。車で前を通り過ぎただけでは取れません。</p>
+      <p>測位の誤差も見ています。「圏内」「たぶん圏内」「圏外」の三段階。
+         たぶん圏内で止まった場合は本陣（運営）の判断に回ります。
+         誤差が大きすぎるときは、空の見える場所へ出てください。</p>
+      <p>測位を担うのは<em>各組の隊長の端末一台のみ</em>。六組で六台。
+         隊長がその場にいなければ、組は一歩も進めません。</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="n">四</div>
+    <div>
+      <h2>飯もまた戦</h2>
+      <p>十六時、鉄輪。地獄蒸し工房での食事は休憩ではなく<em>最高配点の陣所</em>です。百五十点。</p>
+      <p>提出物は、蒸し上がった自分たちの料理の写真。
+         ただし工房は混みます。列に並んだ三十分で、隣の海地獄が閉まる。
+         <em>誰が並び、誰が地獄へ走るか</em>。組を割るかどうかも、ここで決まります。</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="n">五</div>
+    <div>
+      <h2>着城せねば、勝ちもない</h2>
+      <p>十七時三十分、グランヴェルデリゾート。ここに全員そろって初めて二百点が入ります。</p>
+      <p>遅参は減点。どれだけ陣所を取っても、宿に着かなければ意味がありません。
+         最後の一手は「あと一つ取りに行くか、まっすぐ帰るか」。
+         明礬から天間までは<em>山道で二十分</em>。日暮れも近い。欲を出した組から沈みます。</p>
+      <div class="hit">安全運転が最優先です。速度は一切、得点になりません。</div>
+    </div>
+  </div>
+
+
+</div>
+
+<h4>安全の掟 ― これだけは点より上</h4>
+<p class="sub">合戦は車で移動します。以下は得点や勝敗より優先されます。</p>
+<div class="oki" style="border-top:none;padding-top:6px">
+
+  <div class="rule">
+    <div class="n" style="color:#8fc7a0">安</div>
+    <div>
+      <h2>走っている間、画面は動かない</h2>
+      <p>時速15kmを超えると、端末の全ての操作が止まります。停車して5秒たつまで戻りません。
+         これは罰ではなく、<em style="color:#8fc7a0">走行中にスマホを見る意味を消すため</em>の仕組みです。</p>
+      <p>自動占領も走行中は働きません。<em style="color:#8fc7a0">停まらなければ、陣所は取れません。</em></p>
+      <div class="hit" style="border-left-color:#4a8f5f;background:rgba(74,143,95,.09);color:#b9cfbe">
+        隊長の端末は<b>助手席</b>で扱ってください。運転者は操作しないこと。
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="n" style="color:#8fc7a0">安</div>
+    <div>
+      <h2>速さは一点にもならない</h2>
+      <p>速度、到着の早さ、走行距離。<em style="color:#8fc7a0">これらは得点に一切含まれません。</em>
+         飛ばして得をする設計にはしていません。急いだ組が勝つ合戦ではなく、
+         選んだ組が勝つ合戦です。</p>
+      <p>駐車は必ず正規の場所へ。路上駐車で取れる陣所は一つもありません。
+         湯けむり展望台と十文字原展望台は<em style="color:#e07a63">駐車7〜8台・進入路が狭い</em>ため、
+         満車なら潔く次へ向かってください。</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="n" style="color:#8fc7a0">安</div>
+    <div>
+      <h2>八月の別府は、夕方でも三十度</h2>
+      <p>三十分ごとに水分補給の合図が出ます。日陰で休むのも作戦のうちです。
+         気分が悪くなったら、迷わず本陣へ連絡してください。</p>
+      <p>組は<em style="color:#8fc7a0">必ず二名以上</em>で動くこと。単独行動は禁止です。
+         地獄群は高温の蒸気が出ています。柵の外へは出ないでください。</p>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="n" style="color:#e07a63">停</div>
+    <div>
+      <h2>本陣は、いつでも合戦を止められる</h2>
+      <p>事故・急病・悪天候があれば、本陣の判断で<em style="color:#e07a63">合戦は即座に中断</em>されます。
+         全端末の画面が切り替わり、判定は止まります。</p>
+      <p>その表示が出たら、安全な場所に停車して指示を待ってください。
+         点数はその時点で保全されます。<em style="color:#e07a63">中断で損をすることはありません。</em></p>
+    </div>
+  </div>
+
+</div>
+
+<h4>陣立て</h4>
+<p class="sub">東から西へ。閉門時刻に印のあるものは、時間との勝負です。</p>
+<div class="wide"><table id="tbl">
+  <thead><tr><th>No</th><th>陣所</th><th>ヒント</th><th>判定</th><th>開門</th><th>点</th></tr></thead>
+  <tbody></tbody>
+</table></div>
+
+<footer>
+  別府國盗リ合戦 ／ 2026年8月27日（木）13:30 大分空港 出陣<br>
+  六組三十六将・赤青二軍 ／ 本陣：グランヴェルデリゾート（別府市天間）<br>
+  配点と判定半径は現地リハーサル後に確定します。
+</footer>
+
+</div>
+<script>
+const CPS = [{"no": 1, "id": "cp01", "name": "大分空港", "spot": "大分空港 出陣の地", "lat": 33.4796632, "lng": 131.7362008, "radius": 200, "pt": 0, "mode": "photo_group", "status": "ok", "hint": "ハローキティ空港。足湯はどこにある", "mission": "全員そろった一枚（出陣の証）", "memo": "開会式会場。13:30出陣", "leg": "国東", "open_from": "00:00", "open_to": "24:00", "trim": "lock", "flag": "🛫", "parking": "広い"}, {"no": 2, "id": "cp02", "name": "杵築城", "spot": "杵築城", "lat": 33.4147511, "lng": 131.6277461, "radius": 120, "pt": 100, "mode": "photo", "status": "ok", "hint": "日本一小さい天守とも。築城は何年か", "mission": "天守を背にした一枚", "memo": "10:00-17:00", "leg": "杵築", "open_from": "10:00", "open_to": "17:00", "trim": "core", "flag": "🏯", "parking": "あり"}, {"no": 3, "id": "cp03", "name": "酢屋の坂", "spot": "酢屋の坂", "lat": 33.4168439, "lng": 131.6198307, "radius": 80, "pt": 90, "mode": "photo", "status": "ok", "hint": "坂の上と下、二つの坂が一枚に収まる場所を探せ", "mission": "二つの坂を一枚に収めた写真", "memo": "24時間。徒歩のみ", "leg": "杵築", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "⛰", "parking": "市内無料Pへ"}, {"no": 4, "id": "cp04", "name": "大原邸", "spot": "大原邸", "lat": 33.4169128, "lng": 131.6201786, "radius": 80, "pt": 90, "mode": "quiz", "status": "ok", "hint": "松平藩家老の屋敷。屋根は何葺きか", "mission": "屋根の葺き方を入力", "memo": "10:00-17:00。酢屋の坂から徒歩1分", "leg": "杵築", "open_from": "10:00", "open_to": "17:00", "trim": "core", "flag": "🏘", "parking": "市内無料Pへ"}, {"no": 5, "id": "cp05", "name": "的山荘", "spot": "的山荘", "lat": 33.3666231, "lng": 131.533864, "radius": 80, "pt": 80, "mode": "quiz", "status": "ok", "hint": "国指定重要文化財。名物の魚は", "mission": "魚の名を入力", "memo": "外観のみ。営業中は静粛に", "leg": "日出", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🐟", "parking": "少"}, {"no": 6, "id": "cp06", "name": "日出城", "spot": "日出城跡（暘谷城）", "lat": 33.3667515, "lng": 131.5316979, "radius": 100, "pt": 90, "mode": "photo", "status": "ok", "hint": "石垣の上に建つのは何の施設か", "mission": "別府湾を望む石垣からの一枚", "memo": "24時間。小学校敷地内。児童に配慮", "leg": "日出", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🏯", "parking": "少"}, {"no": 7, "id": "cp07", "name": "シーガーデンひじ", "spot": "シーガーデンひじ", "lat": 33.361888, "lng": 131.5034888, "radius": 100, "pt": 60, "mode": "auto", "status": "ok", "hint": "別府湾を望む直売所。名物のパンは", "mission": "車を降りずとも判定される", "memo": "9:00-19:00。国道10号直上。駐車場が広い", "leg": "日出", "open_from": "09:00", "open_to": "19:00", "trim": "core", "flag": "🛍", "parking": "広い"}, {"no": 8, "id": "cp08", "name": "亀川駅", "spot": "亀川駅", "lat": 33.3312028, "lng": 131.4931333, "radius": 80, "pt": 40, "mode": "auto", "status": "ok", "hint": "駅スタンプの惹句は「◯◯と砂湯の駅」", "mission": "停車20秒で自動判定", "memo": "24時間。通行の妨げにならぬこと", "leg": "別府北", "open_from": "00:00", "open_to": "24:00", "trim": "trim2", "flag": "🚉", "parking": "少"}, {"no": 9, "id": "cp09", "name": "別府海浜砂湯", "spot": "別府海浜砂湯", "lat": 33.3120889, "lng": 131.5015273, "radius": 80, "pt": 90, "mode": "photo", "status": "ok", "hint": "砂に埋まる時間は何分間か", "mission": "砂浜と施設を収めた一枚", "memo": "8:00-21:00。入浴は時間的に不可", "leg": "別府北", "open_from": "08:00", "open_to": "21:00", "trim": "core", "flag": "🏖", "parking": "あり"}, {"no": 10, "id": "cp10", "name": "別府駅", "spot": "別府駅（油屋熊八像）", "lat": 33.27924, "lng": 131.50086, "radius": 100, "pt": 50, "mode": "quiz", "status": "ok", "hint": "両手を挙げた銅像の人物は誰か", "mission": "人物名を入力", "memo": "24時間。東口駅前", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🚉", "parking": "有料"}, {"no": 11, "id": "cp11", "name": "トキハ別府", "spot": "トキハ別府", "lat": 33.2803239, "lng": 131.5053767, "radius": 80, "pt": 40, "mode": "auto", "status": "ok", "hint": "地下にあるのは足湯か、温泉か", "mission": "停車20秒で自動判定", "memo": "10:00-19:00", "leg": "別府市街", "open_from": "10:00", "open_to": "19:00", "trim": "trim1", "flag": "🏬", "parking": "あり"}, {"no": 12, "id": "cp12", "name": "別府タワー", "spot": "別府タワー", "lat": 33.281771, "lng": 131.505917, "radius": 80, "pt": 60, "mode": "quiz", "status": "ok", "hint": "展望階は何階か", "mission": "階数を入力", "memo": "登塔は時間的に不可。外観で可", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🗼", "parking": "近隣有料"}, {"no": 13, "id": "cp13", "name": "竹瓦温泉", "spot": "竹瓦温泉", "lat": 33.277456, "lng": 131.505989, "radius": 80, "pt": 80, "mode": "photo", "status": "ok", "hint": "名物は砂湯。入口の屋根の形を見よ", "mission": "唐破風の入口と一枚", "memo": "6:30-22:30", "leg": "別府市街", "open_from": "06:30", "open_to": "22:30", "trim": "lock", "flag": "♨", "parking": "なし"}, {"no": 14, "id": "cp14", "name": "竹瓦小路", "spot": "竹瓦小路アーケード", "lat": 33.277033, "lng": 131.505911, "radius": 60, "pt": 60, "mode": "manual", "status": "ok", "hint": "日本最古級の木造アーケード。何造りか", "mission": "★屋根下でGPS不可。写真で手動判定", "memo": "24時間。竹瓦温泉から徒歩30秒", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🏮", "parking": "なし"}, {"no": 15, "id": "cp15", "name": "別府公園", "spot": "別府公園", "lat": 33.281557, "lng": 131.491006, "radius": 150, "pt": 50, "mode": "photo", "status": "ok", "hint": "園内の竹林を探せ", "mission": "竹林で全員の一枚", "memo": "24時間。市街から2km西に外れる", "leg": "別府市街", "open_from": "00:00", "open_to": "24:00", "trim": "trim2", "flag": "🌳", "parking": "広い"}, {"no": 16, "id": "cp16", "name": "湯けむり展望台", "spot": "湯けむり展望台", "lat": 33.3156683, "lng": 131.4853258, "radius": 100, "pt": 70, "mode": "photo", "status": "ok", "hint": "日本夜景遺産。街から立ち昇るものは", "mission": "湯けむりの立つ街並みを一枚", "memo": "8:00-21:00。★駐車8台・道幅狭い", "leg": "鉄輪", "open_from": "08:00", "open_to": "21:00", "trim": "core", "flag": "💨", "parking": "8台・狭"}, {"no": 17, "id": "cp17", "name": "血の池地獄", "spot": "血の池地獄", "lat": 33.327173, "lng": 131.478173, "radius": 100, "pt": 120, "mode": "photo", "status": "ok", "hint": "日本最古の天然地獄。赤の正体は", "mission": "池の赤を収めた一枚", "memo": "8:00-17:00。★17時閉門。入場料要", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "core", "flag": "🩸", "parking": "あり"}, {"no": 18, "id": "cp18", "name": "龍巻地獄", "spot": "龍巻地獄", "lat": 33.327141, "lng": 131.479401, "radius": 100, "pt": 100, "mode": "quiz", "status": "ok", "hint": "間欠泉の噴出間隔は約何分か", "mission": "間隔を入力", "memo": "8:00-17:00。★噴出待ちで時間が読めない", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "trim3", "flag": "⛲", "parking": "あり"}, {"no": 19, "id": "cp19", "name": "地獄蒸し工房", "spot": "地獄蒸し工房 鉄輪", "lat": 33.3154852, "lng": 131.4762201, "radius": 80, "pt": 150, "mode": "photo_group", "status": "ok", "hint": "蒸し釜の温度は約何度か", "mission": "★食事：組の全員と料理が写った一枚", "memo": "10:00-18:00。16:00-17:00の食事枠", "leg": "鉄輪", "open_from": "10:00", "open_to": "18:00", "trim": "lock", "flag": "🍚", "parking": "あり"}, {"no": 20, "id": "cp20", "name": "鉄輪むし湯", "spot": "鉄輪むし湯", "lat": 33.316165, "lng": 131.477793, "radius": 80, "pt": 80, "mode": "quiz", "status": "ok", "hint": "石室に敷かれた薬草の名は", "mission": "薬草名を入力", "memo": "10:00-20:00。工房から徒歩3分", "leg": "鉄輪", "open_from": "10:00", "open_to": "20:00", "trim": "core", "flag": "♨", "parking": "少"}, {"no": 21, "id": "cp21", "name": "かまど地獄", "spot": "かまど地獄", "lat": 33.316388, "lng": 131.472391, "radius": 80, "pt": 110, "mode": "photo", "status": "ok", "hint": "飲泉は1杯何円か", "mission": "一丁目〜六丁目のいずれかで一枚", "memo": "8:00-17:00。★17時閉門。入場料要", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "core", "flag": "🔥", "parking": "あり"}, {"no": 22, "id": "cp22", "name": "海地獄", "spot": "海地獄", "lat": 33.316812, "lng": 131.468738, "radius": 100, "pt": 120, "mode": "photo", "status": "ok", "hint": "コバルトブルーの正体となる成分は", "mission": "青い池と一枚", "memo": "8:00-17:00。★17時閉門。駐車場広い", "leg": "鉄輪", "open_from": "08:00", "open_to": "17:00", "trim": "lock", "flag": "🌊", "parking": "広い"}, {"no": 23, "id": "cp23", "name": "十文字原展望台", "spot": "十文字原展望台", "lat": 33.3297195, "lng": 131.4602103, "radius": 120, "pt": 90, "mode": "photo", "status": "ok", "hint": "日本夜景遺産。別府湾と国東半島を一望", "mission": "展望台からの一枚", "memo": "★24時間開放。17時以降も取れる数少ない陣所。駐車7-8台・進入路が狭い", "leg": "鉄輪-明礬", "open_from": "00:00", "open_to": "24:00", "trim": "core", "flag": "🌃", "parking": "7台・狭"}, {"no": 24, "id": "cp24", "name": "明礬 湯の里", "spot": "明礬温泉 湯の里", "lat": 33.3195656, "lng": 131.4539899, "radius": 120, "pt": 110, "mode": "photo", "status": "ok", "hint": "湯の花の結晶は何色か", "mission": "藁葺きの湯の花小屋を一枚", "memo": "9:00-18:00。駐車場広い", "leg": "明礬", "open_from": "09:00", "open_to": "18:00", "trim": "core", "flag": "🏚", "parking": "広い"}, {"no": 25, "id": "cp25", "name": "グランヴェルデリゾート", "spot": "グランヴェルデリゾート（着城）", "lat": 33.3236545, "lng": 131.4103905, "radius": 200, "pt": 200, "mode": "photo_group", "status": "ok", "hint": "天と地の間、天間（あまま）", "mission": "★着城：組の全員が写った一枚", "memo": "17:30チェックイン。ここが本陣", "leg": "天間", "open_from": "00:00", "open_to": "24:00", "trim": "lock", "flag": "🏁", "parking": "広い"}];
+const tb = document.querySelector('#tbl tbody');
+let leg = null;
+CPS.forEach(c=>{
+  if(c.leg !== leg){
+    leg = c.leg;
+    const r = document.createElement('tr');
+    r.className = 'leg';
+    r.innerHTML = '<td colspan="6">'+leg+'</td>';
+    tb.appendChild(r);
+  }
+  const closes = (c.open_to && c.open_to !== '24:00');
+  const M={auto:'自動',near:'接近通知',manual:'手動',photo:'写真',photo_group:'全員写真',quiz:'クイズ',gm:'本陣承認'};
+  const auto = (c.mode==='auto');
+  const r = document.createElement('tr');
+  r.innerHTML =
+    '<td class="no">'+c.no+'</td>'+
+    '<td><b>'+c.flag+' '+c.name+'</b></td>'+
+    '<td style="color:#a8a294">'+c.hint+'</td>'+
+    '<td><span class="chip '+(auto?'auto':'hand')+'">'+(M[c.mode]||c.mode)+'</span></td>'+
+    '<td><span class="chip '+(closes?'close':'')+'">'+
+       (closes ? c.open_from+'–'+c.open_to : '24時間')+'</span></td>'+
+    '<td class="pt">'+c.pt+'</td>';
+  tb.appendChild(r);
+});
+</script>
+</body>
+</html>
