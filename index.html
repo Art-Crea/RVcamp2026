@@ -58,11 +58,11 @@
   <h2 class="sec">🚀 次にやること（優先順）</h2>
   <div class="check" id="todo">
     <div class="row"><span class="dot warn"></span><div><div class="k">① ADMIN_TOKEN を自分だけの文字列に変更</div><div class="v">rv_config.js の ADMIN_TOKEN: の値を変更してコミット。現在は初期値から変更済みですが、さらに自分だけが知る文字列にしてください。</div></div></div>
-    <div class="row"><span class="dot warn"></span><div><div class="k">② このZIPを GitHub にアップロード（iPhone Safari 可）</div><div class="v">github.com/Art-Crea/RVcamp2026 → Add file → Upload files → ZIPを展開してアップロード。手順は docs/08 と docs/10 を参照。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">② このZIPを GitHub にアップロード（iPhone Safari 可）</div><div class="v">github.com/Art-Crea/RVcamp2026 → Add file → Upload files → ZIPを展開してアップロード。手順は doc08_github.md と doc10_iphone.md を参照。</div></div></div>
     <div class="row"><span class="dot warn"></span><div><div class="k">③ GitHub Pages を有効化</div><div class="v">リポジトリ Settings → Pages → Source: main / ルート → Save。5分で https://art-crea.github.io/RVcamp2026/ が公開されます。</div></div></div>
     <div class="row"><span class="dot warn"></span><div><div class="k">④ GAS に rv_gas_backend.gs をデプロイ</div><div class="v">Googleスプレッドシート → 拡張機能 → Apps Script → コードを貼付 → デプロイ（全員アクセス可）。URLをGM本陣の接続欄に貼る。</div></div></div>
-    <div class="row"><span class="dot warn"></span><div><div class="k">⑤ LINE 公式アカウントを接続（docs/04 参照）</div><div class="v">LINE Developers でチャネル作成 → トークン発行 → GASスクリプトプロパティに設定 → Webhook URL に ?key=合言葉付きURLを貼る。</div></div></div>
-    <div class="row"><span class="dot warn"></span><div><div class="k">⑥ スマホ実機テスト（docs/07 チェックリスト）</div><div class="v">rv_player_app.html をスマホで開き GPS許可 → 陣所に近づいて申請ボタンが出るか確認。8/27の2週間前までに完了推奨。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">⑤ LINE 公式アカウントを接続（doc04_line.md 参照）</div><div class="v">LINE Developers でチャネル作成 → トークン発行 → GASスクリプトプロパティに設定 → Webhook URL に ?key=合言葉付きURLを貼る。</div></div></div>
+    <div class="row"><span class="dot warn"></span><div><div class="k">⑥ スマホ実機テスト（doc07_checklist.md チェックリスト）</div><div class="v">rv_player_app.html をスマホで開き GPS許可 → 陣所に近づいて申請ボタンが出るか確認。8/27の2週間前までに完了推奨。</div></div></div>
     <div class="row"><span class="dot warn"></span><div><div class="k">⑦ Googleマイマップ作成（参加者ナビ用）</div><div class="v">合戦盤「陣所一覧・書出」→ CSV書出 → Googleマイマップにインポート → 共有URL を rv_config.js の MYMAP_URL に貼る。</div></div></div>
     <div class="row"><span class="dot warn"></span><div><div class="k">⑧ 本番2週間前：36将QRカードを印刷</div><div class="v">GM本陣「参戦リンクを作る」→ 36将分のQRを生成 → A4カード印刷。当日は受付で配布。</div></div></div>
   </div>
@@ -70,7 +70,7 @@
   <h2 class="sec">📱 iPhone からの操作</h2>
   <div class="check">
     <div class="row"><span class="dot ok"></span><div><div class="k">Safari で GitHub.com を開く（推奨・無料）</div><div class="v">github.com/Art-Crea/RVcamp2026 → Add file → Upload files → ファイルアプリからZIP展開後のフォルダを選択。100ファイルまで1回でOK。</div></div></div>
-    <div class="row"><span class="dot ok"></span><div><div class="k">Working Copy アプリ（本格git・¥2,200）</div><div class="v">App Store で「Working Copy - Git Client」をインストール。Personal Access Tokenを発行してclone → 編集 → commit → push が全部iPhoneで完結。手順は docs/10 を参照。</div></div></div>
+    <div class="row"><span class="dot ok"></span><div><div class="k">Working Copy アプリ（本格git・¥2,200）</div><div class="v">App Store で「Working Copy - Git Client」をインストール。Personal Access Tokenを発行してclone → 編集 → commit → push が全部iPhoneで完結。手順は doc10_iphone.md を参照。</div></div></div>
     <div class="row"><span class="dot ok"></span><div><div class="k">1ファイルだけ編集（例：ADMIN_TOKEN変更）</div><div class="v">GitHub.com → rv_config.js → 鉛筆アイコン → 編集 → Commit changes。Safariだけで完結。</div></div></div>
   </div>
 
@@ -84,6 +84,7 @@
 
 <!-- 設定とデータを読み込んで自己診断する -->
 <script src="./rv_config.js"></script>
+<script src="./rv_portraits.js"></script>
 <script src="./rv_data.js"></script>
 <script>
 (function(){
@@ -122,7 +123,7 @@
     ['doc10_iphone', '10 iPhone GitHub操作手順']
   ];
   document.getElementById('docs').innerHTML = docs.map(function(d){
-    return '<a class="card" href="docs/'+d[0]+'.md"><div class="t"><span class="em">📄</span> '+d[0].replace(/_/g,' ')+'</div>'
+    return '<a class="card" href="./'+d[0]+'.md"><div class="t"><span class="em">📄</span> '+d[0].replace(/_/g,' ')+'</div>'
       + '<div class="d">'+d[1]+'</div><span class="role doc">ドキュメント</span></a>';
   }).join('');
 
